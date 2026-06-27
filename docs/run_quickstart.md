@@ -1,5 +1,10 @@
 Quick run notes
 
+- Reward-model data generation from an EG3D checkpoint:
+  `cd reward_model_training/reward_model_framework && bash core_modules/scripts/generate_reward_training_data.sh`
+- The maintained data-generation launcher synthesizes triple RGB, triple depth,
+  sigma-field 256 slabs, and AW98 landmarks. It requires a CUDA-capable env,
+  an external EG3D checkpoint, and substantial storage/time.
 - From repo root, run:
   `cd reward_model_training/reward_model_framework && python -m core_modules.train_rwd_model experiment=sfield_256 logger=csv callbacks=public_local using_wandb=false test=false dloader.num_workers=0 trainer.max_epochs=1 trainer.limit_train_batches=2 trainer.limit_val_batches=2 data.dset_dict.proportion_of_data_to_use=0.02`
 - Prereqs: install requirements. The local `autoroot.py` bootstrap sets repo-root paths and env defaults for the moved reward-model framework.
@@ -34,6 +39,8 @@ the preset.
 
 ### Paper-facing entrypoints
 
+- Reward-model data generation:
+  `reward_model_training/reward_model_framework/core_modules/scripts/generate_reward_training_data.sh`
 - Reward-model full retrain sweep:
   `reward_model_training/reward_model_framework/core_modules/scripts/train_all_reward_models.sh`
 - RLHF verification across the five maintained finetune configs:

@@ -3,6 +3,8 @@ here.
 
 Current contents:
 
+- `generate_reward_training_data.sh`: maintained launcher for synthesizing the
+  EG3D-derived reward-model training inputs used by the public path.
 - `train_all_reward_models.sh`: full retraining sweep for the six maintained
   reward-model experiment families.
 - `train_all_reward_models_1epoch.sh`: quick one-epoch sweep across the same

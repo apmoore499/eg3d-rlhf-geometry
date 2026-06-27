@@ -3,9 +3,7 @@ scripts.
 
 This is now the canonical home for the repo's paper-linked analysis layer.
 Older notes referred to this area as `jupyter_notebooks` and later
-`analysis_scripts`; the repo keeps a local `jupyter_notebooks ->
-paper_result_analyses` symlink for compatibility with older commands and
-notes.
+`analysis_scripts`.
 
 This is no longer a dump of every historical debugging helper. Single-run
 mesh-export one-offs, seed-200050 watch/probe scripts, and other resolved

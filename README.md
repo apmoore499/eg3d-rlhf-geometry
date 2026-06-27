@@ -16,8 +16,9 @@ This is research code from my PhD (Generative AI, mathematics). It accompanies
 > It was built to run the experiments and produce the paper results, not as a
 > polished library. The best-performing reward model and the fine-tuned EG3D
 > generator are **not** included, and the (large) training data lives outside
-> the repo. What you *can* do quickly is read the method and run the smoke
-> pipelines below on synthetic/sample data.
+> the repo. What you *can* do quickly is inspect the method, regenerate the
+> maintained data representations from external checkpoints, and run the smoke
+> pipelines below once the required external assets are in place.
 >
 > Public-scope summary:
 > [public_release_scope_2026-06-24.md](docs/public_release_scope_2026-06-24.md)
@@ -48,14 +49,14 @@ scalar reward / preference logit.
 |------|------|
 | `eg3d/` | The EG3D fork: generator, training, and the **RLHF fine-tuning loop**. Entry point `eg3d/train_rlhf.py`; the RLHF loss is in `eg3d/training/loss.py`; the training loop in `eg3d/training/training_loop.py`. |
 | `reward_model_training/reward_model_framework/core_modules/` | The **reward-model framework** (Hydra + PyTorch Lightning). Entry point `train_rwd_model.py`. |
-| `core_modules/data/` | Data pipeline. The core class is `dset_loaders.dset_single_stream_ordered_minimal`; representations are catalogued in `configs/data/data_defaults.yaml`. |
-| `core_modules/models/` | Reward-model backbones (`modules_conv3d`, `modules_pointnet`, `modules_curvenet`, `modules_depthmap`, …) on a shared `UniversalRWDModel` base. |
-| `core_modules/configs/` | Hydra configs: `experiment/`, `model/`, `data/`. |
-| `core_modules/data/create_train_data/` | Data synthesis from a trained EG3D checkpoint (`generation_utils.py`, `synthesize_*.py`). |
+| `reward_model_training/reward_model_framework/core_modules/data/` | Data pipeline. The core class is `dset_loaders.dset_single_stream_ordered_minimal`; representations are catalogued in `configs/data/data_defaults.yaml`. |
+| `reward_model_training/reward_model_framework/core_modules/models/` | Reward-model backbones (`modules_conv3d`, `modules_pointnet`, `modules_curvenet`, `modules_depthmap`, …) on a shared `UniversalRWDModel` base. |
+| `reward_model_training/reward_model_framework/core_modules/configs/` | Hydra configs: `experiment/`, `model/`, `data/`. |
+| `reward_model_training/reward_model_framework/core_modules/data/create_train_data/` | Data synthesis from a trained EG3D checkpoint (`generation_utils.py`, `synthesize_*.py`). |
 | `eg3d/reward_tune_analysis/` | Curated project-local analysis, export, and verification scripts for reward tuning. |
-| `paper_result_analyses/` | Optional paper-linked post-hoc analyses and figure-generation work. The local `jupyter_notebooks/` symlink remains only as a compatibility alias. |
+| `paper_result_analyses/` | Optional paper-linked post-hoc analyses and figure-generation work. |
 | `paper_artifacts/` | Small tracked paper-supporting result artifacts kept separate from source code. |
-| `docs/` | Handoff notes, run guides, and refactor history. |
+| `docs/` | Curated paper-facing docs, quickstarts, and release-scope notes. |
 
 ---
 
@@ -108,6 +109,8 @@ The current maintained experiment configs are:
 
 ### Paper-facing entrypoints
 
+- Reward-model data generation from an EG3D checkpoint:
+  [generate_reward_training_data.sh](reward_model_training/reward_model_framework/core_modules/scripts/generate_reward_training_data.sh)
 - Reward-model retraining sweep:
   [train_all_reward_models.sh](reward_model_training/reward_model_framework/core_modules/scripts/train_all_reward_models.sh)
 - Protected finetune verification across the five maintained RLHF configs:
@@ -165,8 +168,17 @@ The training data is large and **external** to the repo. The reward-model data
 (`~/Documents/eg3dredo_data`). Override via the env var or Hydra
 `paths.rwd_data_dir`. Other path overrides: `STATIC_CONFIGS_DIR`,
 `RWD_MODELS_DIR`, `RUNS_SUMMARY_CSV` (mirrored by `paths.*` in Hydra). To
-regenerate data from an EG3D checkpoint, see
-`core_modules/data/create_train_data/synthesize_*.py`.
+regenerate the maintained reward-model inputs from an EG3D checkpoint, use:
+
+```sh
+cd reward_model_training/reward_model_framework
+bash core_modules/scripts/generate_reward_training_data.sh
+```
+
+That launcher runs the maintained synthesis scripts for triple RGB views,
+triple depth maps, sigma-field 256 slabs, and AW98 landmarks. It requires a
+CUDA-capable environment, an external pretrained EG3D checkpoint, and
+substantial storage/time.
 
 The main pretrained/tuned checkpoints used in the paper are also external to
 the repo. The public code supports:
@@ -182,7 +194,7 @@ the repo. The public code supports:
 
 - Built originally during a from-scratch learning curve; recently refactored for
   reproducibility (reusable smoke presets, a real-trainer test suite, an audited
-  config catalog). See `docs/` for the refactor history.
+  config catalog). See `docs/` for the public run guides and release scope.
 - Upstream EG3D: https://github.com/NVlabs/eg3d (see its license).
 
 <!-- TODO (author to fill): paper/thesis title + link; author name + contact;

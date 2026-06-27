@@ -31,6 +31,12 @@ The public repo supports:
 - finetuning EG3D from an external pretrained generator checkpoint
 - exporting before/after mesh banks from external snapshot `.pkl` files
 
+Maintained data-generation entrypoint:
+
+- [generate_reward_training_data.sh](../reward_model_training/reward_model_framework/core_modules/scripts/generate_reward_training_data.sh)
+  for triple RGB, triple depth, sigma-field 256, and AW98 landmark synthesis
+  from an external EG3D checkpoint
+
 ## Core Reported Pipeline
 
 ### 1. Reward-model training
@@ -182,7 +188,7 @@ python train_rlhf.py experiment=finetune_eg3d_sfield \
 
 These exist, but they are not the day-one public reproduction path:
 
-- notebook-heavy embedding / UMAP analysis
+- embedding / UMAP analysis
 - SHAP / attribution analysis
 - cross-generator and extension experiments
 - additional mesh-tail diagnostics

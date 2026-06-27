@@ -25,7 +25,7 @@ These can be useful to readers, but they are not part of the minimal
 reproduction contract:
 
 - curated analysis scripts in `eg3d/reward_tune_analysis/`
-- notebook-heavy post-hoc analyses in `paper_result_analyses/`
+- post-hoc analyses in `paper_result_analyses/`
 - small summary artifacts in `paper_artifacts/reward_embedding_analysis/`
 - additional exploratory comparisons and diagnostics
 

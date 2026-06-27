@@ -42,11 +42,10 @@ Main categories there:
 These are public-optional: useful for deeper inspection, not required for the
 main paper-backed runtime path.
 
-## Notebook-Heavy Exploratory Layer
+## Exploratory Post-Hoc Layer
 
 `paper_result_analyses/` is now the canonical home for the smaller selective
-subset of the old exploratory tree. The local `jupyter_notebooks/` symlink is
-kept only as a compatibility alias:
+subset of the old exploratory tree:
 
 - truncation / baseline comparison scripts
 - reward embedding / explainability analysis
@@ -83,7 +82,6 @@ For portfolio / release presentation:
 
 - keep `reward_tune_analysis/` visible as optional analysis
 - keep `paper_result_analyses/` clearly labelled exploratory
-- keep `jupyter_notebooks/` only as a compatibility alias
 - do not imply that every notebook/script is part of the supported public path
 
 ## Reader Guidance
