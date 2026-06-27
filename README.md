@@ -79,11 +79,16 @@ conda config --add channels conda-forge
 conda create -n hf_geom_eg3d_py39 python=3.9 -y
 conda activate hf_geom_eg3d_py39
 conda install -y -c pytorch -c nvidia pytorch=2.0.1 torchvision torchaudio pytorch-cuda=11.8
+conda install -y -c conda-forge pytorch-3dunet dlib
 python -m pip install uv
 python -m uv pip install fvcore iopath
 python -m pip install --no-index --no-cache-dir pytorch3d -f https://dl.fbaipublicfiles.com/pytorch3d/packaging/wheels/py39_cu118_pyt201/pytorch3d-0.7.4-cp39-cp39-linux_x86_64.whl
+python -m uv pip install torch-scatter==2.1.1 -f https://data.pyg.org/whl/torch-2.0.1+cu118.html
+python -m uv pip install torch-geometric
 python -m uv pip install -r requirements.txt
 ```
+
+The `conda-forge` step installs the sigma-field 3D-UNet backbone (`pytorch-3dunet`) and the `dlib` library that loads the bundled landmark model; the `data.pyg.org` step installs the PyTorch-Geometric extensions the framework imports.
 
 `external/dlib/shape_predictor_5_face_landmarks.dat` is tracked in the repo and used by the landmark path. A few optional analysis scripts also expect [PyGeM](https://github.com/mathLab/PyGeM).
 
