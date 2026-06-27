@@ -12,7 +12,7 @@
 #
 # Usage (env hf_geom_eg3d_py39):
 #   bash reward_model_training/reward_model_framework/core_modules/scripts/train_all_reward_models.sh
-# The experiment configs below default to smoke-scale trainer limits (1 batch);
+# The experiment configs below default to small public-test trainer limits (1 batch);
 # the overrides here restore full 10-epoch training. EarlyStopping (patience 3)
 # may end a model sooner -- raise callbacks.early_stopping.patience to force 10.
 # ============================================================================

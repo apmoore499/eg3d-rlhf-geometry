@@ -48,5 +48,5 @@ external_assets/
   (`--baseline-pkl`, `--tuned-pkl`); use the `legacy_sigma10` path for the
   paper-facing geometry.
 - **Release verifier:** `reward_model_training/reward_model_framework/core_modules/scripts/verify_public_release.py`
-  — loads the released reward model and runs forward/export smoke checks.
+  — loads the released reward model and runs forward/export test checks.
 - **Fine-tuning:** see [finetuning.md](finetuning.md).

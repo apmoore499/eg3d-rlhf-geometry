@@ -20,4 +20,4 @@ benchmark: True
 #precision=16, gpus=1, amp_backend='native', amp_level='O2'
 #profiler: null
 
-#profiler = PyTorchProfiler(dirpath='/media/krillman/240GB_DATA/codes2/SSL_GCM/src/profiling',filename='profile_x_newer_ptorch.log',row_limit=None)
+# profiler = PyTorchProfiler(dirpath='<profiling_dir>', filename='profile_x_newer_ptorch.log', row_limit=None)

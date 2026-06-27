@@ -1,11 +1,15 @@
+# Sigma-field transform: self-normalise each 256^3 slab to [0, upper_norm], no augmentation.
+# This is the "normalise the sigma field" step reported in the paper. The same transform is
+# applied on every split (train/val/test/tune) so the reward model and EG3D fine-tuning see
+# identical inputs.
 defaults:
   - _self_
   - contrastive: null
 
 goodmesh_augment: null
-upper_norm: 100
+upper_norm: 100                 # upper bound of the self-normalisation range (lower bound = 0)
 
-# shared block
+# shared transform: per-slab min-max normalise to [0, upper_norm] (custom_transforms.normalise_sigma_self)
 sigma_norm: &sigma_norm
   _target_: core_modules.data.custom_transforms.transforms_composition_helper
   dtype: sigma_field_256
@@ -18,4 +22,4 @@ sigma_norm: &sigma_norm
 train: { <<: *sigma_norm }
 val:   { <<: *sigma_norm }
 test:  { <<: *sigma_norm }
-tune:  { <<: *sigma_norm }
+tune:  { <<: *sigma_norm }      # tune slot = the transform EG3D fine-tuning inherits

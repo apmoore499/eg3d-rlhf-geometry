@@ -1,21 +1,23 @@
 # @package _global_
 #
-# Point-cloud reward fine-tune. Overrides base_config (the null default) with the
-# reward ON. The dtype (PointNet1 / PointNet2 / CurveNet) is derived from the
+# Point-cloud reward fine-tune (non-reported). Overrides base_config (the null default)
+# with the reward ON. The dtype (PointNet1 / PointNet2 / CurveNet) is derived from the
 # reward-model id, so one config serves all three pcd backbones (CurveNet wants
 # rlhf_tune_hpms.batch_size=2). The pcd normalisation transform is inherited from the
 # reward model's recorded `tune` slot. Reward-path depth is rendered natively at 128.
+# Hyperparameters here are NOT standardised against the reported sfield run (abandoned
+# experimentation; standardising gave no benefit for non-sigma representations).
 #   python train_rlhf.py experiment=finetune_eg3d_pn1 rwd_model_id=<pcd_id>
 
 rwd_model_id: 541b13pt          # pcd PointNet1 (recent, 2026-06-19)
-train_tick_stop: 10
+train_tick_stop: 10             # shorter example run (not the reported 20)
 
 data:
-  nrs: 128
+  nrs: 128                      # render reward-path depth natively at 128 (no 64->128 upsample)
 
 rlhf_tune_hpms:
-  lambda_rwd_model: 0.1
-  lambda_sigma_l1: 1.0
-  gen_c_mult_rwd: 0.0
-  G_sample_truncation_psi: 0.7
+  lambda_rwd_model: 0.1         # reward weight (experimental value for this rep)
+  lambda_sigma_l1: 1.0          # sigma anchor set higher for pcd (experimental)
+  gen_c_mult_rwd: 0.0           # conditioning-camera multiplier for reward extraction (off for pcd)
+  G_sample_truncation_psi: 0.7  # truncation psi for G sampling during tuning
   update_G_ema_every_tick: true

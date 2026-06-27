@@ -1,0 +1,5 @@
+seed,method,state,source_pkl,image_path
+9100000,legacy_sigma10,untuned,<baseline_pkl>,<repo_root>/release_verification_outputs/public_release_test/mesh_bank_test/legacy_sigma10/untuned/seed_9100000.jpg
+9100001,legacy_sigma10,untuned,<baseline_pkl>,<repo_root>/release_verification_outputs/public_release_test/mesh_bank_test/legacy_sigma10/untuned/seed_9100001.jpg
+9100000,legacy_sigma10,tuned,<tuned_pkl>,<repo_root>/release_verification_outputs/public_release_test/mesh_bank_test/legacy_sigma10/tuned/seed_9100000.jpg
+9100001,legacy_sigma10,tuned,<tuned_pkl>,<repo_root>/release_verification_outputs/public_release_test/mesh_bank_test/legacy_sigma10/tuned/seed_9100001.jpg

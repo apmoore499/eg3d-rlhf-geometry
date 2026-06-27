@@ -1,22 +1,23 @@
 # @package _global_
 #
-# Triple-depth-map reward fine-tune. Identical to finetune_eg3d_sdmap except for the
-# reward-model id -- single vs triple is auto-derived from the model's dtype
-# (get_datatype_from_model_id).
+# Triple-depth-map reward fine-tune (non-reported). Identical to finetune_eg3d_sdmap
+# except for the reward-model id -- single vs triple is auto-derived from the model's
+# dtype (get_datatype_from_model_id). Hyperparameters here are NOT standardised against
+# the reported sfield run (abandoned experimentation; standardising gave no benefit).
 #   python train_rlhf.py experiment=finetune_eg3d_tdmap rwd_model_id=zxmuq2m9
 
 rwd_model_id: zxmuq2m9          # triple dmap (plain)
-train_tick_stop: 10
+train_tick_stop: 10             # shorter example run (not the reported 20)
 
 data:
-  nrs: 128
-  upsample_64_to_128: false
+  nrs: 128                      # render reward-path depth natively at 128
+  upsample_64_to_128: false     # no 64->128 upsample for the dmap path
 
 rlhf_tune_hpms:
-  lambda_rwd_model: 1.0
+  lambda_rwd_model: 1.0         # reward weight (experimental value for this rep)
   lambda_nose_hard: 1.0         # depth-map models penalise the nose spike
   lambda_sigma_l1: 0.0          # no sigma anchor for the dmap path
-  gen_c_mult_rwd: 0.0
+  gen_c_mult_rwd: 0.0           # conditioning-camera multiplier for reward extraction (off)
 
 pretrained_modules:
   old_G_ema: false              # no sigma_l1 anchor here, so no EMA reference needed

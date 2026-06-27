@@ -12,7 +12,7 @@ else
   WORKING_REPO_ROOT=""
 fi
 
-DEFAULT_WORKDIR="${REPO_ROOT}/release_verification_outputs/public_release_smoke"
+DEFAULT_WORKDIR="${REPO_ROOT}/release_verification_outputs/public_release_test"
 DEFAULT_GENERATOR_PKL=""
 DEFAULT_RWD_MODELS_DIR=""
 if [[ -n "${WORKING_REPO_ROOT}" ]]; then
@@ -54,13 +54,12 @@ if [[ -z "${RWD_MODELS_DIR_VALUE}" || ! -d "${RWD_MODELS_DIR_VALUE}" ]]; then
   exit 1
 fi
 
-rm -rf "${WORKDIR}"
 mkdir -p "${WORKDIR}"
 
 source "${CONDA_SH}"
 conda activate "${CONDA_ENV}"
 
-export PYTHONPYCACHEPREFIX="${PYTHONPYCACHEPREFIX:-/tmp/pycache_public_release}"
+export PYTHONPYCACHEPREFIX="${PYTHONPYCACHEPREFIX:-${WORKDIR}/pycache}"
 export RWD_MODELS_DIR="${RWD_MODELS_DIR_VALUE}"
 
 echo "Running public release verifier"

@@ -1,11 +1,14 @@
+# Shared reward-model training losses. The total objective (assembled in models/base.py:890)
+# sums three preference heads (pairs + scalar + BT) plus small regularisers and a
+# sigma-field-only reconstruction term. All representations use the three heads; only the
+# sigma-field UNet3D actually reconstructs, so the recon term is inert for depth-map/point-cloud.
 
-return_global_embedding: True
-lambda_abs_sym_loss: 0.0
-lambda_BT:  1e-3 #0.0 #1e-3
-lambda_pairs: 1.0 #0.0
-lambda_scalar_rwd: 1e-3 #1e-3 #0.0
-lambda_reg_rwd_vals: 1e-8 #0.0 #1e-8 #l2 loss
-lambda_agg_features_l2: 0.0 #for agg features make sure not too high magnitude
-lambda_recon: 1e-3
-recon_type: 'mse' #mse or l1...
-normalise_recon: false
+return_global_embedding: True   # backbone returns the global feature vector f-bar fed to the reward heads (base.py:64)
+lambda_BT: 1e-3                 # Bradley-Terry head: learns the BT lambda parameter (base.py:778-788)
+lambda_pairs: 1.0               # paired head: BCE over the pair computed both orders for order-invariance; outputs logits (base.py:734-737)
+lambda_scalar_rwd: 1e-3         # scalar head: Ouyang/InstructGPT objective learning the scalar reward s (the paper's L_w) (base.py:752-758)
+lambda_reg_rwd_vals: 1e-8       # tiny L2 reg on reward-value magnitude to curb runaway scores (base.py:801)
+lambda_agg_features_l2: 0.0     # off; optional L2 penalty on aggregated backbone-feature magnitude (base.py:807)
+lambda_recon: 1e-3              # reconstruction-loss weight; sigma-field UNet3D only (sfield_256 overrides to 1e-2)
+recon_type: 'mse'              # reconstruction penalty type, mse or l1 (sfield_256 overrides to l1)
+normalise_recon: false          # normalise reconstruction to the input slab scale first (sfield_256 overrides to true)

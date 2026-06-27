@@ -28,7 +28,7 @@ banks from snapshot `.pkl` files.
 ### 1. Reward-model training — representation/backbone comparison
 
 - Entry: `python -m core_modules.train_rwd_model experiment=<name>`
-  (or the full sweep `core_modules/scripts/train_all_reward_models.sh`).
+  (or the full sweep `scripts/train_reward_models.sh`).
 - Configs: `sfield_256` (reported), `sdmap`, `tdmap`,
   `pcd_pnet_point_cloud_entire`, `pcd_pnet2_point_cloud_entire`,
   `pcd_cvnet_point_cloud_entire`.
@@ -38,7 +38,7 @@ banks from snapshot `.pkl` files.
 ### 2. EG3D RLHF fine-tuning — the main method
 
 - Entry: `eg3d/train_rlhf.py`; reported launcher
-  `eg3d/reward_tune_analysis/scripts/sfield_reported_run.sh`.
+  `scripts/finetune_eg3d_reported_sfield.sh`.
 - Configs: `finetune_eg3d_sfield` (reported), `finetune_eg3d_sdmap`,
   `finetune_eg3d_tdmap`, `finetune_eg3d_pn1`, `finetune_eg3d_null` (control).
 - Paper role: the main fine-tuning result, the reward-vs-control FID comparison,
@@ -57,29 +57,23 @@ banks from snapshot `.pkl` files.
 
 These are not paper figures, but they confirm the public surface runs.
 
-Reward-model smoke (from `reward_model_training/reward_model_framework/`):
+Reward-model test:
 
 ```sh
-python -m core_modules.train_rwd_model experiment=sfield_256 \
-  logger=csv callbacks=public_local using_wandb=false test=false \
-  dloader.num_workers=0 trainer.max_epochs=1 \
-  trainer.limit_train_batches=2 trainer.limit_val_batches=2 \
-  data.dset_dict.proportion_of_data_to_use=0.02
+bash scripts/test_reward_models.sh
 ```
 
 Public release verifier (loads the released reward model, runs a one-batch
 forward pass through each reward config, and a tiny mesh-bank export):
 
 ```sh
-python core_modules/scripts/verify_public_release.py \
-  --baseline-pkl /path/to/untuned.pkl --tuned-pkl /path/to/tuned.pkl
+bash scripts/verify_public_release.sh /path/to/tuned.pkl
 ```
 
-RLHF smoke (from `eg3d/`):
+RLHF test:
 
 ```sh
-python train_rlhf.py experiment=finetune_eg3d_sfield +smoke=on \
-  click_legacy_args.outdir=/tmp/eg3d_rlhf_smoke
+bash scripts/test_eg3d_finetuning.sh
 ```
 
 ## Optional analyses (not the day-one reproduction path)

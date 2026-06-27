@@ -6,30 +6,17 @@ defaults:
   - wandb_images_logger
   - _self_
 
-# model_checkpoint:
-#   dirpath: ${trainer.default_root_dir}/wandb/checkpoints
-#   filename: "epoch_{epoch:03d}"
-#   monitor: "val_epoch/total_loss"
-#   mode: "min"
-#   save_last: True
-#   auto_insert_metric_name: False
-#   save_weights_only: True
-
-#ie try to do pair acc instead of total loss. total loss might be overfitting
 model_checkpoint:
   dirpath: ${trainer.default_root_dir}/wandb/checkpoints
   filename: "epoch_{epoch:03d}"
-  #monitor: "val_epoch/PAIR_acc/"
-  monitor: "val_epoch/paired_loss"
+  monitor: "val_epoch/paired_loss"  # checkpoint on the paired (pairs-head) validation loss
   mode: "min"
   save_last: False
   auto_insert_metric_name: False
   save_weights_only: True
 
 early_stopping:
-  #monitor: "val_epoch/PAIR_acc/"
-  monitor: "val_epoch/paired_loss"
-  patience: 3
+  monitor: "val_epoch/paired_loss"  # early-stop on the paired (pairs-head) validation loss
+  patience: 3                       # stop after 3 epochs without improvement (paper's early stopping)
   mode: "min"
-  divergence_threshold: 2.0
-  #stopping_threshold: 0.97 # stop training immediately once the monitored quantity reaches this threshold
+  divergence_threshold: 2.0         # abort the run if the monitored loss diverges past this

@@ -34,8 +34,7 @@ the `100000–101000` seed range at truncation `ψ = 0.25`.
 ## Run it
 
 ```sh
-cd reward_model_training/reward_model_framework
-bash core_modules/scripts/generate_reward_training_data.sh
+bash scripts/generate_reward_training_data.sh
 ```
 
 The launcher runs four synthesis steps in sequence. Each can be toggled with an
@@ -43,8 +42,8 @@ environment variable (`1` = run, `0` = skip), which is useful for regenerating a
 single representation:
 
 ```sh
-RUN_RGB=0 RUN_DMAP=0 RUN_SIGMA256=1 RUN_LANDMARKS=0 \
-  bash core_modules/scripts/generate_reward_training_data.sh
+cd reward_model_training/reward_model_framework/core_modules/data/create_train_data
+python synthesize_sigma_field_256_combined.py
 ```
 
 | Step | Script | Output |

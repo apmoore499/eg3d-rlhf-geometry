@@ -1,13 +1,13 @@
 cff-version: 1.2.0
 message: "If you use this code or the released models, please cite the paper."
-title: "Using Human Feedback to Fine-Tune Implicit 3D Face Geometry"
+title: "Sculpting NeRF Geometry: Human-Preference Fine-Tuning of a 3D-Aware Face GAN"
 abstract: >-
   Code and released models for fine-tuning the 3D geometry of EG3D, a 3D-aware
   GAN, from a geometry-sensitive reward model trained on human preference
   rankings.
 authors:
   - family-names: Moore
-    given-names: Archer P.
+    given-names: Archer
   - family-names: Gong
     given-names: Mingming
   - family-names: Hodgkinson
@@ -22,5 +22,20 @@ keywords:
   - neural radiance fields
   - RLHF
   - 3D face geometry
-# When the arXiv preprint is posted, add a preferred-citation block here with the
-# eprint id so "Cite this repository" points at the paper.
+preferred-citation:
+  type: article
+  title: "Sculpting NeRF Geometry: Human-Preference Fine-Tuning of a 3D-Aware Face GAN"
+  authors:
+    - family-names: Moore
+      given-names: Archer
+    - family-names: Gong
+      given-names: Mingming
+    - family-names: Hodgkinson
+      given-names: Liam
+  year: 2026
+  journal: "arXiv preprint"
+  url: "https://arxiv.org/abs/2606.27305"
+  identifiers:
+    - type: other
+      value: "arXiv:2606.27305"
+      description: "arXiv eprint ID"

@@ -20,8 +20,7 @@ reward model with `rwd_model_id`.
 ## Reported run
 
 ```sh
-cd eg3d
-bash reward_tune_analysis/scripts/sfield_reported_run.sh
+bash scripts/finetune_eg3d_reported_sfield.sh
 ```
 
 This is the exact reported configuration: the `7wnzkgie` sigma-field reward
@@ -52,24 +51,22 @@ The non-sigma configs reproduce the paper's comparison showing that image-
 derived reward signals are unstable as a fine-tuning driver; `finetune_eg3d_null`
 is the matched no-reward control.
 
-## Fast smoke run
+## Quick test
 
-A cheap end-to-end pass that reaches `tick 0` and exits (~15 s on a 4090):
+A cheap end-to-end pass that runs one tick of each maintained finetune config:
 
 ```sh
-python train_rlhf.py experiment=finetune_eg3d_sfield +smoke=on \
-  click_legacy_args.outdir=/tmp/eg3d_rlhf_smoke
+bash scripts/test_eg3d_finetuning.sh
 ```
 
-The `+smoke=on` preset shrinks the batch, stops at `tick 0`, and disables the
-expensive reporting paths (FID/KID, reward plots, the preference-study render,
-W&B, end-of-run mesh render) while keeping the reward-loss path exercised. Any
-inline override still wins over the preset.
+Each run uses `train_tick_stop=1`, disables the expensive reporting paths, and
+writes into the persistent `EG3D_TRAINING_OUTDIR` location (default:
+`$HOME/training_runs_2`).
 
 ## Verification across all configs
 
 ```sh
-bash reward_tune_analysis/scripts/run_protected_finetune_one_tick.sh
+bash scripts/test_eg3d_finetuning.sh
 ```
 
 Runs one tick of each maintained finetune config as a correctness check.

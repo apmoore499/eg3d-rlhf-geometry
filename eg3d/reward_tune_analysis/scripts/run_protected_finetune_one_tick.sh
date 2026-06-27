@@ -11,11 +11,13 @@
 # - All protected configs currently resolve to tune_type=clamped.
 # - This is a verification harness, not a reported experiment launcher.
 set -euo pipefail
-cd "$(dirname "$0")/../.."      # -> eg3d/
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
+cd "$SCRIPT_DIR/../.."      # -> eg3d/
 
 ENV=hf_geom_eg3d_py39
 OUT="${EG3D_TRAINING_OUTDIR:-$HOME/training_runs_2}"
-LOGDIR=/tmp/protected_finetune_one_tick
+LOGDIR="${EG3D_TRAINING_LOGDIR:-$REPO_ROOT/release_verification_outputs/eg3d_finetune_logs/protected_one_tick}"
 mkdir -p "$LOGDIR"
 
 run_one () {                    # $1=experiment

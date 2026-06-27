@@ -1,3 +1,4 @@
+# No-op augmentation default: each representation overrides this with its own transform config.
 train: null
 val: null
 test: null

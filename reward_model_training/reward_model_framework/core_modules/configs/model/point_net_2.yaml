@@ -25,13 +25,13 @@ n_features: 0
 n_fourier_freq: 0
 # `aggr` is the PointNet++ backbone aggregation (consumed by Pointnet2_RWD).
 aggr:
-- mean
+- max
 
 # `act_type` drives the reward-head MLPs (mlp_global/pairs/BT/scalar_rwd, via
 # `${model.act_type}` in mlps/default). The PointNet++ backbone conv layers use
 # `mlp_settings.activation_type` below instead — these are independent knobs.
 # Best-performing config: heads cos, backbone relu.
-act_type: 'cos'
+act_type: 'softplus'
 
 mlp_settings:
   normalisation_type: 'batch_norm' #layer norm if small batch; not needed here

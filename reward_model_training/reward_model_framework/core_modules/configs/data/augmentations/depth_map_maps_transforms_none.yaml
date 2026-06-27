@@ -1,13 +1,16 @@
+# Depth-map preprocessing: no filtering (the reported setting). The per-view boolean flags
+# below toggle abandoned filter experiments (Laplacian / high-pass / side-crop / low-pass);
+# all off here. Rationale for dropping them: docs/reward_model_design_notes.md.
 maps_transforms:
-  laplace: [False, False, False]
-  hipass: [False, False, False]
-  normalise_sides_crop: [False, False, False]
-  run_lowpass_sides: [False, False, False]
+  laplace: [False, False, False]               # per-view Laplacian filter (off)
+  hipass: [False, False, False]                # per-view high-pass filter (off)
+  normalise_sides_crop: [False, False, False]  # per-view side-crop normalisation (off)
+  run_lowpass_sides: [False, False, False]     # per-view low-pass on sides (off)
 
-model_maps_transforms: ${data.augmentations.maps_transforms}
+model_maps_transforms: ${data.augmentations.maps_transforms}  # forwarded to the depth-map backbone
 
 train:
-  _target_: torch.nn.Identity
+  _target_: torch.nn.Identity   # no data-side transform (any filtering happens in the backbone)
 
 val: ${data.augmentations.train}
 test: ${data.augmentations.train}

@@ -13,7 +13,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from typing import Dict, Iterable, List, Sequence
 
-os.environ.setdefault("MPLCONFIGDIR", "/tmp/matplotlib-codex")
+os.environ.setdefault("MPLCONFIGDIR", str(Path.home() / ".cache" / "eg3d_rlhf_geometry" / "matplotlib"))
 
 if not hasattr(importlib_metadata, "packages_distributions"):
     try:
@@ -87,19 +87,19 @@ class SummaryWriter:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run the maintained public-release verification checks.")
-    parser.add_argument("--workdir", type=Path, default=Path("/tmp/eg3d_rlhf_public_verify"))
-    parser.add_argument("--seeds", type=str, default="28852,28853", help="Two ranked seeds for the smoke batch, e.g. '28852,28853'.")
+    parser.add_argument("--workdir", type=Path, default=REPO_ROOT / "release_verification_outputs" / "public_release_test")
+    parser.add_argument("--seeds", type=str, default="28852,28853", help="Two ranked seeds for the test batch, e.g. '28852,28853'.")
     parser.add_argument("--truncation-psi", type=float, default=1.0)
     parser.add_argument("--generator-pkl", type=Path, default=None, help="External untuned EG3D generator checkpoint for data synthesis.")
-    parser.add_argument("--reward-model-id", type=str, default="7wnzkgie", help="Released reward-model id to load for the checkpoint smoke.")
-    parser.add_argument("--baseline-pkl", type=Path, default=None, help="Untuned baseline EG3D snapshot for the mesh-bank smoke.")
-    parser.add_argument("--tuned-pkl", type=Path, default=None, help="Fine-tuned EG3D snapshot for the mesh-bank smoke.")
+    parser.add_argument("--reward-model-id", type=str, default="7wnzkgie", help="Released reward-model id to load for the checkpoint test.")
+    parser.add_argument("--baseline-pkl", type=Path, default=None, help="Untuned baseline EG3D snapshot for the mesh-bank test.")
+    parser.add_argument("--tuned-pkl", type=Path, default=None, help="Fine-tuned EG3D snapshot for the mesh-bank test.")
     parser.add_argument("--mesh-bank-start-seed", type=int, default=9100000)
     parser.add_argument("--mesh-bank-num-seeds", type=int, default=2)
     parser.add_argument("--skip-data-generation", action="store_true")
-    parser.add_argument("--skip-loader-smoke", action="store_true")
-    parser.add_argument("--skip-forward-smoke", action="store_true")
-    parser.add_argument("--skip-released-checkpoint-smoke", action="store_true")
+    parser.add_argument("--skip-loader-test", action="store_true")
+    parser.add_argument("--skip-forward-test", action="store_true")
+    parser.add_argument("--skip-released-checkpoint-test", action="store_true")
     parser.add_argument("--skip-mesh-bank", action="store_true")
     return parser.parse_args()
 
@@ -189,7 +189,7 @@ def summarise_losses(losses: Dict[str, torch.Tensor]) -> Dict[str, float]:
     return summary
 
 
-def run_data_generation_smoke(seeds: Sequence[int], truncation_psi: float) -> Dict[str, object]:
+def run_data_generation_test(seeds: Sequence[int], truncation_psi: float) -> Dict[str, object]:
     from core_modules.tests import test_data_generation as tdg
 
     tdg.regenerate_triple_rgb(seeds, truncation_psi=truncation_psi)
@@ -199,13 +199,13 @@ def run_data_generation_smoke(seeds: Sequence[int], truncation_psi: float) -> Di
     return {"generated_dir": os.environ["RWD_DATA_DIR"]}
 
 
-def run_loader_smoke(seed: int, env: Dict[str, str]) -> Dict[str, object]:
+def run_loader_test(seed: int, env: Dict[str, str]) -> Dict[str, object]:
     cmd = [sys.executable, "core_modules/tests/test_dset_loaders.py", "--seed", str(seed), "--map_on", "cpu"]
-    run_cmd(cmd, cwd=FRAMEWORK_ROOT, env=env, label="dataset loader smoke")
+    run_cmd(cmd, cwd=FRAMEWORK_ROOT, env=env, label="dataset loader test")
     return {"seed": seed}
 
 
-def run_experiment_forward_smoke(experiments: Iterable[str], seeds: Sequence[int], device: torch.device) -> Dict[str, object]:
+def run_experiment_forward_test(experiments: Iterable[str], seeds: Sequence[int], device: torch.device) -> Dict[str, object]:
     results = {}
     for experiment in experiments:
         print(f"\n[forward] experiment={experiment}")
@@ -231,7 +231,7 @@ def run_experiment_forward_smoke(experiments: Iterable[str], seeds: Sequence[int
     return results
 
 
-def run_released_checkpoint_smoke(run_id: str, seeds: Sequence[int], device: torch.device) -> Dict[str, object]:
+def run_released_checkpoint_test(run_id: str, seeds: Sequence[int], device: torch.device) -> Dict[str, object]:
     print(f"\n[checkpoint] reward_model_id={run_id}")
     dtype = str(get_datatype_from_model_id(run_id))
     tune_aug = instantiate_transform(load_tune_augmentation_from_cfg(run_id))
@@ -254,10 +254,10 @@ def run_released_checkpoint_smoke(run_id: str, seeds: Sequence[int], device: tor
     }
 
 
-def run_mesh_bank_smoke(args: argparse.Namespace, env: Dict[str, str]) -> Dict[str, object]:
+def run_mesh_bank_test(args: argparse.Namespace, env: Dict[str, str]) -> Dict[str, object]:
     if args.baseline_pkl is None or args.tuned_pkl is None:
-        raise SkipStep("mesh-bank smoke requires both --baseline-pkl and --tuned-pkl")
-    outdir = args.workdir / "mesh_bank_smoke"
+        raise SkipStep("mesh-bank test requires both --baseline-pkl and --tuned-pkl")
+    outdir = args.workdir / "mesh_bank_test"
     if outdir.exists():
         shutil.rmtree(outdir)
     mesh_env = env.copy()
@@ -279,7 +279,7 @@ def run_mesh_bank_smoke(args: argparse.Namespace, env: Dict[str, str]) -> Dict[s
         "--methods",
         "legacy_sigma10",
     ]
-    run_cmd(cmd, cwd=FRAMEWORK_ROOT, env=mesh_env, label="mesh-bank export smoke")
+    run_cmd(cmd, cwd=FRAMEWORK_ROOT, env=mesh_env, label="mesh-bank export test")
     return {"outdir": str(outdir)}
 
 
@@ -317,29 +317,29 @@ def main() -> None:
     summary = SummaryWriter(args.workdir / "verification_summary.json", seeds=seeds, workdir=args.workdir)
 
     if not args.skip_data_generation:
-        execute_step(summary, "data_generation_smoke", run_data_generation_smoke, seeds, args.truncation_psi)
+        execute_step(summary, "data_generation_test", run_data_generation_test, seeds, args.truncation_psi)
     else:
-        summary.add("data_generation_smoke", "skipped", reason="--skip-data-generation")
+        summary.add("data_generation_test", "skipped", reason="--skip-data-generation")
 
-    if not args.skip_loader_smoke:
-        execute_step(summary, "dataset_loader_smoke", run_loader_smoke, seeds[0], env)
+    if not args.skip_loader_test:
+        execute_step(summary, "dataset_loader_test", run_loader_test, seeds[0], env)
     else:
-        summary.add("dataset_loader_smoke", "skipped", reason="--skip-loader-smoke")
+        summary.add("dataset_loader_test", "skipped", reason="--skip-loader-test")
 
-    if not args.skip_forward_smoke:
-        execute_step(summary, "maintained_reward_model_forward_smoke", run_experiment_forward_smoke, DEFAULT_EXPERIMENTS, seeds, device)
+    if not args.skip_forward_test:
+        execute_step(summary, "maintained_reward_model_forward_test", run_experiment_forward_test, DEFAULT_EXPERIMENTS, seeds, device)
     else:
-        summary.add("maintained_reward_model_forward_smoke", "skipped", reason="--skip-forward-smoke")
+        summary.add("maintained_reward_model_forward_test", "skipped", reason="--skip-forward-test")
 
-    if not args.skip_released_checkpoint_smoke:
-        execute_step(summary, "released_reward_model_checkpoint_smoke", run_released_checkpoint_smoke, args.reward_model_id, seeds, device)
+    if not args.skip_released_checkpoint_test:
+        execute_step(summary, "released_reward_model_checkpoint_test", run_released_checkpoint_test, args.reward_model_id, seeds, device)
     else:
-        summary.add("released_reward_model_checkpoint_smoke", "skipped", reason="--skip-released-checkpoint-smoke")
+        summary.add("released_reward_model_checkpoint_test", "skipped", reason="--skip-released-checkpoint-test")
 
     if not args.skip_mesh_bank:
-        execute_step(summary, "mesh_bank_export_smoke", run_mesh_bank_smoke, args, env)
+        execute_step(summary, "mesh_bank_export_test", run_mesh_bank_test, args, env)
     else:
-        summary.add("mesh_bank_export_smoke", "skipped", reason="--skip-mesh-bank")
+        summary.add("mesh_bank_export_test", "skipped", reason="--skip-mesh-bank")
 
     summary.set_status("ok")
     print(f"\nVerification summary: {summary.path}")

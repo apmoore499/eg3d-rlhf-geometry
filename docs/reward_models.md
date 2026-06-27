@@ -37,17 +37,12 @@ standalone rankers but unstable when used to drive fine-tuning, which is the
 core finding that motivated the sigma-field choice. Keeping them runnable lets a
 reader reproduce that comparison.
 
-## Local / smoke runs
+## Quick test
 
-For a quiet, CPU-friendly end-to-end pass without Weights & Biases:
+For the public release test sweep, run:
 
 ```sh
-python -m core_modules.train_rwd_model \
-  experiment=sfield_256 \
-  logger=csv callbacks=public_local using_wandb=false test=false \
-  dloader.num_workers=0 trainer.max_epochs=1 \
-  trainer.limit_train_batches=2 trainer.limit_val_batches=2 \
-  data.dset_dict.proportion_of_data_to_use=0.02
+bash scripts/test_reward_models.sh
 ```
 
 ## Useful overrides
@@ -62,10 +57,12 @@ python -m core_modules.train_rwd_model \
 To reproduce the full representation/backbone sweep in one go:
 
 ```sh
-bash core_modules/scripts/train_all_reward_models.sh
+bash scripts/train_reward_models.sh
 ```
 
-This writes the resulting reward-model ids to `reward_model_ids.env`.
+The simpler repo-root script is the release-facing path. The framework-local
+helper under `core_modules/scripts/` remains available if you want the older
+auto-generated `reward_model_ids.env` behavior.
 
 ## Outputs
 

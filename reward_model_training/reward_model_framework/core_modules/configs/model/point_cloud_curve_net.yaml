@@ -9,7 +9,7 @@ _target_: core_modules.models.modules_curvenet.CurveNetEnsemble
 
 name: CurveNetEnsemble
 global_feature_size: 512
-act_type: 'cos'
+act_type: 'softplus'
 
 # 4-MLP reward head comes from `mlps: default`; only the per-backbone
 # input_size is set here.

@@ -2,7 +2,7 @@
 
 Improving the 3D geometry of [EG3D](https://github.com/NVlabs/eg3d), a 3D-aware GAN, using human preference supervision.
 
-Paper: arXiv link coming soon.
+Paper: [arXiv:2606.27305](https://arxiv.org/abs/2606.27305).
 
 ## Overview
 
@@ -62,7 +62,7 @@ Reward-model training can be reproduced from the released code and data. Full EG
 |---|---|
 | [docs/data_generation.md](docs/data_generation.md) | rebuild the reward-model training inputs from an EG3D checkpoint |
 | [docs/reward_models.md](docs/reward_models.md) | train reward models; the representation/backbone experiment configs |
-| [docs/finetuning.md](docs/finetuning.md) | fine-tune EG3D from any reward model; the reported run and smoke runs |
+| [docs/finetuning.md](docs/finetuning.md) | fine-tune EG3D from any reward model; the reported run and quick test runs |
 | [docs/reproducing_paper.md](docs/reproducing_paper.md) | map of paper results to scripts/configs, plus verification commands |
 | [docs/released_artifacts.md](docs/released_artifacts.md) | the released checkpoints and their loading contract |
 | [docs/camera_conventions.md](docs/camera_conventions.md) | camera pose / intrinsics conventions used throughout |
@@ -115,8 +115,7 @@ Other reward-model configs: `sdmap` (single depth map), `tdmap` (triple depth ma
 Run the reported sigma-field fine-tuning:
 
 ```sh
-cd eg3d
-bash reward_tune_analysis/scripts/sfield_reported_run.sh
+bash scripts/finetune_eg3d_reported_sfield.sh
 ```
 
 Fine-tuning configs: `finetune_eg3d_sfield`, `finetune_eg3d_sdmap`, `finetune_eg3d_tdmap`, `finetune_eg3d_pn1`, and `finetune_eg3d_null` (baseline).
@@ -136,15 +135,15 @@ Non-commercial research use, under the NVIDIA Source Code License for EG3D — s
 
 ## Citation
 
-If you use this code or the released models, please cite the paper (arXiv link
-coming soon):
+If you use this code or the released models, please cite the paper
+([arXiv:2606.27305](https://arxiv.org/abs/2606.27305)):
 
 ```bibtex
 @misc{moore2026eg3drlhf,
-  title         = {Using Human Feedback to Fine-Tune Implicit 3D Face Geometry},
-  author        = {Moore, Archer P. and Gong, Mingming and Hodgkinson, Liam},
+  title         = {Sculpting {NeRF} Geometry: Human-Preference Fine-Tuning of a 3{D}-Aware Face {GAN}},
+  author        = {Moore, Archer and Gong, Mingming and Hodgkinson, Liam},
   year          = {2026},
-  eprint        = {2026.XXXXX},   % fill in once the arXiv preprint is posted
+  eprint        = {2606.27305},
   archivePrefix = {arXiv},
   primaryClass  = {cs.CV}
 }

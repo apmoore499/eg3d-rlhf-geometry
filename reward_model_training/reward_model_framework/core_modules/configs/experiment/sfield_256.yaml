@@ -1,116 +1,75 @@
 # @package _global_
+# Reported sigma-field (256^3) reward model: ResNet-SE-3D-UNet backbone + MLP heads,
+# trained on the sigma_field_256 representation. Headline reward model, run 7wnzkgie.
+# Backbone: model/sigma_field_3dconv.yaml. Shared losses: loss/all_losses.yaml.
+#   python -m core_modules.train_rwd_model experiment=sfield_256
+
 defaults:
-  - override /model: sigma_field_3dconv
+  - override /model: sigma_field_3dconv        # ResNet-SE-3D-UNet backbone + MLP reward heads
   - override /trainer: default
   - override /data: data_defaults
-  - override /data/augmentations: sigma_256_self_norm_no_aug #pair_aug_tune #sigma_256_augment_clamp_zero #default #sigma_256_self_norm
-  - override /loss: all_losses #pair_no_BT #all_losses #pair_no_BT #no BT, normalising it leads to very high magnitude outputs.....not sure why. its because of softplus activation. activation must be cos.
-  - override /callbacks: default ##_pacc
-  - override /model/optimizer: adam #adamW
-  - override /model/scheduler: null #cosine_warm_rsts
-# all parameters below will be merged with parameters from default configurations set above
-# this allows you to overwrite only specified parameters
+  - override /data/augmentations: sigma_256_self_norm_no_aug  # self-normalise slab, no aug (reported)
+  - override /loss: all_losses                 # 3 preference heads (pairs/scalar/BT); recon weight set below
+  - override /callbacks: default
+  - override /model/optimizer: adam
+  - override /model/scheduler: null
 
-tags: ["sigma field 256","sigma volume","3d conv net"]
+tags: ["sigma field 256", "sigma volume", "3d conv net"]
 
 trainer:
   min_epochs: 1
-  max_epochs: 2
-  profiler: null #"advanced"
+  max_epochs: 2                 # public test run; paper trains to max 10 epochs with early stopping
+  profiler: null
   num_sanity_val_steps: 0
-  # smoke run: one batch per split so we just confirm a full train/val/test runs
-  # end-to-end and saves a run_config with the bundled tune augmentation slot.
-  limit_train_batches: 1
+  limit_train_batches: 1        # public test: 1 batch/split to confirm an end-to-end train/val/test pass
   limit_val_batches: 1
   limit_test_batches: 1
 
-  #overfit
-# Historical checkpoint experiments loaded from RWD_MODELS_FOR_TUNING/<run_id>/best_model.pt.
-
-
 loss:
-  lambda_recon: 1e-2
-  recon_type: l1
-  normalise_recon: true # normalise the reconstructed sigma slab to the input slab scale before applying the L1 reconstruction loss
-  #lambda_BT: 0.0
-  #lambda_reg_rwd_vals: 0.0
-# dloader:
-#   num_workers: 0
-#   prefetch_factor: null
-
+  lambda_recon: 1e-2            # sigma-slab reconstruction weight (paper 10^-2); only sigma-field reconstructs, depth/pcd ignore it
+  recon_type: l1               # L1 reconstruction penalty on the reconstructed sigma slab
+  normalise_recon: true        # normalise reconstruction back to the input slab scale before the L1
 
 dloader:
   num_workers: 6
   prefetch_factor: 2
 
-# Historical references:
-# - core_modules/models/modules_unet3d.py
-# - core_modules/configs/experiment/_archive/3dconv_net_sigma_512_unet3d.yaml
-
 model:
-  # Backbone + 4-MLP head now live in configs/model/sigma_field_3dconv.yaml.
-  # Only per-experiment overrides remain here.
-  act_type: 'softplus'
+  act_type: 'softplus'         # MLP-head activation (mlps/default reads ${model.act_type})
   swa: null
   name: unet3d_sigma_256
 
-batch_size_all: 1
-prop_data: 0.05
-train_ct_partition: false #normally true for this 3d conv model...
+batch_size_all: 1              # reward-model batch size for sigma-field (paper: 1)
+prop_data: 0.05                # public test uses 5% of data; full runs use 1.0
+train_ct_partition: false      # contrastive-partition leg (abandoned); no paper result uses it
+train_on: datamodule_third     # top+bottom ranked-pair datamodule (the variant that worked)
 
-
-
-#train_on: datamodule_third
-#train_on: datamodule_first_binary
-train_on: datamodule_third
-
-goodseed_pred_prob:  1.0    #   if random sample of p(uniform~(0,1))<:  goodseed_pred_prob, and goodseed in batch, keep goodseed
-badseed_pred_prob:  1.0     #   if random sample of p(uniform~(0,1))<:  badseed_pred_prob, and badseeds in batch, keep badseeds
-augment_orig_prob:   0.0     #   do we want to augment the original batch of seeds? if p(uniform~(0,1))<:  augment_orig_prob then augment,
-                            #   and insert this into the batch such that b: [gs,a(s1),s1,...]
-                            #   b: [gs,a(s1),s1,...]
-augment_good_prob:   0.0     #   do we want to augment any goodseeds in batch? if p(uniform~(0,1))<: augment_good_prob, augment, and
-                            #   insert this into the batch such that b: [a(gs),gs,s1,...]
-keep_all_orig_prob:   1.0    #   do we want to keep all orig seeds in batch? if p(uniform~(0,1))<: keep_all_orig_prob, then keep
-keep_all_good_prob:   1.0    #   do we want to keep all good seeds in batch? if p(uniform~(0,1))<: keep_all_good_prob, then keep
-sample_seed_pair_from_rankings: False #if batch such that b=[s1,s2,s3...], subsample down to b=[s_i,s_j] s.t. j-1>1
-
+# Batch-composition sampling probs (consumed in data/dset_loaders.py:221-227, 670-678):
+goodseed_pred_prob: 1.0        # prob of keeping a goodseed when one is present in the batch
+badseed_pred_prob: 1.0         # prob of keeping badseeds when present in the batch
+augment_orig_prob: 0.0         # prob of augmenting the original seed batch (off for reported)
+augment_good_prob: 0.0         # prob of augmenting goodseeds in the batch (off for reported)
+keep_all_orig_prob: 1.0        # prob of keeping all original seeds in the batch
+keep_all_good_prob: 1.0        # prob of keeping all goodseeds in the batch
+sample_seed_pair_from_rankings: False  # if true, subsample a batch down to one ranked pair
 
 data:
-  #augmentations: ${data.augmentations}
   dset_dict:
-    
-    selected_dtypes: ['sigma_field_256']  #sigma_field_512  nb #sigma_rays is 128x128x128 volume. 
+    selected_dtypes: ['sigma_field_256']     # the 256^3 sigma-density volume representation
     proportion_of_data_to_use: ${prop_data}
-
-    badseeds_models: []  # ['226_nose_overfit_experiment','225_nose_overfit_experiment'] #['226_nose_overfit_experiment','225_nose_overfit_experiment']
-
-
-    goodmeshes:
-      # NB: total n good meshes is 98
-      # Therefore, can be leq 98
-      # do not use perceantages integer only
-      n_train: 700 #40
+    badseeds_models: []        # empty = do not include extra poor-quality samples (abandoned method)
+    goodmeshes:                # curated good-quality meshes added to the ranking pool
+      n_train: 700
       n_test: 150
-      n_val: 150 #10
+      n_val: 150
       p_add: 1.0
-
-    remove_middle_data: true
-    row_size_to_keep: 2
-
-
-    include_goodseed: true
-
-
+    remove_middle_data: true   # collapse each ranking to its best + worst entry (drop the middle ranks)
+    row_size_to_keep: 2        # keep only rankings with >= this many ranked entries (>=2 needed for a pair)
+    include_goodseed: true     # include curated goodseed exemplars in training
 
 test: True
 sync: True
 sync_model_weights: False
 optuna_tuning: False
 log_net_debug: False
-#logger.wandb.offline: False
 swa: False
-
-
-
-#Conv3DNetworkSTD

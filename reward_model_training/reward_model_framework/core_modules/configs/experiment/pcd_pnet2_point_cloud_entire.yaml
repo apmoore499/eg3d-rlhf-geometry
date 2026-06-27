@@ -1,14 +1,16 @@
 # @package _global_
-# PointNet2 (PointNet++) on the unified `point_cloud_entire` dtype, reusing the
-# pcd train/val/test/tune augmentation slots. Quick smoke config (prop_data 0.05
-# + 1 batch/split). Identical to pcd_pnet_point_cloud_entire except the model
-# + the model-specific settings carried from the old pcd_pnet2_pcd_as_pt config.
+# PointNet++ (PointNet2) reward model on the point_cloud_entire representation
+# (full depth-map-derived point cloud). Quick public test config (prop_data 0.05 +
+# 1 batch/split). Bundled run 7pvkwpnz used model.act_type: cos (kept softplus here
+# for cross-config consistency; PCD backbones do not learn ranking under either).
+#   python -m core_modules.train_rwd_model experiment=pcd_pnet2_point_cloud_entire
+
 defaults:
-  - override /model: point_net_2
+  - override /model: point_net_2               # PointNet++ backbone (agg=max) + MLP reward heads
   - override /trainer: default
   - override /data: data_defaults
-  - override /data/augmentations: point_cloud_entire
-  - override /loss: all_losses
+  - override /data/augmentations: point_cloud_entire  # subsample -> center -> mean-scale (+scale/jitter on train)
+  - override /loss: all_losses                 # 3 preference heads (pairs/scalar/BT); recon inert for point clouds
   - override /callbacks: default
   - override /model/optimizer: adam
   - override /model/scheduler: null
@@ -17,11 +19,10 @@ tags: ["pointnet++", "pointnet2", "point_cloud_entire"]
 
 trainer:
   min_epochs: 1
-  max_epochs: 2
+  max_epochs: 2                 # public test run; paper trains to max 10 epochs with early stopping
   profiler: null
   num_sanity_val_steps: 0
-  # smoke run: one batch per split so we just confirm it runs end-to-end
-  limit_train_batches: 1
+  limit_train_batches: 1        # public test: 1 batch/split to confirm an end-to-end train/val/test pass
   limit_val_batches: 1
   limit_test_batches: 1
 
@@ -31,39 +32,35 @@ dloader:
 
 model:
   swa: null
-  act_type: 'cos'
+  act_type: 'softplus'         # MLP-head activation; bundled run 7pvkwpnz used cos (see header)
 
-batch_size_all: 2
-prop_data: 0.05
-train_ct_partition: false
+batch_size_all: 2              # reward-model batch size for this point-cloud backbone
+prop_data: 0.05                # public test uses 5% of data; full runs use 1.0
+train_ct_partition: false      # contrastive-partition leg (abandoned); no paper result uses it
+train_on: datamodule_third     # top+bottom ranked-pair datamodule (the variant that worked)
 
-train_on: datamodule_third
-
-goodseed_pred_prob: 1.0
-badseed_pred_prob: 1.0
-augment_orig_prob: 0.0
-augment_good_prob: 0.0
-keep_all_orig_prob: 1.0
-keep_all_good_prob: 1.0
-sample_seed_pair_from_rankings: False
+# Batch-composition sampling probs (consumed in data/dset_loaders.py:221-227, 670-678):
+goodseed_pred_prob: 1.0        # prob of keeping a goodseed when one is present in the batch
+badseed_pred_prob: 1.0         # prob of keeping badseeds when present in the batch
+augment_orig_prob: 0.0         # prob of augmenting the original seed batch (off for reported)
+augment_good_prob: 0.0         # prob of augmenting goodseeds in the batch (off for reported)
+keep_all_orig_prob: 1.0        # prob of keeping all original seeds in the batch
+keep_all_good_prob: 1.0        # prob of keeping all goodseeds in the batch
+sample_seed_pair_from_rankings: False  # if true, subsample a batch down to one ranked pair
 
 data:
   dset_dict:
-    selected_dtypes: ['point_cloud_entire']
+    selected_dtypes: ['point_cloud_entire']  # full depth-map-derived point cloud
     proportion_of_data_to_use: ${prop_data}
-
-    badseeds_models:
-
-    goodmeshes:
+    badseeds_models:           # empty = do not include extra poor-quality samples (abandoned method)
+    goodmeshes:                # curated good-quality meshes added to the ranking pool
       n_train: 700
       n_test: 150
       n_val: 150
       p_add: 1.0
-
-    remove_middle_data: true
-    row_size_to_keep: 2
-
-    include_goodseed: false
+    remove_middle_data: true   # collapse each ranking to its best + worst entry (drop the middle ranks)
+    row_size_to_keep: 2        # keep only rankings with >= this many ranked entries (>=2 needed for a pair)
+    include_goodseed: false    # exclude curated goodseed exemplars (this experiment's recorded run)
 
 test: True
 sync: True

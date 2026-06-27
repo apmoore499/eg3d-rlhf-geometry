@@ -1,19 +1,18 @@
+# Point-cloud transforms. Train uses a random subsample, eval a fixed deterministic one.
+# tune == val/test (the clean transform the reward model expects), so EG3D fine-tuning
+# inherits exactly this via load_tune_augmentation_from_cfg.
 defaults:
   - _self_
   - contrastive: null
 
 goodmesh_augment: null
 
-# Point counts: random subsample at train, fixed deterministic subsample at eval.
-# tune == val/test (the clean transform the reward model expects), so eg3d
-# fine-tuning inherits exactly this via load_tune_augmentation_from_cfg.
-n_points_train: 2048
-n_points_eval: 2048
+n_points_train: 2048            # points kept by the train subsample
+n_points_eval: 2048            # points kept by the eval (val/test/tune) subsample
 
 # Normalisation (all splits): subsample -> center -> mean-scale into unit cube.
 # Train additionally applies stochastic random-scale + jitter AFTER normalisation
 # (so the scale jitter is not cancelled). No rotation (faces have a canonical pose).
-
 train:
   _target_: core_modules.data.custom_transforms.transforms_composition_helper
   dtype: point_cloud_entire
@@ -21,17 +20,17 @@ train:
     subsample:
       _target_: core_modules.data.aug_and_tforms.augtforms_pointcloud.pcd_subsample
       n_points: ${data.augmentations.n_points_train}
-      random: true
+      random: true              # random subsample (train-time stochasticity)
     center:
       _target_: core_modules.data.aug_and_tforms.augtforms_pointcloud.pcd_center
     mean_scale:
       _target_: core_modules.data.aug_and_tforms.augtforms_pointcloud.pcd_mean_scale
     random_scale:
       _target_: core_modules.data.aug_and_tforms.augtforms_pointcloud.pcd_random_scale
-      margin: 0.05
+      margin: 0.05              # +/- fraction for the stochastic rescale
     jitter:
       _target_: core_modules.data.aug_and_tforms.augtforms_pointcloud.pcd_jitter
-      jitter_range: 0.001
+      jitter_range: 0.001        # per-point Gaussian jitter magnitude
 
 # shared clean eval transform (deterministic) reused by val/test/tune
 eval_norm: &eval_norm
@@ -41,7 +40,7 @@ eval_norm: &eval_norm
     subsample:
       _target_: core_modules.data.aug_and_tforms.augtforms_pointcloud.pcd_subsample
       n_points: ${data.augmentations.n_points_eval}
-      random: false
+      random: false             # deterministic subsample (no eval-time stochasticity)
     center:
       _target_: core_modules.data.aug_and_tforms.augtforms_pointcloud.pcd_center
     mean_scale:

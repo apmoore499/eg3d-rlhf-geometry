@@ -14,17 +14,13 @@ defaults:
 _target_: core_modules.models.modules_depthmap.DepthMap
 n_dmaps: 1
 name: DepthMap_${model.external.name}_${model.n_dmaps}
-#name: helloe
 normtype: 'batch_norm'
 
 
 global_feature_size: 512
 
 
-act_type: 'cos'
-
-
-#hidden_sizes: [1024, 1024, 512]
+act_type: 'softplus'
 
 
 
@@ -50,18 +46,6 @@ loss:
   lambda_reg_rwd_vals: 1e-8 #0.0 #1e-8 #l2 loss
   lambda_agg_features_l2: 0.0 #for agg features make sure not too high magnitude
 
-# optimizer:
-#   _target_: torch.optim.Adam
-#   _partial_: True
-#   lr:           1e-5
-#   weight_decay: 1e-4
-
-
-
-# optimizer:
-#   _target_: sharpness_aware_optimiser.SAM
-#   _partial_: True
-#   lr:           1e-3
 
 swa: True
 swa_start: 1 #start stochastic weight avg at this epo number

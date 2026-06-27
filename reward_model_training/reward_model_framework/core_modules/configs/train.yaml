@@ -1,96 +1,61 @@
+# Base reward-model training config. Hydra composes the groups below; an
+# `experiment=<name>` override (configs/experiment/) sets the representation, backbone,
+# batch size and run length. Run: python -m core_modules.train_rwd_model experiment=<name>
 defaults:
   - _self_
   - data: data_defaults
-#  - batch_augmentations: default
   - callbacks: default
-  - model: point_net_1
+  - model: point_net_1          # default backbone; each experiment overrides this
   - trainer: default
-  - logger: wandb # set logger here or use command line (e.g. `python train.py logger=tensorboard`)
+  - logger: wandb               # logging backend; override on the CLI, e.g. logger=tensorboard
   - loss: all_losses
-  - hydra: default #try set logging here, see if it works
-  - paths: default #required for hydra yaml to work
+  - hydra: default
+  - paths: default              # required for the hydra config to resolve
   - external: null
-  - experiment: null
+  - experiment: null            # selected via experiment=<name>
   - hparams_search: null
   - optional local: default
   - debug: null
-  - scheduler: null #cosine
+  - scheduler: null
   - optimizer: null
   - augmentations: null
-
-
-
-
-
-
-
-# data:
-#   batch_augmentations_config: default
-
-
-
-
-
-
-
-
-
-#plot_goodbad_meshes: True
-#export_dloaders_only: False
-#compare_pairs_or_scalar_reward: pairs
-#subset_count_to_ten: False
-#plot_tsne: False
-# multirun https://stackoverflow.com/questions/70619014/specify-hydra-multirun-sweeps-in-a-config-file
 
 hydra:
   run:
     dir: ${trainer.default_root_dir}
 
-
-batch_size_all: 4
+batch_size_all: 4               # default batch size for all splits; experiments override per representation
 
 trainer:
-  max_epochs: 5
-  limit_train_batches: null
+  max_epochs: 5                 # default; experiments/paper use up to 10 with early stopping
+  limit_train_batches: null     # null = all batches; experiment test configs set 1 for smoke runs
   limit_val_batches: null
   limit_test_batches: null
 
-
-
 dloader:
-  batch_size_train: ${batch_size_all} #2 #8
+  batch_size_train: ${batch_size_all}
   batch_size_val: ${batch_size_all}
   batch_size_test: ${batch_size_all}
   num_workers: 4
   pin_memory: True
   prefetch_factor: 2
 
-# tags to help you identify your experiments
-# you can overwrite this in experiment configs
-# overwrite from command line with `python train.py tags="[first_tag, second_tag]"`
-tags: ["dev"]
+tags: ["dev"]                   # experiment tags for logging; overwrite in experiment configs or on the CLI
 
-# set False to skip model training
-train: True
-# evaluate on test set, using best model weights achieved during training
-# lightning chooses best weights based on the metric specified in checkpoint callback
-test: True
+train: True                     # set False to skip training (e.g. test-only)
+test: True                      # evaluate on the test set using the best checkpoint
 
-# simply provide checkpoint path to resume training
-ckpt_path: null
-
-# seed for random number generators in pytorch, numpy and python.random
-seed: 42
-torch_matmul_precision: high
-train_on: datamodule_third
-using_wandb: true
+ckpt_path: null                 # path to resume training from a checkpoint
+seed: 42                        # RNG seed for torch / numpy / python.random
+torch_matmul_precision: high    # torch float32 matmul precision (high = TF32 where available)
+train_on: datamodule_third      # ranked-pair datamodule variant (top+bottom pairs)
+using_wandb: true               # enable Weights & Biases logging
 optuna_tuning: null
-sync: true #this one determine whether we sync result or not. ie uploaad.
-thumbnail_export_size: 5000
+sync: true                      # upload/sync run results (e.g. to wandb)
+thumbnail_export_size: 5000     # pixel size for exported preview thumbnails (train_rwd_model.py:545)
 task_name: "train"
 
-test_on_first: false
-test_on_third: true
+test_on_first: false            # also evaluate on the datamodule_first test split
+test_on_third: true             # evaluate on the datamodule_third test split (the one used; train_rwd_model.py:556)
 
-
-backupcode: false
+backupcode: false               # if true, back up the code dir with the run (train_rwd_model.py:478)

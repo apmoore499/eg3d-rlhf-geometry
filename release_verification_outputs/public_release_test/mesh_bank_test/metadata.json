@@ -1,0 +1,17 @@
+{
+  "tuned_pkl": "<tuned_pkl>",
+  "baseline_pkl": "<baseline_pkl>",
+  "outdir": "<repo_root>/release_verification_outputs/public_release_test/mesh_bank_test",
+  "start_seed": 9100000,
+  "num_seeds": 2,
+  "shape_res": 256,
+  "truncation_psi": 0.7,
+  "truncation_cutoff": 14,
+  "methods": [
+    {
+      "name": "legacy_sigma10",
+      "level": 10.0,
+      "use_solidify": false
+    }
+  ]
+}
