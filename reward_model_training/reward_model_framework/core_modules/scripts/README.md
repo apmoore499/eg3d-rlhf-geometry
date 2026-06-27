@@ -5,6 +5,9 @@ Current contents:
 
 - `generate_reward_training_data.sh`: maintained launcher for synthesizing the
   EG3D-derived reward-model training inputs used by the public path.
+- `run_public_release_verifier.sh`: single-command wrapper around the maintained
+  public release verifier. By default it writes outputs under
+  `release_verification_outputs/public_release_smoke/` in the public worktree.
 - `verify_public_release.py`: maintained public release verifier for 2-seed
   data generation, loader smoke, maintained reward-model forward smokes,
   released reward-model checkpoint loading, and optional tuned-vs-untuned

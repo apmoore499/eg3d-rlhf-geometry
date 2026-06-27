@@ -42,7 +42,7 @@ the preset.
 - Reward-model data generation:
   `reward_model_training/reward_model_framework/core_modules/scripts/generate_reward_training_data.sh`
 - Public release verification:
-  `cd reward_model_training/reward_model_framework && python core_modules/scripts/verify_public_release.py --baseline-pkl /path/to/untuned.pkl --tuned-pkl /path/to/tuned.pkl`
+  `bash reward_model_training/reward_model_framework/core_modules/scripts/run_public_release_verifier.sh /path/to/tuned.pkl`
 - Reward-model full retrain sweep:
   `reward_model_training/reward_model_framework/core_modules/scripts/train_all_reward_models.sh`
 - RLHF verification across the five maintained finetune configs:

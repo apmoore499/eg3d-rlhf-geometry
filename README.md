@@ -112,7 +112,7 @@ The current maintained experiment configs are:
 - Reward-model data generation from an EG3D checkpoint:
   [generate_reward_training_data.sh](reward_model_training/reward_model_framework/core_modules/scripts/generate_reward_training_data.sh)
 - Public release verification (2-seed data generation, loader smoke, maintained reward-model one-batch forward smoke, released reward-model checkpoint load, and optional mesh-bank export):
-  [verify_public_release.py](reward_model_training/reward_model_framework/core_modules/scripts/verify_public_release.py)
+  [run_public_release_verifier.sh](reward_model_training/reward_model_framework/core_modules/scripts/run_public_release_verifier.sh)
 - Reward-model retraining sweep:
   [train_all_reward_models.sh](reward_model_training/reward_model_framework/core_modules/scripts/train_all_reward_models.sh)
 - Protected finetune verification across the five maintained RLHF configs:
@@ -187,16 +187,12 @@ substantial storage/time. Override the EG3D checkpoint with
 For a maintained public-release verification pass, use:
 
 ```sh
-cd reward_model_training/reward_model_framework
-python core_modules/scripts/verify_public_release.py \
-  --baseline-pkl /path/to/untuned.pkl \
-  --tuned-pkl /path/to/tuned.pkl
+bash reward_model_training/reward_model_framework/core_modules/scripts/run_public_release_verifier.sh /path/to/tuned.pkl
 ```
 
-This writes a summary JSON under `/tmp/eg3d_rlhf_public_verify/` by default.
-The released reward-model checkpoint smoke expects `RWD_MODELS_DIR` to point at
-the external released artifact bundle. If you omit `--baseline-pkl` /
-`--tuned-pkl`, the mesh-bank export step is skipped.
+By default this writes all outputs under
+`release_verification_outputs/public_release_smoke/` in the public worktree.
+The wrapper auto-detects the sibling working-repo baseline checkpoint and reward-model bundle when they are available locally. Override them with the `PUBLIC_RELEASE_VERIFY_*` env vars if needed.
 
 The main pretrained/tuned checkpoints used in the paper are also external to
 the repo. The public code supports:
