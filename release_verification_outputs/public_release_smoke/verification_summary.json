@@ -1,0 +1,135 @@
+{
+  "status": "ok",
+  "workdir": "/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code_public/release_verification_outputs/public_release_smoke",
+  "seeds": [
+    28852,
+    28853
+  ],
+  "steps": [
+    {
+      "step": "data_generation_smoke",
+      "status": "ok",
+      "seconds": 7.35,
+      "generated_dir": "/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code_public/release_verification_outputs/public_release_smoke/generated_data"
+    },
+    {
+      "step": "dataset_loader_smoke",
+      "status": "ok",
+      "seconds": 9.83,
+      "seed": 28852
+    },
+    {
+      "step": "maintained_reward_model_forward_smoke",
+      "status": "ok",
+      "seconds": 3.22,
+      "sfield_256": {
+        "dtype": "sigma_field_256",
+        "losses": {
+          "paired_loss": 0.6901190280914307,
+          "BT_rwd_loss": 0.0006912066019140184,
+          "abs_val_loss": 0.0,
+          "scalar_rwd_loss": 0.0007380558527074754,
+          "l2_reg_lambda": 8.96030982744378e-09,
+          "l2_reg_agg_features": 0.0,
+          "reco_loss": 0.0,
+          "total_loss": 0.6915483474731445
+        },
+        "sum_in_batch": 1
+      },
+      "sdmap": {
+        "dtype": "single_dmap",
+        "losses": {
+          "paired_loss": 0.7246049642562866,
+          "BT_rwd_loss": 0.0006955944700166583,
+          "abs_val_loss": 0.0,
+          "scalar_rwd_loss": 0.0006928794318810105,
+          "l2_reg_lambda": 1.6438866268231322e-08,
+          "l2_reg_agg_features": 0.0,
+          "reco_loss": 0.0,
+          "total_loss": 0.7259934544563293
+        },
+        "sum_in_batch": 1
+      },
+      "tdmap": {
+        "dtype": "triple_dmap",
+        "losses": {
+          "paired_loss": 0.6945958137512207,
+          "BT_rwd_loss": 0.0006946687353774905,
+          "abs_val_loss": 0.0,
+          "scalar_rwd_loss": 0.0006940104649402201,
+          "l2_reg_lambda": 1.2317354247670664e-08,
+          "l2_reg_agg_features": 0.0,
+          "reco_loss": 0.0,
+          "total_loss": 0.6959845423698425
+        },
+        "sum_in_batch": 1
+      },
+      "pcd_cvnet_point_cloud_entire": {
+        "dtype": "point_cloud_entire",
+        "losses": {
+          "paired_loss": 0.6990384459495544,
+          "BT_rwd_loss": 0.0006931509124115109,
+          "abs_val_loss": 0.0,
+          "scalar_rwd_loss": 0.000693146837875247,
+          "l2_reg_lambda": 1.317789521948498e-08,
+          "l2_reg_agg_features": 0.0,
+          "reco_loss": 0.0,
+          "total_loss": 0.7004247307777405
+        },
+        "sum_in_batch": 1
+      },
+      "pcd_pnet_point_cloud_entire": {
+        "dtype": "point_cloud_entire",
+        "losses": {
+          "paired_loss": 0.7221171259880066,
+          "BT_rwd_loss": 0.0006931058596819639,
+          "abs_val_loss": 0.0,
+          "scalar_rwd_loss": 0.0006932425894774497,
+          "l2_reg_lambda": 1.8810094815080447e-08,
+          "l2_reg_agg_features": 0.0,
+          "reco_loss": 0.0,
+          "total_loss": 0.7235034704208374
+        },
+        "sum_in_batch": 1
+      },
+      "pcd_pnet2_point_cloud_entire": {
+        "dtype": "point_cloud_entire",
+        "losses": {
+          "paired_loss": 0.6932231783866882,
+          "BT_rwd_loss": 0.000693146837875247,
+          "abs_val_loss": 0.0,
+          "scalar_rwd_loss": 0.0006931471871212125,
+          "l2_reg_lambda": 4.527522357022917e-09,
+          "l2_reg_agg_features": 0.0,
+          "reco_loss": 0.0,
+          "total_loss": 0.6946094632148743
+        },
+        "sum_in_batch": 1
+      }
+    },
+    {
+      "step": "released_reward_model_checkpoint_smoke",
+      "status": "ok",
+      "seconds": 0.62,
+      "reward_model_id": "7wnzkgie",
+      "dtype": "sigma_field_256",
+      "losses": {
+        "paired_loss": 2.084730625152588,
+        "BT_rwd_loss": 0.0016795635456219316,
+        "abs_val_loss": 0.0,
+        "scalar_rwd_loss": 0.0016852158587425947,
+        "l2_reg_lambda": 6.642274996693232e-08,
+        "l2_reg_agg_features": 0.0,
+        "reco_loss": 0.0,
+        "total_loss": 2.0880954265594482
+      },
+      "sum_in_batch": 1
+    },
+    {
+      "step": "mesh_bank_export_smoke",
+      "status": "ok",
+      "seconds": 53.89,
+      "outdir": "/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code_public/release_verification_outputs/public_release_smoke/mesh_bank_smoke"
+    }
+  ]
+}
