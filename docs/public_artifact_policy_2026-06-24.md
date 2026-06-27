@@ -70,6 +70,15 @@ Minimum mandatory released checkpoint:
 - `7wnzkgie`
   The sigma-field reward model used by the reported EG3D RLHF fine-tuning path.
 
+Recommended released file contract for `7wnzkgie`:
+
+- `best_model.pt`
+- `release_config.yaml`
+
+The archived `run_config.yaml` may remain in the private working bundle, but it
+should not be the public loading contract. The maintained loader now prefers
+`release_config.yaml` when it is present.
+
 Optional additional released checkpoints:
 
 - representatives for the other maintained experiment families:
@@ -105,15 +114,19 @@ Recommended released contents:
   - reward-model checkpoint used
   - expected paired untuned baseline checkpoint
 
+For the current public release, prefer **GitHub Release assets** as the primary
+checkpoint channel. The curated checkpoint files for this project are all below
+GitHub's per-asset `2 GiB` limit, so they can be published there directly
+without requiring a separate model registry account.
+
 ## Recommended Release Shape
 
 For the public mirror:
 
 - keep code/configs in git
 - keep small summary artifacts in git
-- put released checkpoint files in:
-  - GitHub release assets, or
-  - a separate lightweight public artifact bundle
+- put released checkpoint files in GitHub Release assets by default
+- keep a separate lightweight artifact mirror only if you want a backup channel
 
 Recommended manifest fields:
 

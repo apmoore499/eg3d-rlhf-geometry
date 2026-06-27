@@ -195,7 +195,8 @@ By default this writes all outputs under
 The wrapper auto-detects the sibling working-repo baseline checkpoint and reward-model bundle when they are available locally. Override them with the `PUBLIC_RELEASE_VERIFY_*` env vars if needed.
 
 The main pretrained/tuned checkpoints used in the paper are also external to
-the repo. The public code supports:
+the repo. The curated public release artifact plan is documented in
+[released_artifacts.md](docs/released_artifacts.md). For the released sigma reward-model bundle, the maintained public loading contract is `best_model.pt` + `release_config.yaml`. The public code supports:
 
 - training reward models from external preference-derived geometry data
 - fine-tuning EG3D from an external pretrained generator checkpoint
