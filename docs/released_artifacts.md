@@ -29,19 +29,6 @@ the download commands.
   fine-tuning and the paired baseline for mesh export. Obtain it from the
   upstream [EG3D repository](https://github.com/NVlabs/eg3d) / NVIDIA NGC.
 
-## Suggested local layout
-
-```text
-external_assets/
-  eg3d/
-    ffhq512-128.pkl
-    eg3d-finetuned-sfield-run01446-network-snapshot-002068_LAST.pkl
-  reward_models/
-    7wnzkgie/
-      best_model.pt
-      release_config.yaml
-```
-
 ## Scripts that consume these
 
 - **Mesh-bank export:** `eg3d/reward_tune_analysis/scripts/export_snapshot_mesh_bank.py`

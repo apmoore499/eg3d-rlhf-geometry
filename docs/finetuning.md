@@ -23,20 +23,15 @@ reward model with `rwd_model_id`.
 bash scripts/finetune_eg3d_reported_sfield.sh
 ```
 
-This is the exact reported configuration: the `7wnzkgie` sigma-field reward
-model, raw clipped reward `L_r = -λ·clip(r(x), -10, 10)` with `λ = 10`, fine-
-tuning from the pretrained checkpoint (resume at 2048 kimg). Override the output
-directory with `EG3D_TRAINING_OUTDIR=/path/to/runs`.
+This is the exact reported configuration: the `7wnzkgie` sigma-field reward model, raw clipped reward `L_r = -λ·clip(r(x), -10, 10)` with `λ = 10`, fine-tuning from the pretrained checkpoint (resume at 2048 kimg). Override the output directory with `EG3D_TRAINING_OUTDIR=/path/to/runs`.
 
 ## Fine-tune from any reward model
 
-The general entrypoint is `train_rlhf.py`. Pick a `finetune` config and pass the
-reward-model id:
+The general entrypoint is `train_rlhf.py`. Pick a `finetune` config and pass the reward-model id `xxxxxx`:
 
 ```sh
 cd eg3d
-python train_rlhf.py experiment=finetune_eg3d_sfield rwd_model_id=<your_id> \
-  using_wandb=false click_legacy_args.outdir=/path/to/runs
+python train_rlhf.py experiment=finetune_eg3d_sfield rwd_model_id=xxxxxx using_wandb=false click_legacy_args.outdir=/path/to/runs
 ```
 
 | `experiment=` | Reward representation |

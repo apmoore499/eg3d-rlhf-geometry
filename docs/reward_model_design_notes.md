@@ -11,9 +11,8 @@ The reward model trains three preference heads together
 (`reward_model_training/reward_model_framework/core_modules/configs/loss/all_losses.yaml`,
 assembled in `core_modules/models/base.py`):
 
-- `lambda_pairs` (1.0): binary cross-entropy over the ranked pair, computed in both orders
-  for order-invariance (paired head outputs logits).
-- `lambda_scalar_rwd` (1e-3): the Ouyang/InstructGPT scalar-reward objective — the loss
+- `lambda_pairs` (1.0): binary cross-entropy over the ranked pair, computed in both orders for order-invariance (paired head outputs logits).
+- `lambda_scalar_rwd` (1e-3): the Ouyang et al. (InstructGPT/2022) scalar-reward objective — the loss
   written as `L_w` in the paper.
 - `lambda_BT` (1e-3): a Bradley-Terry term (learns the BT lambda parameter).
 
@@ -24,12 +23,8 @@ order-invariance and to confirm no single formulation dominated. Throughout the 
 
 The sigma-field (256³ density volume) preserved the most geometric signal and is the reported reward model and fine-tuning input. The others were explored but not pursued:
 
-- Depth-map filters (Laplacian, high-pass, low-pass, side-crop): tried, no improvement. The reported depth-map models use no filtering (`.../configs/data/augmentations/depth_map_maps_transforms_none.yaml`).
+- Depth-map filters (Laplacian, high-pass, low-pass, side-crop): tried, no improvement. The reported depth-map models use no filtering (`core_modules/configs/data/augmentations/depth_map_maps_transforms_none.yaml`).
 - Point-cloud transforms (subsample, jitter, random scale, normalisation): varied without improvement. The point-cloud backbones (PointNet/PointNet++/CurveNet) do not learn the ranking and collapse toward chance.
-
-## Activation
-
-The shipped reward configs use `model.act_type: softplus`. The bundled PointNet++ and CurveNet runs (`7pvkwpnz`, `w4eberou`) used `cos`; they are kept at softplus for consistency, which does not change the outcome (those backbones do not learn the ranking under either).
 
 ## Fine-tuning hyperparameters
 

@@ -32,8 +32,7 @@ banks from snapshot `.pkl` files.
 - Configs: `sfield_256` (reported), `sdmap`, `tdmap`,
   `pcd_pnet_point_cloud_entire`, `pcd_pnet2_point_cloud_entire`,
   `pcd_cvnet_point_cloud_entire`.
-- Paper role: the representation and backbone comparison, and the selection of
-  the sigma-field model as the reported reward.
+- Paper role: the representation and backbone comparison, and the selection of the sigma-field model as the reported reward.
 
 ### 2. EG3D RLHF fine-tuning — the main method
 
@@ -41,17 +40,14 @@ banks from snapshot `.pkl` files.
   `scripts/finetune_eg3d_reported_sfield.sh`.
 - Configs: `finetune_eg3d_sfield` (reported), `finetune_eg3d_sdmap`,
   `finetune_eg3d_tdmap`, `finetune_eg3d_pn1`, `finetune_eg3d_null` (control).
-- Paper role: the main fine-tuning result, the reward-vs-control FID comparison,
-  and the reward-trajectory / histogram outputs.
+- Paper role: the main fine-tuning result, the reward-vs-control FID comparison, and the reward-trajectory / histogram outputs.
 
 ### 3. Before/after mesh-bank export — the geometry figures
 
 - Entry: `eg3d/reward_tune_analysis/scripts/export_snapshot_mesh_bank.py`
   (`--baseline-pkl`, `--tuned-pkl`).
 - Paper role: the tuned-vs-untuned before/after geometry figures.
-- The paper-facing export uses the `legacy_sigma10` path (marching cubes at
-  sigma level 10), matching the user-study geometry. The `cummax` mode is
-  exploratory only and distorts geometry relative to the user-study path.
+- The paper-facing export uses the `legacy_sigma10` path (marching cubes at sigma level 10), matching the user-study geometry. The `cummax` mode is exploratory only and distorts geometry relative to the user-study path.
 
 ## Verification (fast correctness checks)
 
@@ -63,8 +59,7 @@ Reward-model test:
 bash scripts/test_reward_models.sh
 ```
 
-Public release verifier (loads the released reward model, runs a one-batch
-forward pass through each reward config, and a tiny mesh-bank export):
+Public release verifier (loads the released reward model, runs a one-batch forward pass through each reward config, and a tiny mesh-bank export):
 
 ```sh
 bash scripts/verify_public_release.sh /path/to/tuned.pkl
@@ -76,11 +71,9 @@ RLHF test:
 bash scripts/test_eg3d_finetuning.sh
 ```
 
-## Optional analyses (not the day-one reproduction path)
+## Optional analyses
 
-The embedding/UMAP, SHAP attribution, cross-generator transfer, and additional
-mesh-tail diagnostics in the paper's appendices are exploratory analyses, kept
-under `paper_result_analyses/`. They are not part of the minimal reproduction.
+The embedding/UMAP, SHAP attribution, cross-generator transfer, and additional mesh-tail diagnostics in the paper's appendices are exploratory analyses, kept under `paper_result_analyses/`. They are not part of the minimal reproduction.
 
 ## Suggested reading order
 

@@ -6,7 +6,7 @@ Paper: [arXiv:2606.27305](https://arxiv.org/abs/2606.27305).
 
 ## Overview
 
-EG3D produces strong rendered views, but the underlying geometry often contains unrealistic surface distortions and implausible shapes that are easy to miss in the 2D images. These defects are usually obvious to a human looking at the extracted mesh. The approach here is to learn a geometry-sensitive reward model from quality rankings of samples drawn from the pretrained generator, and then fine-tune EG3D against that reward model. In spirit this is similar to RLHF, though it is not reinforcement learning per se — the reward enters as a differentiable regulariser on the generator update rather than through a policy-gradient method such as PPO.
+EG3D produces strong rendered views, but the underlying geometry often contains unrealistic surface distortions and implausible shapes that are easy to miss in the 2D images. These defects are usually obvious to a human looking at the extracted mesh. The approach here is to learn a geometry-sensitive reward model via quality rankings of samples drawn from the pretrained generator. This reward model is then used to fine-tune EG3D. In spirit this is similar to RLHF, though it is not reinforcement learning per se - the reward enters as a differentiable regulariser on the generator update rather than through a policy-gradient method such as PPO.
 
 The work proceeded in three stages:
 
@@ -69,7 +69,7 @@ Reward-model training can be reproduced from the released code and data. Full EG
 
 ## Setup
 
-Tested with Python 3.9, CUDA 11.8, PyTorch 2.0.1. The full environment:
+Tested with Python 3.9, CUDA 11.8, PyTorch 2.0.1. The full environment (June 2026):
 
 ```sh
 git clone https://github.com/apmoore499/eg3d-rlhf-geometry
