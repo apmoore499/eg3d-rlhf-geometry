@@ -23,7 +23,7 @@ All configs live in
 `core_modules/configs/experiment/`. Each selects a representation and backbone:
 
 | `experiment=` | Representation | Backbone |
-|---|---|---|
+| --- | --- | --- |
 | `sfield_256` | cropped `256³` sigma field | ResNet-SE 3D U-Net **(reported)** |
 | `sdmap` | single depth map | ResNet-50 |
 | `tdmap` | triple depth map | ResNet-50 |

@@ -21,7 +21,7 @@ winner/loser labels are fixed; this stage just renders the geometry for them.
 ## Configuration (environment variables)
 
 | Variable | Purpose | Default |
-|---|---|---|
+| --- | --- | --- |
 | `E3D_RLHF_GENERATOR_PKL` | path to the EG3D `ffhq512-128.pkl` checkpoint | `pkl_pt/eg3d_1/ffhq512-128.pkl` |
 | `E3D_RLHF_SAVE_DIR` | base output directory for generated data | `generated_data/` |
 | `E3D_RLHF_SIGMA_DATA_DIR` | override for the sigma-field output directory | `<save dir>/entire_sigma_field_256_...` |
@@ -47,7 +47,7 @@ python synthesize_sigma_field_256_combined.py
 ```
 
 | Step | Script | Output |
-|---|---|---|
+| --- | --- | --- |
 | Triple RGB | `synthesize_triple_rgb.py` | three RGB views per seed |
 | Triple depth | `synthesize_triple_dmap.py` | three depth maps per seed |
 | Sigma field `256³` | `synthesize_sigma_field_256_combined.py` | cropped sigma slab per seed (the reported representation) |

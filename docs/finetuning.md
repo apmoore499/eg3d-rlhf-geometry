@@ -40,7 +40,7 @@ python train_rlhf.py experiment=finetune_eg3d_sfield rwd_model_id=<your_id> \
 ```
 
 | `experiment=` | Reward representation |
-|---|---|
+| --- | --- |
 | `finetune_eg3d_sfield` | sigma field **(reported)** |
 | `finetune_eg3d_sdmap` | single depth map |
 | `finetune_eg3d_tdmap` | triple depth map |

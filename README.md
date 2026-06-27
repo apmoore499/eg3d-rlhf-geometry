@@ -22,7 +22,6 @@ Geometry from the fine-tuned generator was preferred by human raters in 74% of p
 
 ![Geometry before (left) and after (right) fine-tuning, seed 2](docs/before_vs_after_visualised_sample_seed_2_web.jpg)
 
-
 ## Tech stack
 
 - EG3D fork (PyTorch) for generation and the fine-tuning loop.
@@ -48,7 +47,7 @@ Reward-model training can be reproduced from the released code and data. Full EG
 ## Repository layout
 
 | Path | Contents |
-|---|---|
+| --- | --- |
 | `eg3d/` | EG3D fork plus the RLHF fine-tuning loop (`train_rlhf.py`) and the mesh-export / analysis scripts |
 | `reward_model_training/` | Hydra + Lightning reward-model framework, the data-generation scripts, and the ranked-preference metadata |
 | `dataset_preprocessing/` | EG3D dataset preprocessing (inherited from upstream) |
@@ -59,7 +58,7 @@ Reward-model training can be reproduced from the released code and data. Full EG
 ## Documentation
 
 | Doc | Topic |
-|---|---|
+| --- | --- |
 | [docs/data_generation.md](docs/data_generation.md) | rebuild the reward-model training inputs from an EG3D checkpoint |
 | [docs/reward_models.md](docs/reward_models.md) | train reward models; the representation/backbone experiment configs |
 | [docs/finetuning.md](docs/finetuning.md) | fine-tune EG3D from any reward model; the reported run and quick test runs |
@@ -159,4 +158,4 @@ If you use this code or the released models, please cite the paper
 
 ## Contact
 
-Archer Moore — archerplmoore@gmail.com · [@apmoore499](https://github.com/apmoore499)
+Archer Moore — <archerplmoore@gmail.com> · [@apmoore499](https://github.com/apmoore499)
