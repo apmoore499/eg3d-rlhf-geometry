@@ -51,7 +51,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--base", required=True, help="Untuned/base EG3D snapshot.")
     parser.add_argument("--target", required=True, help="Tuned EG3D snapshot.")
     parser.add_argument("--reward-model-id", default="7wnzkgie")
-    parser.add_argument("--pads-config", type=Path, default=Path("../reward_model_training/static_configs/pads_vals_front_full_rear40.yaml"))
+    parser.add_argument("--pads-config", type=Path, default=Path("../reward_model_training/static_configs/pads_vals_entire.yaml"))
     parser.add_argument("--seeds", default="0-47", help="Comma/range seed list.")
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--device", choices=["cpu", "cuda"], default="cuda")

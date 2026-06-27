@@ -4,14 +4,13 @@ training, EG3D fine-tuning, and some data-generation utilities.
 Kept files:
 
 - `pads_vals_entire.yaml`
-  Main sigma-volume crop used by the maintained EG3D RLHF reward path.
-- `pads_vals_front_full_rear40.yaml`
-  Front-biased sigma crop used by the sigma-volume reward-model data-generation
-  scripts.
+  Maintained sigma-volume crop used by the `sigma_field_256` dtype, the
+  `sfield_256` reward model, and the active EG3D RLHF reward path.
 - `pads_vals_nose.yaml`
-  Nose-region crop used by nose-specific auxiliary analyses and helpers.
+  Nose-region crop used by the `nose_512` dtype only. This is an old
+  experimental path, not part of the maintained public reward-model surface.
 - `pads_vals_64c.yaml`
-  Older centered sigma crop kept for legacy compatibility.
+  Older centered sigma crop kept only for legacy compatibility.
 - `single_dmap_cameras.pt`, `single_dmap_conditioning.pt`
   Cached single-view depth-map camera / conditioning tensors.
 - `triple_dmap_cameras.pt`, `triple_dmap_conditioning.pt`

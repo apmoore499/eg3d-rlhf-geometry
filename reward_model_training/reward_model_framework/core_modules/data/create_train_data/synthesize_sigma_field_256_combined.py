@@ -14,7 +14,7 @@ from core_modules.utils import finetuning_utils
 from core_modules.data.create_train_data import generation_utils as gen_utils
 
 SAVE_DIR = gen_utils.DEFAULT_SAVE_DIR
-DEFAULT_OUTPUT_DIR = SAVE_DIR / "frontslab_sigma_field_256_ffhq512-128_const_noise_t1"
+DEFAULT_OUTPUT_DIR = SAVE_DIR / "entire_sigma_field_256_ffhq512-128_const_noise_t1"
 
 # Configuration paths
 STATIC_CONFIGS_DIR = gen_utils.STATIC_CONFIGS_DIR
@@ -83,7 +83,7 @@ def parse_args():
         default=Path(
             os.environ.get(
                 "E3D_RLHF_SIGMA_PADS_CONFIG",
-                str(STATIC_CONFIGS_DIR / "pads_vals_front_full_rear40.yaml"),
+                str(STATIC_CONFIGS_DIR / "pads_vals_entire.yaml"),
             )
         ),
     )
