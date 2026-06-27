@@ -1,0 +1,13 @@
+
+
+_target_: sharpness_aware_optimiser.SAM
+_partial_: true
+lr: 1e-3
+momentum: 0.9
+adaptive: false
+rho: 0.03
+base_optimizer:
+  _target_: torch.optim.SGD
+  _partial_: true
+  momentum: 0.9
+  lr: 1e-3

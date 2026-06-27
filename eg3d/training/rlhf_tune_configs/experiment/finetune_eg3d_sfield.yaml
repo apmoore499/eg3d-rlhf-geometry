@@ -1,0 +1,25 @@
+# @package _global_
+#
+# Sigma-field (256^3) reward fine-tune -- the REPORTED configuration.
+#
+# Reward term (clipped RAW reward-model score; no standardisation):
+#     L_reward = -lambda_rwd_model * clip(r_phi(x), rwd_clamp_min, rwd_clamp_max)
+#   with lambda_rwd_model = 10, clip = [-10, +10], r_phi = sigma-field reward model
+#   7wnzkgie. The clip acts as a trust region: it pushes low-scoring geometries up
+#   and leaves already-good ones untouched (they saturate the clip -> 0 gradient).
+#   normalise_scalar_rwd=false selects the raw path in loss._compute_reward_score_raw.
+#
+# Mean/variance (Ziegler 2019) standardisation is available as an ABLATION via
+# normalise_scalar_rwd=true (then lambda_rwd_model ~1, clip ~+-1). In our setting the
+# raw clipped reward above gave better geometry, so it is the reported config.
+#
+# Everything else (sigma_l1 anchor, old_G_ema reference, G-sampling, optimiser) comes
+# from base_config; the sigma tune transform (normalise_sigma_self 0..100) is inherited
+# from 7wnzkgie's recorded slot. No depth-map / sigma-front-growth regularisers.
+#   python train_rlhf.py experiment=finetune_eg3d_sfield rwd_model_id=7wnzkgie
+
+rwd_model_id: 7wnzkgie          # sigma_field resnet3d reward model (run 18052026)
+normalise_scalar_rwd: false     # RAW reward (reported); true = Ziegler standardisation (ablation)
+
+rlhf_tune_hpms:
+  lambda_rwd_model: 10.0

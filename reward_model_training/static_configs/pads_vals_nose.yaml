@@ -1,0 +1,13 @@
+# Sigma-volume crop "slab": *_pad = fraction trimmed inward from each face of the
+# EG3D sigma density field (0 = keep full; larger = tighter crop). front/rear =
+# depth axis (face / back of head), top/bot = vertical, lhs/rhs = horizontal.
+# shape_res = sigma sampling resolution; output_shape = explicit post-crop dims.
+# "nose": tight nose-region crop, @512.
+bot_pad: 0.45
+front_pad: 0.1
+lhs_pad: 0.45
+rear_pad: 0.6
+rhs_pad: 0.45
+top_pad: 0.4
+shape_res: 512
+output_shape: [52, 78, 154]

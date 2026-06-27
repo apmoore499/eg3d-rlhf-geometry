@@ -1,0 +1,116 @@
+defaults:
+  - _self_
+  - optimizer: null
+  - scheduler: null
+  - /data/augmentations: nose_512
+
+_target_: core_modules.models.modules_conv3d.Conv3DNetworkEnsemble
+name: Conv3DNetworkEnsemble
+
+
+global_feature_size: 512
+
+
+act_type: 'cos'
+
+mlp_global:
+  _target_: core_modules.models.utils_base.MLP
+  input_size: ${model.Conv3DModule.final_size_out}
+  output_size: ${model.global_feature_size}
+  hidden_sizes: [1024, 1024, 512]
+  dropout_rate: 0.15
+  use_dropout: False
+  normalisation_type: 'none'
+  activation_type: ${model.act_type}
+  norm_first_layer: False
+  residual: True
+
+
+# mlp_global:
+#   _target_: core_modules.models.utils_base.MLP
+#   input_size: 1024
+#   output_size: ${model.global_feature_size}
+#   hidden_sizes: [1024, 1024, 512]
+#   dropout_rate: 0.15
+#   use_dropout: False
+#   normalisation_type: 'none'
+#   activation_type: ${model.act_type}
+#   norm_first_layer: False
+#   residual: True
+
+
+
+
+Conv3DModule:
+  _target_: core_modules.models.modules_conv3d.Conv3DNetwork #(final_size=self.hparams.mlp_global.input_size)
+
+
+
+
+# Conv3DModule:
+#   _target_: core_modules.models.modules_conv3d.Conv3DNetwork #(final_size=self.hparams.mlp_global.input_size)
+
+
+
+mlp_pairs:
+  _target_: core_modules.models.utils_base.MLP
+  input_size: ${multiply:${model.mlp_global.output_size},2}   #,${model.n_dmaps}}
+  output_size: 2
+  hidden_sizes: [256, 128]
+  dropout_rate: 0.15
+  use_dropout: False
+  normalisation_type: 'none'
+  activation_type: ${model.act_type}
+  norm_first_layer: False
+  residual: True
+
+
+
+
+
+mlp_BT:
+  _target_: core_modules.models.utils_base.MLP
+  input_size: ${model.mlp_global.output_size}
+  output_size: 1
+  hidden_sizes: [256, 128]
+  dropout_rate: 0.15
+  use_dropout: False
+  normalisation_type: 'none'
+  activation_type: ${model.act_type}
+  norm_first_layer: False
+  residual: True
+
+
+mlp_scalar_rwd:
+  _target_: core_modules.models.utils_base.MLP
+  input_size: ${model.mlp_global.output_size}
+  output_size: 1
+  hidden_sizes: [256, 128]
+  dropout_rate: 0.15
+  use_dropout: False
+  normalisation_type: 'none'
+  activation_type: ${model.act_type}
+  norm_first_layer: False
+  residual: True
+
+
+
+
+
+
+
+
+return_global_embedding: true
+compile: false
+
+
+
+
+external: null
+optimizer: null
+scheduler: null
+
+loss: null
+
+swa: True
+swa_start: 1 #start stochastic weight avg at this epo number

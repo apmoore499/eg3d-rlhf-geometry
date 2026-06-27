@@ -1,0 +1,21 @@
+defaults:
+  - _self_
+  - contrastive: null
+
+goodmesh_augment: null
+upper_norm: 100
+
+# shared block
+sigma_norm: &sigma_norm
+  _target_: core_modules.data.custom_transforms.transforms_composition_helper
+  dtype: sigma_field_256
+  instantiated_transforms:
+    normalise_sigma_self:
+      _target_: core_modules.data.custom_transforms.normalise_sigma_self
+      min_norm: 0.0
+      max_norm: ${data.augmentations.upper_norm}
+
+train: { <<: *sigma_norm }
+val:   { <<: *sigma_norm }
+test:  { <<: *sigma_norm }
+tune:  { <<: *sigma_norm }

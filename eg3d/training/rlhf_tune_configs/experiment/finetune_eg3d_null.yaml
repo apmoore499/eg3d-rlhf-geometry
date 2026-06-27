@@ -1,0 +1,7 @@
+# @package _global_
+#
+# NULL fine-tune baseline -- identical to base_config (lambda_rwd_model: 0.0), i.e.
+# eg3d tuned with the GAN objective + regularisers but NO reward signal. This is the
+# reference run for FID/KID. It exists only to give the null baseline an explicit
+# experiment name; `python train_rlhf.py` (no experiment) is equivalent.
+#   python train_rlhf.py experiment=finetune_eg3d_null

@@ -1,0 +1,6 @@
+[submodule "dataset_preprocessing/ffhq/Deep3DFaceRecon_pytorch"]
+	path = dataset_preprocessing/ffhq/Deep3DFaceRecon_pytorch
+	url = https://github.com/sicxu/Deep3DFaceRecon_pytorch.git
+[submodule "external/PointContrast"]
+	path = external/PointContrast
+	url = https://github.com/facebookresearch/PointContrast

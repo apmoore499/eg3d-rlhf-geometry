@@ -1,0 +1,119 @@
+
+defaults:
+  - _self_
+  - optimizer: null
+  - scheduler: null
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+_target_: core_modules.models.modules_aw98.aw98_3d_lmks_MLP
+name: aw98_3d_lmks
+normtype: 'batch_norm'
+
+
+
+act_type: 'cos'
+n_kpts: 98
+kpts_dim: 3
+external: null
+global_feature_size: 512
+
+
+mlp_global:
+  _target_: core_modules.models.utils_base.MLP
+  input_size: ${multiply:${model.n_kpts},${model.kpts_dim}}
+  output_size: ${model.global_feature_size}
+  hidden_sizes: [512, 512]
+  #hidden_sizes: [512, 512]
+  dropout_rate: 0.15
+  use_dropout: False
+  normalisation_type: 'none'
+  activation_type: ${model.act_type}
+  norm_first_layer: False
+  residual: True
+
+
+mlp_pairs:
+  _target_: core_modules.models.utils_base.MLP
+  input_size: ${multiply:${model.mlp_global.output_size},2}   #,${model.n_dmaps}}
+  output_size: 2
+  hidden_sizes: [256, 128]
+  #hidden_sizes: [128, 128]
+  dropout_rate: 0.15
+  use_dropout: False
+  normalisation_type: 'none'
+  activation_type: ${model.act_type}
+  norm_first_layer: False
+  residual: True
+
+
+
+
+
+mlp_BT:
+  _target_: core_modules.models.utils_base.MLP
+  input_size: ${model.mlp_global.output_size}
+  output_size: 1
+  hidden_sizes: [256, 128]
+  dropout_rate: 0.15
+  use_dropout: False
+  normalisation_type: 'none'
+  activation_type: ${model.act_type}
+  norm_first_layer: False
+  residual: True
+
+
+mlp_scalar_rwd:
+  _target_: core_modules.models.utils_base.MLP
+  input_size: ${model.mlp_global.output_size}
+  output_size: 1
+  hidden_sizes: [256, 128]
+  dropout_rate: 0.15
+  use_dropout: False
+  normalisation_type: 'none'
+  activation_type: ${model.act_type}
+  norm_first_layer: False
+  residual: True
+
+
+
+
+
+
+  
+return_global_embedding: True
+
+
+compile: False
+
+loss:
+  return_global_embedding: True
+  lambda_abs_sym_loss: 0.0
+  lambda_BT:  1e-3 #0.0 #1e-3
+  lambda_pairs: 1.0 #0.0
+  lambda_scalar_rwd: 1e-3 #1e-3 #0.0
+  lambda_reg_rwd_vals: 1e-8 #0.0 #1e-8 #l2 loss
+  lambda_agg_features_l2: 0.0 #for agg features make sure not too high magnitude
+
+
+swa: False
+swa_start: 1 #start stochastic weight avg at this epo number
+
+
+using_wandb: false
+
+optuna_tuning: null
+sync: false #this one determine whether we sync result or not. ie uploaad.

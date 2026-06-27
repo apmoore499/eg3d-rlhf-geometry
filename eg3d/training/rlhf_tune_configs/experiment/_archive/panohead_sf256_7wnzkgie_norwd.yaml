@@ -1,0 +1,150 @@
+# @package _global_
+# CONTROL run: identical to panohead_sf256_7wnzkgie EXCEPT the reward-model
+# loss is turned off (lambda_rwd_model: 1.0 -> 0.0). Everything else (camera,
+# adversarial D, sigma_l1 anchor, front-growth, batch/accum/ticks) is the same.
+# Use this to check whether the upward eye drift comes from the reward model:
+#   - if the eyes still drift with reward off -> not the reward model
+#     (look at front-growth / adversarial D / camera instead)
+#   - if the eyes stop drifting -> it's the reward model.
+# NB: lambda_sigma_front_growth (10.0) is still ON here, matching the trained
+# config; zero that too if you want a fully reward/geometry-free control.
+#
+# Launch:  python train_rlhf.py experiment=panohead_sf256_7wnzkgie_norwd
+
+wandb:
+  setup:
+    project: eg3d_rlhf_tune
+    entity: apmoore251
+    mode: online
+  watch:
+    log: all
+    log_freq: 100
+  project: eg3d_rlhf_tune
+  entity: apmoore251
+  mode: online
+ltype: ${rlhf_tune_hpms.tune_type}
+pair_seeds:
+  minseed: 400000
+  maxseed: 400200
+plot:
+  minseed: 300000
+  maxseed: 300200
+  batchsize: 4
+nm_vis: 4
+seedslist_visualisation:
+- 2
+- 3
+- 4
+- 5
+- 6
+rwd_loss_scale: 1.0
+seed: 42
+train_tick_stop: 20
+using_wandb: true
+export_first_images: false
+EVALUATE_METRICS: true
+export_indiv_dmaps: false
+rwd_model_id: 7wnzkgie
+rwd_model_data_type: null
+vis_shape_res: 256
+plot_rwd_dist: true
+output_mesh_images_only: false
+n_output_for_preference_study: 50
+network_snapshot_ticks: 1
+rlhf_tune_hpms:
+  lambda_dmap_l1: 0.0
+  lambda_sigma_l1: 1.0
+  lambda_lpips: 0.0
+  lambda_dmap_mse: 0.0
+  lambda_rwd_model: 0.0
+  lambda_sigma_front_growth: 10.0
+  sigma_use_geometric_flip_mask: true
+  sigma_mse_geometric_flip_penalty: true
+  sigma_flip_local_mean_kernel: 1
+  sigma_flip_local_kernel_max: false
+  sigma_front_growth_shape_res: 64
+  zero_grad_below_sigma_threshold: 0.0
+  gen_c_mult_rwd: 1.0
+  hard_nose_depth: null
+  lambda_nose: 0.0
+  lambda_nose_hard: 0.0
+  update_emas_gdepth: true
+  margin_for_rwd: 0.0
+  tune_type: ${rlhf_tune_hpms.rwd_type}
+  set_rwd_affine_offset: true
+  scalar_sp: -2
+  n_comparisons: 4
+  batch_size: 16
+  gamma: 20
+  resume_kimg: 2048
+  G_gain_scale: 1.0
+  D_gain_scale: 1.0
+  update_G_ema_every_tick: false
+  lambda_rgb_white: 0.001
+  rwd_type: clamped
+  accum_steps: 16
+  scale_sigma_vals: 1.0
+  G_depth_gain: 1.0
+  G_sample_noise_mode: const
+  G_sample_truncation_psi: 1.0
+  G_sample_truncation_cutoff: 14
+  G_sample_camera_type: zeros
+  augmentations:
+    _target_: data.custom_transforms.transforms_composition_helper
+    dtype: sigma_field_256
+    instantiated_transforms:
+      normalise_sigma_self:
+        _target_: data.custom_transforms.normalise_sigma_self
+        min_norm: 0.0
+        max_norm: 100.0
+pretrained_modules:
+  old_G: false
+  old_G_ema: true
+  LPIPS: false
+clamp_rwd: true
+rwd_clamp_max: 10
+rwd_clamp_min: -10
+hpms_first_dmaps:
+  truncation_psi: 0.25
+  truncation_cutoff: 14
+data:
+  nrs: 64
+  upsample_64_to_128: true
+  downsample_pcd_points: true
+  n_point_samples_per_pcd_batch: 2048
+  sample_points_face_area: false
+  center_points: true
+  unit_scale_points: true
+  pcd_as_pt:
+    _target_: aux_data_tools.depth_map_to_pcd_from_image
+    center_mean: ${data.center_points}
+    unit_scale_points: ${data.unit_scale_points}
+    n_point_samples_per_pcd_batch: ${data.n_point_samples_per_pcd_batch}
+    nrs: ${data.nrs}
+  single_dmap:
+    nrs: ${data.nrs}
+  triple_dmap:
+    nrs: ${data.nrs}
+click_legacy_args:
+  cfg: ffhq
+  gpus: 1
+  arch: panohead
+  gen_pose_cond: true
+  tick: 1
+  resume: /home/krillman/Documents/eg3dredo/PanoHead/models/easy-khair-180-gpc0.8-trans10-025000.pkl
+  neural_rendering_resolution_final: 128
+  resume_kimg: ${rlhf_tune_hpms.resume_kimg}
+  outdir: /media/krillman/240GB_DATA/training_runs_2
+  rlhf_config_fn: /home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/eg3d_rlhf_hpms_dm3.yaml
+  data: /media/krillman/DISK5_1TB/t2_ffhq/eg3d_for_dataset/eg3d_w_mirrore.zip
+  batch: ${rlhf_tune_hpms.batch_size}
+  gamma: ${rlhf_tune_hpms.gamma}
+  mbstd_group: ${click_legacy_args.batch}
+  metrics:
+  - fid1k_partial
+  density_reg_every: 4
+  workers: 3
+rlhf_opt:
+  type: original
+eval_metrics_only: false
+init_seeds_first: true

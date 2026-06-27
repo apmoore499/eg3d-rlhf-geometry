@@ -1,0 +1,59 @@
+# @package model
+#
+# Canonical 4-MLP reward head, shared across every backbone.
+# Pull it from a model yaml with `defaults: - mlps: default` (listed BEFORE
+# `_self_` so the model can fill in the one per-backbone field below).
+#
+# `mlp_global.input_size` is intentionally left mandatory-missing (`???`):
+# it depends on the backbone's output shape, so each model yaml must set it
+# (e.g. 1024, 2048, `${model.Conv3DModule.final_size_out}`, ...). Everything
+# else (capacity, dropout, activation via `${model.act_type}`, residual) is
+# shared here so there is a single source of truth.
+
+mlp_global:
+  _target_: core_modules.models.utils_base.MLP
+  input_size: ???
+  output_size: ${model.global_feature_size}
+  hidden_sizes: [512, 512]
+  dropout_rate: 0.15
+  use_dropout: False
+  normalisation_type: 'none'
+  activation_type: ${model.act_type}
+  norm_first_layer: False
+  residual: True
+
+mlp_pairs:
+  _target_: core_modules.models.utils_base.MLP
+  input_size: ${multiply:${model.mlp_global.output_size},2}
+  output_size: 2
+  hidden_sizes: [256, 128]
+  dropout_rate: 0.15
+  use_dropout: False
+  normalisation_type: 'none'
+  activation_type: ${model.act_type}
+  norm_first_layer: False
+  residual: True
+
+mlp_BT:
+  _target_: core_modules.models.utils_base.MLP
+  input_size: ${model.mlp_global.output_size}
+  output_size: 1
+  hidden_sizes: [256, 128]
+  dropout_rate: 0.15
+  use_dropout: False
+  normalisation_type: 'none'
+  activation_type: ${model.act_type}
+  norm_first_layer: False
+  residual: True
+
+mlp_scalar_rwd:
+  _target_: core_modules.models.utils_base.MLP
+  input_size: ${model.mlp_global.output_size}
+  output_size: 1
+  hidden_sizes: [256, 128]
+  dropout_rate: 0.15
+  use_dropout: False
+  normalisation_type: 'none'
+  activation_type: ${model.act_type}
+  norm_first_layer: False
+  residual: True

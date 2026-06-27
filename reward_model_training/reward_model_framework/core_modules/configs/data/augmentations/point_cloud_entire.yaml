@@ -1,0 +1,52 @@
+defaults:
+  - _self_
+  - contrastive: null
+
+goodmesh_augment: null
+
+# Point counts: random subsample at train, fixed deterministic subsample at eval.
+# tune == val/test (the clean transform the reward model expects), so eg3d
+# fine-tuning inherits exactly this via load_tune_augmentation_from_cfg.
+n_points_train: 2048
+n_points_eval: 2048
+
+# Normalisation (all splits): subsample -> center -> mean-scale into unit cube.
+# Train additionally applies stochastic random-scale + jitter AFTER normalisation
+# (so the scale jitter is not cancelled). No rotation (faces have a canonical pose).
+
+train:
+  _target_: core_modules.data.custom_transforms.transforms_composition_helper
+  dtype: point_cloud_entire
+  instantiated_transforms:
+    subsample:
+      _target_: core_modules.data.aug_and_tforms.augtforms_pointcloud.pcd_subsample
+      n_points: ${data.augmentations.n_points_train}
+      random: true
+    center:
+      _target_: core_modules.data.aug_and_tforms.augtforms_pointcloud.pcd_center
+    mean_scale:
+      _target_: core_modules.data.aug_and_tforms.augtforms_pointcloud.pcd_mean_scale
+    random_scale:
+      _target_: core_modules.data.aug_and_tforms.augtforms_pointcloud.pcd_random_scale
+      margin: 0.05
+    jitter:
+      _target_: core_modules.data.aug_and_tforms.augtforms_pointcloud.pcd_jitter
+      jitter_range: 0.001
+
+# shared clean eval transform (deterministic) reused by val/test/tune
+eval_norm: &eval_norm
+  _target_: core_modules.data.custom_transforms.transforms_composition_helper
+  dtype: point_cloud_entire
+  instantiated_transforms:
+    subsample:
+      _target_: core_modules.data.aug_and_tforms.augtforms_pointcloud.pcd_subsample
+      n_points: ${data.augmentations.n_points_eval}
+      random: false
+    center:
+      _target_: core_modules.data.aug_and_tforms.augtforms_pointcloud.pcd_center
+    mean_scale:
+      _target_: core_modules.data.aug_and_tforms.augtforms_pointcloud.pcd_mean_scale
+
+val: { <<: *eval_norm }
+test: { <<: *eval_norm }
+tune: { <<: *eval_norm }

@@ -1,0 +1,13 @@
+{
+  "label": "eg3d",
+  "sigma_root": "/home/krillman/Documents/eg3dredo_data",
+  "robust_norm": false,
+  "clip_pct": null,
+  "flip_axis0": false,
+  "n": 100,
+  "mean": 14.546980012357235,
+  "median": 15.03567886352539,
+  "std": 2.254108335963594,
+  "min": 0.27688726782798767,
+  "max": 17.176876068115234
+}

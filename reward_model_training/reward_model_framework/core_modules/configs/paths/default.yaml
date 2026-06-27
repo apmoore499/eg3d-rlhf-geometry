@@ -1,0 +1,29 @@
+# path to root directory
+# prefer env override if set, otherwise fall back to current working directory
+root_dir: ${oc.env:PROJECT_ROOT,${hydra:runtime.cwd}}
+
+# path to data directory
+data_dir: ${paths.root_dir}/data/
+
+# path to RLHF reward-model data (PT files). Uses env override if set.
+rwd_data_dir: ${oc.env:RWD_DATA_DIR,${oc.env:HOME}/Documents/eg3dredo_data}
+
+# static configs (cameras, pads yaml, weights). Env override: STATIC_CONFIGS_DIR.
+static_configs_dir: ${oc.env:STATIC_CONFIGS_DIR,${paths.root_dir}/reward_model_training/static_configs}
+
+# reward model runs (best_model.pt + run_config.yaml). Env override: RWD_MODELS_DIR.
+rwd_model_dir: ${oc.env:RWD_MODELS_DIR,${paths.root_dir}/reward_model_training/reward_model_framework/core_modules/RWD_MODELS_FOR_TUNING}
+
+# reward model runs summary CSV. Env override: RUNS_SUMMARY_CSV.
+run_summary_csv: ${oc.env:RUNS_SUMMARY_CSV,${paths.root_dir}/reward_model_training/reward_model_framework/core_modules/notebooks/runs_summary_for_tune.csv}
+
+# path to logging directory
+log_dir: ${paths.root_dir}/logs/
+
+# path to output directory, created dynamically by hydra
+# path generation pattern is specified in `configs/hydra/default.yaml`
+# use it to store all files generated during the run, like ckpts and metrics
+output_dir: ${hydra:runtime.output_dir}
+
+# path to working directory
+work_dir: ${hydra:runtime.cwd}

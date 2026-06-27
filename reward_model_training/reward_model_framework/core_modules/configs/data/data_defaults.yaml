@@ -1,0 +1,126 @@
+# Reward-model training data config (datamodule_third pipeline).
+# Consumed by RankingDataBuilder (ranking_datasets.py) + dset_loaders.py, and
+# referenced by every experiment yaml via `override /data: data_defaults`.
+# Reorganised 2026-06-13 (session 3): VALUES UNCHANGED — only grouped + labelled
+# by representation, with unused dtype blocks quarantined at the bottom. Verified
+# by an order-independent deep-equal of the parsed config before/after.
+
+defaults:
+  - _self_
+  - augmentations: default
+  - batch_augmentations: default
+
+map_on: cpu
+
+_target_: core_modules.data.ranking_datasets.RankingDataBuilder
+
+
+dset_dict:
+
+  # ===== core (datamodule_third) =====
+  # NOTE: data_dir is effectively a DEAD param for datamodule_third —
+  # return_checked_combos (ranking_datasets.py:105-110) ignores it and reads the
+  # in-repo rankedseedsall.csv. Keep this as a benign placeholder string rather
+  # than a stale machine-specific path.
+  data_dir: UNUSED_PRE_DISK_WIPE_DATA_DIR
+  proportion_of_data_to_use: 1.0 # experiments override (e.g. ${prop_data})
+  partition_splits:
+    n_train: 0.70
+    n_val: 0.15
+    n_test: 0.15
+  remove_middle_data: True
+  row_size_to_keep: 2 # keep rows at least this size; min 2 for a pair
+  using_transforms:
+    train: False
+    val: False
+    test: False
+  selected_dtypes: ["point_cloud_entire"] # the main knob; overridden per experiment
+  dset_version: ""
+
+  # ===== bolt-ons (optional; disabled by default here, overridden per experiment) =====
+  # 225/226 negative-sample models (datamodule_second experiment); read at
+  # ranking_datasets.py:192.
+  badseeds_models: ['226_nose_overfit_experiment','225_nose_overfit_experiment']
+  # goodmeshes: higher-quality meshes optionally mixed into a batch. The CURRENT
+  # approach samples TRUNCATED from the *standard* ffhq checkpoint (seeds
+  # 100000-100999) — that hardcoded range is what get_goodmeshes_and_split
+  # (ranking_datasets.py:273) actually uses. goodmeshes_fn below is from an
+  # ABANDONED first attempt (a curated 98-mesh set from the ffhq-REBALANCED
+  # checkpoint) and is no longer read. n_* default 0 here; experiments override.
+  goodmeshes:
+    goodmeshes_fn: UNUSED_PRE_DISK_WIPE_GOODMESHES_FN # vestigial: first-attempt ffhq-rebal 98-mesh set
+    n_train: 0
+    n_test: 0
+    n_val: 0
+  include_goodseed: False
+  margin_for_offset_testing: 0.0 # eval-only; read in logging_utils.py
+
+  # ===== representation blocks =====
+  # Each `selected_dtypes` value picks one block; consumed as dset_dict[<dtype>]
+  # and dispatched in dset_loaders.return_single_data (that branch is the source
+  # of truth). Descriptions below were cross-checked against the dispatch on
+  # 2026-06-13. [loads] = verified by tests/test_data_types_loadable.py.
+
+  # --- sigma field / density volume (file-backed: entire_sigma_field_N_s_<seed>.pt) ---
+  sigma_field_256:        # [loads] 256-res density field. THE winner reward-model input.
+    dummy_val: 1
+  sigma_field_128:        # [loads] 128-res variant
+    dummy_val: 1
+  sigma_field_64:         # [no data] 64-res variant; not re-synthed
+    dummy_val: 1
+  nose_512:               # [no data] nose-region sigma slab; abandoned experiment, not synthed
+    dummy_val: 1
+
+  # --- depth map (file-backed: triple_dmap_s_<seed>.pt; single = middle view, idx 1) ---
+  single_dmap:            # [loads] canonical/middle-view depth map (idx 1 of the triple)
+    n_dmaps: 1
+  triple_dmap:            # [loads] 3-view depth maps
+    n_dmaps: 3
+
+  # --- point cloud (derived from the depth map) ---
+  point_cloud_entire:     # [loads] full depth-map PCD: 128x128=16384 pts, (B,3,N).
+    dummy_val: 1           # subsample/normalise/augment come from data/augmentations
+                           # (point_cloud_entire.yaml); the old permute_downsample +
+                           # center_mean dtypes folded into its train/val/test/tune slots.
+
+  # --- landmarks / centroids (AW98 98-landmark scheme) ---
+  canonical_rgb_lmks_98:  # [loads] 98 2D landmarks, canonical view
+    n_lmks: 98
+  # AW98 = the 98-point facial-keypoint scheme. aw98_3d_lmks = the 98 keypoints as
+  # 3D coords sampled from the depth-map PCD (depends only on AW98 2D landmarks +
+  # the depth map; the brittle file-backed 3D-landmark loader was removed).
+  aw98_3d_lmks:           # [loads] 98 AW98 keypoints sampled from the depth-map PCD, (1,98,3)
+    dummy_val: 1
+  # aw98_patch_* = image-shaped PATCHES of the PCD cropped around AW98 keypoint
+  # centroids (built for CoAtNet_centroids; no model config currently selects them
+  # — kept loadable via tests/test_data_types_loadable). Region indices live in
+  # AW98_REGION_LANDMARKS (dset_loaders.py).
+  aw98_patch_rgb_4region_32:  # [loads] 4 regions (nose/mouth/eyes) 32x32, 9ch xyz+rgb+freq, (1,4,9,32,32)
+    dummy_val: 1
+  aw98_patch_geom_nose_8:     # [loads] nose 8x8, 6ch xyz+freq (geometry), (1,1,6,8,8)
+    dummy_val: 1
+  aw98_patch_normals_nose_8:  # [loads] nose 8x8, 9ch xyz+normals+freq, (1,1,9,8,8)
+    dummy_val: 1
+  aw98_patch_geom_all98_8:    # [loads] all 98 keypoints 8x8, 6ch xyz+freq, (1,98,6,8,8)
+    dummy_val: 1
+
+  # ===== NOT CURRENTLY LOADABLE / NOT USED BY ANY CURRENT EXPERIMENT =====
+  # Kept (not deleted) so a stray selected_dtypes can't KeyError. This covers only
+  # dtypes whose return_single_data branch still exists. Fully-dead dtypes (branches
+  # that called undefined methods, selected by no config) were removed 2026-06-19.
+  # Verified against return_single_data + the backbone smoke test.
+
+  pcd_nose_combined:              # runnable but unused (derives PCD from dmap; self.ept.*)
+    n_point_samples_per_pcd_batch: 1024
+
+  # -- needs source files not present in eg3dredo_data --
+  ws_code_view_conditioned:       # stored EG3D W+ code file absent
+    ws_dummy: 1
+
+  # -- RGB-render dtypes (RGB not synthed for the ranked seed set; deprecated) --
+  single_rgb:                     # single canonical RGB image
+    n_ims: 1
+  triple_rgb:                     # 3-view RGB images
+    n_ims: 3
+  single_rgb_and_dmap:            # RGB (128) concatenated with the canonical depth map
+    dummy_val: 1

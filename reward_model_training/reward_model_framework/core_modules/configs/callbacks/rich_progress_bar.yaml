@@ -1,0 +1,19 @@
+# https://lightning.ai/docs/pytorch/latest/api/lightning.pytorch.callbacks.RichProgressBar.html
+# Switched to TQDMProgressBar to fix issue with reusing trainer across multiple fit() calls
+
+rich_progress_bar:
+  _target_: lightning.pytorch.callbacks.TQDMProgressBar
+  refresh_rate: 1
+  # theme:
+  #   _target_: lightning.pytorch.callbacks.progress.rich_progress.RichProgressBarTheme
+  #   description : "#f6ad5a"
+  #   progress_bar : "#0c4d16"
+  #   progress_bar_finished : "#25ffcc"
+  #   progress_bar_pulse : "#6206E0"
+  #   batch_progress : "#ff84ca"
+  #   time : "#7fc0eb"
+  #   processing_speed : "#ec7a7a"
+  #   metrics : "#f9fd7b"
+    
+    
+

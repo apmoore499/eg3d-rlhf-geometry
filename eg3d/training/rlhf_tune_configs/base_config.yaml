@@ -1,0 +1,122 @@
+# ============================================================================
+# base_config.yaml -- the PRIMARY rlhf-tune config and the default schema.
+#
+# Run bare (`python train_rlhf.py`) this is a NULL fine-tune: lambda_rwd_model = 0.0,
+# so eg3d is tuned with the GAN objective + regularisers but NO reward signal -- the
+# reference run for FID/KID. A real reward run selects an experiment that overrides
+# ONLY its deltas:  `python train_rlhf.py experiment=finetune_eg3d_sdmap`.
+#
+# Default reward hyperparameters (override per experiment):
+#   lambda_sigma_l1:  0.01   sigma-field anchor
+#   lambda_rwd_model: 1.0    real runs (0.0 here = null baseline)
+#   lambda_nose_hard: 0.0    default; 1.0 for depth-map reward models
+# ============================================================================
+
+defaults:
+  - _self_
+  - data: defaults
+  - click_legacy_args: defaults
+  - rlhf_opt: original
+  - experiment: null
+
+wandb:
+  setup:
+      project: eg3d_rlhf_tune
+      entity: apmoore251
+      mode: online
+  watch:
+      log: all
+      log_freq: 100
+  project: eg3d_rlhf_tune
+  entity: apmoore251
+  mode: online
+  run_id: run_id_str
+
+ltype: ${rlhf_tune_hpms.tune_type}   # active reward backend selector mirrored from tune_type; pairs_refset uses pairwise reference comparisons, other values use scalar reward heads
+
+# --- run control ------------------------------------------------------------
+seed: 42
+train_tick_stop: 20
+using_wandb: True
+EVALUATE_METRICS: True
+eval_metrics_only: False
+output_mesh_images_only: False
+export_first_images: False
+export_indiv_dmaps: False
+init_seeds_first: True        # compute the initial-generator reward baseline at tick 0
+plot_rwd_dist: True
+network_snapshot_ticks: 5
+n_output_for_preference_study: 50
+nm_vis: 4
+vis_shape_res: 256
+seedslist_visualisation: [2, 3, 4, 5, 6]
+
+# --- reward standardisation (Ziegler 2019) ----------------------------------
+normalise_scalar_rwd: True    # standardise reward to (r - mu_hat) / sigma_hat
+rwd_std_floor_frac: 0.5       # floor sigma_hat at this * |mu_hat| so a tiny initial std can't explode rwd_scale (0 = pure 1/std)
+rwd_scale_max: 10.0           # absolute cap on rwd_scale (guards near-degenerate reward models where mu_hat~0; 0 = no cap)
+rwd_loss_scale: 1.0
+clamp_rwd: True
+# Loose safety rail on the standardised reward (rarely bites once standardised;
+# see _compute_reward_score NOTE in loss.py).
+rwd_clamp_max: 10
+rwd_clamp_min: -10
+
+# --- reward model -----------------------------------------------------------
+rwd_model_id: 7wnzkgie        # sigma_field resnet3d (run 18052026); override per experiment
+rwd_model_data_type:          # populated at runtime from rwd_model_id via get_datatype_from_model_id
+
+# --- generator render resolution (data group default = nrs 64 + upsample) ---
+data:
+  nrs: 64                       # reward-path render depth before optional upsample; not the final EG3D image resolution
+  upsample_64_to_128: true      # upsample 64x64 reward-path depths to 128x128 before reward formatting; sdmap/tdmap override to native 128
+
+# --- fine-tuning hyperparameters --------------------------------------------
+rlhf_tune_hpms:
+  lambda_rwd_model: 0.0         # main reward-loss weight; 0.0 gives the null baseline, nonzero enables reward tuning
+  lambda_sigma_l1:  0.01        # live sigma-anchor weight against old_G_ema for sigma-field-style tuning
+  lambda_dmap_l1:   0.0         # optional depth-map L1 consistency regulariser against old_G_ema
+  lambda_dmap_mse:  0.0         # optional plain depth-map MSE regulariser against old_G_ema
+  lambda_lpips:     0.0         # optional perceptual consistency loss on image_raw against old_G_ema
+  lambda_nose_hard: 0.0         # live hard nose-depth floor penalty for depth-map reward paths
+  hard_nose_depth:              # runtime-populated canonical nose-depth threshold used only when lambda_nose_hard > 0
+  neg_softplus_scale: -2        # used only by tune_type=neg_softplus; must stay negative so positive rewards map toward 0 loss while negative rewards are penalised
+  rwd_type: clamped             # preferred active values: clamped, clamped_iqr, neg_softplus, pairs_refset; keep in sync with tune_type
+  tune_type: ${rlhf_tune_hpms.rwd_type}  # reward-loss branch selector used in loss._compute_reward_score; archived `pairs` is still accepted as a legacy alias for pairs_refset
+  n_comparisons: 4              # used only by tune_type=ltype=pairs_refset when sampling reference comparisons per generated item
+  batch_size: 16                # total RLHF training batch passed through click_legacy_args.batch
+  accum_steps: 16               # gradient-accumulation split count inside the G_depth RLHF step
+  gamma: 20                     # discriminator R1 weight forwarded through click_legacy_args.gamma
+  resume_kimg: 2048             # starting kimg counter when resuming from the pretrained checkpoint
+  scale_sigma_vals: 1.0         # scalar multiplier applied to sigma-ray reward tensors before the reward model
+  gen_c_mult_rwd: 1.0           # multiplier on conditioning cameras for sigma-field reward extraction
+  G_gain_scale: 1.0             # gain multiplier for standard GAN G phases
+  D_gain_scale: 1.0             # gain multiplier for standard GAN D phases
+  G_depth_gain: 1.0             # gain multiplier on the RLHF G_depth backward pass
+  update_emas_gdepth: true      # whether RLHF reward-path G renders update EMA stats during run_G
+  update_G_ema_every_tick: false # refresh loss.old_G_ema from the live G_ema each tick; used by some optional reg branches
+  G_sample_noise_mode: 'const'  # generator noise mode used when forming reward-model inputs
+  G_sample_truncation_psi: 1.0  # truncation psi used when forming reward-model inputs
+  G_sample_truncation_cutoff: 14 # truncation cutoff used when forming reward-model inputs
+
+pretrained_modules:
+  old_G: False                  # attach a frozen old_G reference when optional regularisers need it
+  old_G_ema: True               # attach a frozen old_G_ema reference when sigma/depth regularisers need it
+  LPIPS: False                  # attach LPIPS when lambda_lpips turns on the perceptual consistency term
+
+hpms_first_dmaps:
+  truncation_psi: 0.25          # truncation used for the initial baseline dmap sweep that sets hard_nose_depth / reward stats
+  truncation_cutoff: 14         # truncation cutoff for the same initial baseline dmap sweep
+
+click_legacy_args:
+  density_reg_every: 4          # forwarded to the underlying EG3D training entrypoint
+  workers: 3                    # dataloader workers forwarded to the underlying EG3D training entrypoint
+
+pair_seeds:
+  minseed: 400000               # seed range used only by pairwise reward-model branches / diagnostics
+  maxseed: 400200
+
+plot:
+  minseed: 300000               # seed range used for baseline reward/distribution plots
+  maxseed: 300200
+  batchsize: 4                  # batch size for those baseline plotting/eval sweeps

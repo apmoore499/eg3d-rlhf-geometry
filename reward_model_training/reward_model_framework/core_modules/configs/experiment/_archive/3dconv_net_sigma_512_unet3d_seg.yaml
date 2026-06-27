@@ -1,0 +1,145 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py experiment=example
+
+defaults:
+  - override /model: point_cloud_3dconv
+  - override /trainer: default
+  - override /data: data_defaults
+  - override /loss: all_losses
+  - override /model/optimizer: adam
+  - override /callbacks: default ##_pacc
+#  - override /model/scheduler: cosine_warm_rsts
+# all parameters below will be merged with parameters from default configurations set above
+# this allows you to overwrite only specified parameters
+
+tags: ["adam_optimiser","3d conv net"]
+
+trainer:
+  min_epochs: 1
+  max_epochs: 5
+  profiler: null #"advanced"
+  num_sanity_val_steps: 0
+
+  #limit_val_batches: 1 #0.1 #0.1
+  #limit_train_batches: 1 #0.1 #0.1
+  #limit_test_batches: 1 #0.1
+
+
+
+
+
+
+
+# # model configuration
+# model:
+#   # model class, e.g. UNet3D, ResidualUNet3D
+#   name: UNet3D
+#   # number of input channels to the model
+#   in_channels: 1
+#   # number of output channels
+#   out_channels: 1
+#   # determines the order of operators in a single layer (gcr - GroupNorm+Conv3d+ReLU)
+#   layer_order: gcr
+#   # number of features at each level of the U-Net
+#   f_maps: [32, 64, 128, 256]
+#   # number of groups in the groupnorm
+#   num_groups: 8
+#   # apply element-wise nn.Sigmoid after the final 1x1 convolution, otherwise apply nn.Softmax
+#   # this is only relevant during inference, during training the network outputs logits and it is up to the loss function
+#   # to normalize with Sigmoid or Softmax
+#   final_sigmoid: true
+#   # if True applies the final normalization layer (sigmoid or softmax), otherwise the networks returns the output from the final convolution layer; use False for regression problems, e.g. de-noising
+#   is_segmentation: true
+# # trainer configuration
+
+
+
+
+dloader:
+  num_workers: 0
+
+
+#/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/reward_model_training/reward_model_framework/core_modules/models/modules_unet3d.py
+#/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/reward_model_training/reward_model_framework/core_modules/configs/experiment/3dconv_net_sigma_512_unet3d.yaml
+
+model:
+  act_type: 'cos'
+  swa: null
+
+
+  Conv3DModule:
+    #_target_: core_modules.models.modules_conv3d.Conv3DNetworkResnet3D #(final_size=self.hparams.mlp_global.input_size) #53568 #Conv3DNetworkResnet3D
+    _target_: core_modules.models.modules_unet3d.UNet3D #(final_size=self.hparams.mlp_global.input_size) #53568 #Conv3DNetworkResnet3D
+    in_channels: 1
+    out_channels: 1
+    layer_order: gcr
+    f_maps: [8,16] #, 256]
+    num_groups: 8
+    final_sigmoid: false
+    is_segmentation: false
+
+    final_size_out: 512
+
+
+
+  mlp_global:
+    _target_: core_modules.models.utils_base.MLP
+    input_size: ${model.Conv3DModule.final_size_out}
+    output_size: ${model.global_feature_size}
+    hidden_sizes: [128, 128]
+    dropout_rate: 0.15
+    use_dropout: False
+    normalisation_type: 'none'
+    activation_type: ${model.act_type}
+    norm_first_layer: False
+    residual: True
+
+
+  name: unet3d_on_entire_sigma_512_no_transforms
+#Conv3DNetworkLeftToRight
+
+batch_size_all: 1
+#prop_data: 1.0
+
+prop_data: 1.0 #0.03
+
+train_on: datamodule_third
+
+
+data:
+  dset_dict:
+    selected_dtypes: ['sigma_field_512']  #sigma_field_512  nb #sigma_rays is 128x128x128 volume. 
+    proportion_of_data_to_use: ${prop_data}
+
+
+
+    goodmeshes:
+      # NB: total n good meshes is 98
+      # Therefore, can be leq 98`
+      # do not use perceantages integer only
+      n_train: 60 #40
+      n_test: 0
+      n_val: 10 #10
+      p_add: 1.0
+
+    remove_middle_data: true
+    row_size_to_keep: 6
+
+    margin_for_offset_testing: 0.0 # between 0.0 and0.5, if the p(win) = 1-p(lose) + margin, consider a win.ONLY USED IN TEST SET
+
+
+
+
+test: True
+sync: True
+sync_model_weights: False
+optuna_tuning: False
+log_net_debug: False
+#logger.wandb.offline: False
+swa: False
+
+
+
+#Conv3DNetworkSTD

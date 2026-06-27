@@ -1,0 +1,101 @@
+click_legacy_args:
+  cfg: ffhq
+  gpus: 1
+
+  gen_pose_cond: True
+  mbstd-group: 1
+  tick: 1
+  #resume: /home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/pkl_pt/eg3d_1/ffhq512-128.pkl #original checkpoint!
+  #resume: /media/krillman/240GB_DATA/training_runs_2/00180-ffhq-FFHQ_512_4995-gpus1-batch4-gamma25/network-snapshot-002033.pkl #tuned rwd model!
+  resume: /media/krillman/240GB_DATA/training_runs_2/00197-ffhq-FFHQ_512_4995-gpus1-batch4-gamma25/eg3d_checkpoint_fine_tuned_without_rwd_model_6_epoch.pkl #tuned eg3d without any rwd, just trainign loop
+  neural_rendering_resolution_final: 128
+  resume_kimg: 2028
+
+  outdir: /media/krillman/240GB_DATA/training_runs_2
+  rlhf_config_fn: /home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/eg3d_rlhf_hpms_dm3.yaml
+  data: /media/krillman/DISK5_1TB/t2_ffhq/eg3d_for_dataset/dataset_preprocessing/ffhq/FFHQ_512_4995.zip
+  batch: 4
+  gamma: 25
+  mbstd_group: 4
+
+#------------------------
+
+wandb:
+  setup:
+    project: eg3d_rlhf_tune
+    entity: apmoore251
+    mode: online
+  watch:
+    log: all
+    log_freq: 100
+
+  project: eg3d_rlhf_tune
+  entity: apmoore251
+  mode: online
+  run_id: run_id_str
+
+# pointnet with avg pooling
+
+rwd_model_id: 998t41yf
+
+output_mesh_images_only: False
+
+#curve net best one so far
+
+# reward_model:
+#   _target_: models.point_cloud.CurveNetRWD
+#   name: CurveNetRWD
+#   ckpt_path: /home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/reward_model_training/reward_model_framework/core_modules/outputs/2023-11-09/00-17-23/checkpoint_best.pt
+# #reward_model_training/reward_model_framework/core_modules/outputs/2023-11-09/00-17-23
+
+#pointnet basic
+
+# reward_model:
+#   _target_: rlhf_src.models.point_cloud.scalar_reward_pointnet2
+#   add_self_loops: False
+#   name: scalar_rwd_pointnet2_2048
+#   #ckpt_path: /home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/reward_model_training/reward_model_framework/core_modules/outputs/2023-10-31/20-02-59/checkpoint_best.pt
+#   #ckpt_path: /home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/reward_model_training/reward_model_framework/core_modules/outputs/2023-10-27/22-15-33/checkpoint_best.pt
+#   #ckpt_path: /home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/reward_model_training/reward_model_framework/core_modules/outputs/2023-10-29/22-00-07/checkpoint_best.pt
+#   #ckpt_path: /home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/reward_model_training/reward_model_framework/core_modules/outputs/2023-11-01/12-22-04/checkpoint_best.pt
+#   ckpt_path: /home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/reward_model_training/reward_model_framework/core_modules/outputs/2023-11-03/00-39-43/checkpoint_best.pt
+
+#ckpt_path: /home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/reward_model_training/reward_model_framework/core_modules/outputs/2023-11-02/01-24-15/checkpoint_best.pt   #with normals
+#name: scalar_reward_pointnet2_pcd_w_normals_and_radius_1.1
+#n_features: 3
+
+#ckpt_path:
+
+pretrained_modules:
+  old_G: False
+  old_G_ema: False
+  LPIPS: False
+
+clamp_rwd: True
+rwd_clamp_max: 0.0
+rwd_clamp_min: !!null
+
+n_samples_for_rwd_offset: 10
+
+#python train_rlhf.py rlhf_tune_hpms.lambda_dmap_l1=0.0001,0.001,0.01,0.0 rlhf_tune_hpms.lambda_lpips=0.0001,0.001,0.01,0.0 rlhf_tune_hpms.lambda_dmap_mse=0.0001,0.001,0.01,0.0 --multirun
+
+#lambda_dmap_mse
+
+rlhf_tune_hpms:
+  lambda_dmap_l1: 0.0
+  lambda_lpips: 0.0
+  lambda_dmap_mse: 0.0
+  lambda_rwd_model: 0.01
+  hard_nose_depth: 2.35 #2.25 hard lim #depth values less than this will be openalised. ie nose will nto be alllowed to go to limit of scenew (forweard())
+  lambda_nose: 1.0
+
+data:
+  nrs: 128
+  n_point_samples_per_pcd_batch: 2048
+
+seed: 42
+train_tick_stop: 10
+using_wandb: False
+export_first_images: True
+#-----------------------
+#python train_rlhf.py data.n_point_samples_per_pcd_batch=2048,4096 rlhf_tune_hpms.lambda_dmap_l1=0.0001,0.001,0.01,0.0 rlhf_tune_hpms.lambda_lpips=0.0001,0.001,0.01,0.0 rlhf_tune_hpms.lambda_dmap_mse=0.0001,0.001,0.01,0.0 --multirun

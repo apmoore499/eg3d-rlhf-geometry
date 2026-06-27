@@ -1,0 +1,147 @@
+# @package _global_
+defaults:
+  - override /model: point_cloud_3dconv
+  - override /trainer: default
+  - override /data: data_defaults
+  - override /data/augmentations: sigma_256_self_norm_augment_recreating_f12 #pair_aug_tune #sigma_256_augment_clamp_zero #default #sigma_256_self_norm
+#  - override batch_augmentations: aug_sigma_field_batch_aug_all #default 
+  - override /loss: pair_no_BT #no BT, normalising it leads to very high magnitude outputs.....not sure why
+  - override /callbacks: default ##_pacc
+  - override /model/optimizer: adam #adamW
+# all parameters below will be merged with parameters from default configurations set above
+# this allows you to overwrite only specified parameters
+
+tags: ["adam_optimiser","3d conv net"]
+
+trainer:
+  min_epochs: 1
+  max_epochs: 5
+  profiler: null #"advanced"
+  num_sanity_val_steps: 0
+
+  limit_val_batches: 2 #0.1 #0.1
+  limit_train_batches: 2 #0.1 #0.1
+  limit_test_batches: 2 #0.1
+
+  #overfit
+train_ct_partition: false
+#ckpt_path: /home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/reward_model_training/reward_model_framework/core_modules/RWD_MODELS_FOR_TUNING/f12n5jti/best_model.pt
+
+
+loss:
+  lambda_recon: 1e-2
+  recon_type: l1
+  normalise_recon: true #normalise reconstructed sigma field to same scale as input sigma field
+
+dloader:
+  num_workers: 6
+  prefetch_factor: 2
+
+#/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/reward_model_training/reward_model_framework/core_modules/models/modules_unet3d.py
+#/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/reward_model_training/reward_model_framework/core_modules/configs/experiment/3dconv_net_sigma_512_unet3d.yaml
+
+model:
+  act_type: 'softplus'
+  swa: null
+  global_feature_size: 512
+
+  #augmentations: ${augmentations}
+
+  Conv3DModule:
+    #_target_: core_modules.models.modules_conv3d.Conv3DNetworkResnet3D #(final_size=self.hparams.mlp_global.input_size) #53568 #Conv3DNetworkResnet3D
+    #_target_: core_modules.models.modules_unet3d.UNet3D #(final_size=self.hparams.mlp_global.input_size) #53568 #Conv3DNetworkResnet3D ResidualUNetSE3D, ResidualUNet3D, UNet3D
+    #_target_: core_modules.models.modules_unet3d.ResidualUNet3D #(final_size=self.hparams.mlp_global.input_size) #53568 #Conv3DNetworkResnet3D ResidualUNetSE3D, ResidualUNet3D, UNet3D
+    _target_: core_modules.models.modules_unet3d.ResidualUNetSE3D #(final_size=self.hparams.mlp_global.input_size) #53568 #Conv3DNetworkResnet3D ResidualUNetSE3D, ResidualUNet3D, UNet3D
+    in_channels: 1
+    out_channels: 8
+    layer_order: gcr
+    #f_maps: [8,16,32, 64, 128, 256] #, 256]
+    f_maps: [8,16,32, 64, 128, 256] #, 256]
+    num_groups: 8
+    final_sigmoid: false
+    is_segmentation: false
+    final_size_out: 8192 #1024
+    forward_type: 'entire'
+    crop_each_to_positive_only: False
+    conv_padding: 1 #try with no padding, usually it's set to 1.
+    #upsample: 'trilinear' #defulat is deconvolve for ResidualUnetSE3D
+    conv_kernel_size: 3 #default is 3 #nb ResidualUNetSE3D does not accept conv_padding=3 argument for some reason. with given architecture etc we can use conv_kernel_size=3 but not =7
+    softplus_sigma_reconstruction: False #false works better #if we are using sigma_256_self_norm augmentations....
+    n_channels_for_recon: 4 #false works better #if we are using sigma_256_self_norm augmentations....
+    n_channels_for_feature: 4 #false works better #if we are using sigma_256_self_norm augmentations....
+    recon_pool_type: 'max'
+    feature_pool_type: 'max'
+    
+
+    final_sigma_decoder_initialise_minimal_noise: True
+  #make a special transform for the first seed in batch
+
+
+
+
+#entire
+
+  mlp_global:
+    _target_: core_modules.models.utils_base.MLP
+    input_size: ${model.Conv3DModule.final_size_out}
+    output_size: ${model.global_feature_size}
+    hidden_sizes: [512, 512]
+    dropout_rate: 0.15
+    use_dropout: False
+    normalisation_type: 'none'
+    activation_type: ${model.act_type}
+    norm_first_layer: False
+    residual: True
+
+
+  name: unet3d_sigma_256
+#Conv3DNetworkLeftToRight
+
+batch_size_all: 1
+#prop_data: 1.0
+
+prop_data: 1.0
+
+
+train_on: datamodule_third
+
+
+data:
+  map_on: cpu
+  #augmentations: ${data.augmentations}
+  dset_dict:
+    
+    selected_dtypes: ['sigma_field_256']  #sigma_field_512  nb #sigma_rays is 128x128x128 volume. 
+    proportion_of_data_to_use: ${prop_data}
+
+    badseeds_models: ['226_nose_overfit_experiment','225_nose_overfit_experiment']
+
+
+    goodmeshes:
+      # NB: total n good meshes is 98
+      # Therefore, can be leq 98`
+      # do not use perceantages integer only
+      n_train: 600 #60 #40
+      n_test: 0
+      n_val: 100 #10 #10
+      p_add: 1.0
+
+    remove_middle_data: false #try different strategy so expose model to more data
+    row_size_to_keep: 2
+
+    margin_for_offset_testing: 0.0 # between 0.0 and0.5, if the p(win) = 1-p(lose) + margin, consider a win.ONLY USED IN TEST SET
+
+
+
+
+test: True
+sync: True
+sync_model_weights: False
+optuna_tuning: False
+log_net_debug: False
+#logger.wandb.offline: False
+swa: False
+
+
+
+#Conv3DNetworkSTD

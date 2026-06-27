@@ -1,0 +1,24 @@
+# PanoHead DRY-RUN variant of panohead.yaml. Same arch / nets / data /
+# resume checkpoint, but actually runs the training loop for a few ticks:
+#   - dry_run=False (the real loop runs)
+#   - tiny total_kimg (kimg=1 -> a few hundred iters; stop after ~10-20)
+#   - metrics=[] so FID does NOT run at tick 0 (expensive)
+# Reward-phase + wandb-disable overrides are passed on the CLI (see the
+# helper script run_panohead_dryrun.sh).
+cfg: ffhq
+gpus: 1
+gen_pose_cond: True
+arch: panohead   # <-- ONLY this config sets arch; default configs never do.
+tick: 1
+kimg: 1
+resume: ${oc.env:PANOHEAD_PKL,../../../PanoHead/models/easy-khair-180-gpc0.8-trans10-025000.pkl}
+neural_rendering_resolution_final: 128
+resume_kimg: ${rlhf_tune_hpms.resume_kimg}
+outdir: ${oc.env:EG3D_RLHF_TRAINING_RUNS_DIR,../paper_artifacts/_external_training_runs}
+# Reuse the exact mirrored FFHQ zip from click_legacy_args/defaults.yaml.
+data: ${oc.env:EG3D_RLHF_DATASET_ZIP,../paper_artifacts/_external_data/eg3d_w_mirrore.zip}
+batch: ${rlhf_tune_hpms.batch_size}
+gamma: ${rlhf_tune_hpms.gamma}
+mbstd_group: ${click_legacy_args.batch}
+metrics: []          # disable FID/KID for the dry run.
+dry_run: False       # actually run the training loop.

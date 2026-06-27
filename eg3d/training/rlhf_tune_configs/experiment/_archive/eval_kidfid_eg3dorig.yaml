@@ -1,0 +1,90 @@
+# @package _global_
+
+
+defaults:
+  - _self_
+  - experiment: null
+  - override /data: defaults
+  - override /rlhf_opt: original
+  - override /click_legacy_args: defaults
+
+
+
+
+#dpoje3ea
+nm_vis: 4
+
+train_tick_stop: 10
+
+data:
+  nrs: 64
+  upsample_64_to_128: true
+  downsample_pcd_points: true
+  n_point_samples_per_pcd_batch: 2048
+  sample_points_face_area: false
+  center_points: true
+  unit_scale_points: true #j87azjo4
+
+rlhf_tune_hpms:
+  lambda_rwd_model: 0.0
+  lambda_nose_hard: 1.0
+  update_emas_gdepth: true
+  rwd_type: pairs
+  resume_kimg: 2028
+  lambda_dmap_l1:  0.0 #1e-2 #0.0 #1e-2
+  lambda_sigma_l1:  1.0 #1e-1 #1e-2 #0.0 #1e-2
+  n_comparisons: 10
+  batch_size: 2
+  scale_sigma_vals: 1.0
+  G_gain_scale: 0.5 #1.0 #1.0 #1e-1 #compensate for very small batch size
+  D_gain_scale: 0.5 #1.0 #1.0 #1e-1 #compensate for very small batch size
+  G_depth_gain: 1.0
+  update_G_ema_every_tick: true
+
+
+clamp_rwd: True
+rwd_clamp_max: 0.0
+#rwd_clamp_min: !!null
+rwd_clamp_min: -100
+
+
+rwd_model_id: qmf9bkx1 #pcd_as_pt_no_transform, pointnet2
+#yhiewiof
+hpms_first_dmaps:
+  truncation_psi: 0.25
+  truncation_cutoff: 14
+
+
+pretrained_modules:
+  old_G_ema: True #nb only do this is lambda_sigma_l1 > 0
+
+
+#nb this one was trained for 100 epo. 35pc accuracy on test.
+
+#u3i8pq1ks
+
+n_output_for_preference_study: 100
+
+click_legacy_args:
+  resume: /media/krillman/240GB_DATA/training_runs_2/00237-ffhq-FFHQ_512_4995-gpus1-batch4-gamma25_ORIG_FID_SSCORE/network-snapshot-002028.pkl
+  data: /media/krillman/DISK5_1TB/t2_ffhq/eg3d_for_dataset/dataset_preprocessing/ffhq/FFHQ_512_4995.zip
+
+
+eval_metrics_only: True
+output_mesh_images_only: False
+
+# nm_vis: 1
+
+seedslist_visualisation: [2,3,4,5,6]
+
+#lambda_dmap_mse
+pair_seeds:
+  minseed: 400000
+  maxseed: 400200
+
+
+
+plot:
+  minseed: 300000
+  maxseed: 300200
+  batchsize: 4 #8

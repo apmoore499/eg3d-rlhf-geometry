@@ -1,0 +1,45 @@
+# @package _global_
+
+defaults:
+  - override /hydra/sweeper: optuna
+
+# choose metric which will be optimized by Optuna
+# make sure this is the correct name of some metric logged in lightning module!
+optimized_metric: "val/pairs/pc_correct"
+
+data:
+  dset_dict:
+    proportion_of_data_to_use: 0.3
+
+
+test: False
+sync: False
+optuna_tuning: True
+# here we define Optuna hyperparameter search
+# it optimizes for value returned from function with @hydra.main decorator
+hydra:
+  sweeper:
+    _target_: hydra_plugins.hydra_optuna_sweeper.optuna_sweeper.OptunaSweeper
+    # 'minimize' or 'maximize' the objective
+    direction: maximize
+    sampler:
+      seed: 123
+
+    storage: null
+    study_name: null
+    n_trials: 50
+    n_jobs: 1
+    params:
+      model.optimizer.lr: interval(1.5e-2,3e-2)
+      model.feature_transform: False
+      batch_size_all: 8
+      model.agg_type: max
+
+      model.optimizer.rho: 0.1
+      model.optimizer.adaptive: true
+      
+
+#val_epoch/total_loss
+
+#"cummax_mean": "cumsum_norm" "cummax_std"
+

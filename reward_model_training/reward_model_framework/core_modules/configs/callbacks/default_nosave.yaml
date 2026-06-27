@@ -1,0 +1,29 @@
+defaults:
+  #- model_checkpoint
+  - early_stopping
+  - model_summary
+  - rich_progress_bar
+  - wandb_images_logger
+  - _self_
+
+model_checkpoint:
+  dirpath: ${trainer.default_root_dir}/checkpoints
+  filename: "epoch_{epoch:03d}"
+  monitor: "val/total_loss"
+  mode: "min"
+  save_last: True
+  auto_insert_metric_name: False
+  save_weights_only: True
+
+early_stopping:
+  monitor: "val/total_loss"
+  patience: 100
+  mode: "min"
+
+model_summary:
+  max_depth: -1
+
+
+
+
+#lightning.pytorch.callbacks.StochasticWeightAveraging

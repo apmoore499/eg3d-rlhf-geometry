@@ -1,0 +1,94 @@
+# @package _global_
+# Whole-scene 128^3 reward training, ResidualUNetSE3D backbone, paired ranking.
+# Cloned from 3dconv_net_sigma_256_unet3d.yaml; only the data type and augmentations
+# differ. Architecture is dimension-dynamic so it accepts 128^3 inputs as-is.
+
+defaults:
+  - override /model: point_cloud_3dconv
+  - override /trainer: default
+  - override /data: data_defaults
+  - override /data/augmentations: sigma_128_self_norm
+  - override /loss: all_losses
+  - override /callbacks: default
+  - override /model/optimizer: adam
+
+tags: ["adam_optimiser", "3d conv net", "sigma_field_128"]
+
+trainer:
+  min_epochs: 3
+  max_epochs: 10
+  profiler: null
+  num_sanity_val_steps: 0
+
+loss:
+  lambda_recon: 1e-2
+  recon_type: l1
+  normalise_recon: false
+
+dloader:
+  num_workers: 4
+
+model:
+  act_type: 'softplus'
+  swa: null
+  global_feature_size: 512
+
+  Conv3DModule:
+    _target_: core_modules.models.modules_unet3d.ResidualUNetSE3D
+    in_channels: 1
+    out_channels: 8
+    layer_order: gcr
+    f_maps: [8, 16, 32, 64, 128, 256]
+    num_groups: 8
+    final_sigmoid: false
+    is_segmentation: false
+    final_size_out: 8192
+    forward_type: 'entire'
+    crop_each_to_positive_only: False
+    conv_padding: 1
+    conv_kernel_size: 3
+    softplus_sigma_reconstruction: False
+    n_channels_for_recon: 4
+    n_channels_for_feature: 4
+    recon_pool_type: 'max'
+    feature_pool_type: 'max'
+    final_sigma_decoder_initialise_minimal_noise: True
+
+  mlp_global:
+    _target_: core_modules.models.utils_base.MLP
+    input_size: ${model.Conv3DModule.final_size_out}
+    output_size: ${model.global_feature_size}
+    hidden_sizes: [512, 512]
+    dropout_rate: 0.15
+    use_dropout: False
+    normalisation_type: 'none'
+    activation_type: ${model.act_type}
+    norm_first_layer: False
+    residual: True
+
+  name: unet3d_sigma_128
+
+batch_size_all: 1
+prop_data: 0.05
+train_on: datamodule_third
+
+data:
+  dset_dict:
+    selected_dtypes: ['sigma_field_128']
+    proportion_of_data_to_use: ${prop_data}
+    badseeds_models: ['226_nose_overfit_experiment', '225_nose_overfit_experiment']
+    goodmeshes:
+      n_train: 60
+      n_test: 0
+      n_val: 10
+      p_add: 1.0
+    remove_middle_data: true
+    row_size_to_keep: 4
+    margin_for_offset_testing: 0.0
+
+test: True
+sync: True
+sync_model_weights: False
+optuna_tuning: False
+log_net_debug: False
+swa: False

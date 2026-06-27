@@ -1,0 +1,64 @@
+
+
+_target_: core_modules.models.modules_curvenet.CurveNetEnsemble_SEG
+
+name: CurveNetEnsemble_SEG
+
+
+#CurveNetEnsemble_SEG
+
+mlp_global:
+  input_size: 2048
+  output_size: 512
+  hidden_sizes: [1024, 1024, 512]
+  dropout_rate: 0.15
+  use_dropout: False
+  normalisation_type: 'none'
+  activation_type: 'softplus'
+  
+
+mlp_pairs:
+  input_size: 1024
+  output_size: 2
+  hidden_sizes: [512, 256, 128]
+  dropout_rate: 0.15
+  use_dropout: False
+  normalisation_type: 'none'
+  activation_type: 'softplus'
+
+
+mlp_BT:
+  input_size: 512
+  output_size: 1
+  hidden_sizes: [256, 128]
+  dropout_rate: 0.15
+  use_dropout: False
+  normalisation_type: 'none'
+  activation_type: 'softplus'
+
+
+mlp_scalar_rwd:
+  input_size: 512
+  output_size: 1
+  hidden_sizes: [256, 128]
+  dropout_rate: 0.15
+  use_dropout: False
+  normalisation_type: 'none'
+  activation_type: 'softplus'
+
+return_global_embedding: true
+compile: false
+
+
+
+
+external: null
+scheduler: null
+optimizer: null
+
+loss: null
+
+swa: True
+swa_start: 1 #start stochastic weight avg at this epo number
+
+

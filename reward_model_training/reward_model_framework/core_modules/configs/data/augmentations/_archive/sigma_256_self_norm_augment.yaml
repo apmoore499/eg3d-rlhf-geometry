@@ -1,0 +1,92 @@
+
+upper_norm: 100
+
+
+
+
+
+
+goodmesh_augment:
+
+
+  _target_: core_modules.data.custom_transforms.transforms_composition_helper
+  dtype: nose_512
+  instantiated_transforms:
+
+    normalise_sigma_self:
+      _target_: core_modules.data.custom_transforms.normalise_sigma_self
+      min_norm: 0.0
+      max_norm: ${data.augmentations.upper_norm}
+
+    ensemble_mouth_eyes_nose_smooth:
+      _target_: core_modules.data.custom_transforms.ensemble_mouth_eyes_nose_smooth
+
+
+
+train:
+  _target_: core_modules.data.custom_transforms.transforms_composition_helper
+  dtype: nose_512
+  instantiated_transforms:
+
+    # sigma_compress_and_jitter:
+    #   _target_:data.custom_transforms.sigma_compress_and_jitter
+
+
+    
+
+    # normalize:
+    #   _target_: torchvision.transforms.Normalize 
+    #   mean: 0.5
+    #   std: 0.25
+
+    normalise_sigma_self:
+      _target_: core_modules.data.custom_transforms.normalise_sigma_self
+      min_norm: 0.0
+      max_norm: ${data.augmentations.upper_norm}
+
+
+    # normalize:
+    #   _target_: torchvideo.transforms.NormalizeVideo
+    #   mean: 0.5
+    #   std: 0.25
+    #   channel_dim: 0
+
+val:
+  _target_: core_modules.data.custom_transforms.transforms_composition_helper
+  dtype: nose_512
+  instantiated_transforms:
+
+    # sigma_compress_and_jitter:
+    #   _target_:data.custom_transforms.sigma_compress_and_jitter
+
+    normalise_sigma_self:
+      _target_: core_modules.data.custom_transforms.normalise_sigma_self
+      min_norm: 0.0
+      max_norm: ${data.augmentations.upper_norm}
+
+
+test:
+  _target_: core_modules.data.custom_transforms.transforms_composition_helper
+  dtype: nose_512
+  instantiated_transforms:
+  
+    # sigma_compress_and_jitter:
+    #   _target_:data.custom_transforms.sigma_compress_and_jitter
+
+    normalise_sigma_self:
+      _target_: core_modules.data.custom_transforms.normalise_sigma_self
+      min_norm: 0.0
+      max_norm: ${data.augmentations.upper_norm}
+
+
+tune:
+  _target_: core_modules.data.custom_transforms.transforms_composition_helper
+  dtype: nose_512
+  instantiated_transforms:
+
+    normalise_sigma_self:
+      _target_: core_modules.data.custom_transforms.normalise_sigma_self
+      min_norm: 0.0
+      max_norm: ${data.augmentations.upper_norm}
+
+

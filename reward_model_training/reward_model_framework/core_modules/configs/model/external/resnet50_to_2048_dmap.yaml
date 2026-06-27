@@ -1,0 +1,6 @@
+_target_: core_modules.models.external.conv2d_backbone.resnet50_to_2048_dmap
+normalise_for_dmap: False
+resnet50_to_2048_dmap: True
+name: resnet50_to_2048_dmap
+embedding_size: 2048
+maps_transforms: ${data.augmentations.model_maps_transforms}

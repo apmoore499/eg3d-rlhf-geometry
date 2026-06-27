@@ -1,0 +1,21 @@
+defaults:
+  - model_checkpoint
+  - early_stopping
+  - model_summary
+  - rich_progress_bar
+  - _self_
+
+model_checkpoint:
+  dirpath: ${trainer.default_root_dir}/checkpoints
+  filename: "epoch_{epoch:03d}"
+  monitor: "val_epoch/paired_loss"
+  mode: "min"
+  save_last: False
+  auto_insert_metric_name: False
+  save_weights_only: True
+
+early_stopping:
+  monitor: "val_epoch/paired_loss"
+  patience: 3
+  mode: "min"
+  divergence_threshold: 2.0

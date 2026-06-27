@@ -1,0 +1,81 @@
+defaults:
+  - mlps: default
+  - _self_
+  - optimizer: null
+  - scheduler: null
+
+_target_: core_modules.models.modules_pointnet.PointNetOne
+name: PointNetOne_${model.agg_type}
+
+agg_type: 'max'
+# T-Nets off by default: the feature transform (STNkd) is applied WITHOUT its
+# orthogonality reg (trans_feat is discarded in forward_to_pre_aggregation) -> it
+# destabilises rather than helps; and the input transform (STN3d) is redundant
+# since the faces are already canonically posed (pcd aug does no rotation).
+# Re-enable per-run with model.spatial_transform_3d=true / model.feature_transform=true.
+spatial_transform_3d: False
+feature_transform: False
+normtype: 'batch_norm'
+
+
+global_feature_size: 512
+
+
+# 4-MLP reward head comes from `mlps: default`; only the per-backbone
+# input_size is set here.
+mlp_global:
+  input_size: 1024
+
+
+
+
+
+
+
+return_global_embedding: true
+external: null
+#scheduler: null
+compile: false
+
+
+
+loss:
+  return_global_embedding: True
+  lambda_abs_sym_loss: 0.0
+  lambda_BT:  1e-3 #0.0 #1e-3
+  lambda_pairs: 1.0 #0.0
+  lambda_scalar_rwd: 1e-3 #1e-3 #0.0
+  lambda_reg_rwd_vals: 1e-8 #0.0 #1e-8 #l2 loss
+  lambda_agg_features_l2: 0.0 #for agg features make sure not too high magnitude
+
+
+
+# optimizer:
+#   _target_: torch.optim.Adam
+#   _partial_: true
+#   lr:           1e-5
+#   weight_decay: 1e-4
+
+
+
+
+
+
+# use_residual_gconv_layers: False
+# use_residual_block_kaming: False
+
+# mlp_settings:
+#   normalisation_type: 'batch_norm' #use layer norm if we have a small batch size probably, but not necessary here
+#   activation_type: 'relu' #default are relu and batch morm for pointnet+_+
+
+#CurveNetRWD
+
+
+
+
+
+
+
+
+
+

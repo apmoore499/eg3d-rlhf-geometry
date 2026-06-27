@@ -1,0 +1,135 @@
+# @package _global_
+
+
+defaults:
+  - _self_
+  - experiment: null
+  - override /data: defaults
+  - override /rlhf_opt: original
+  - override /click_legacy_args: defaults
+
+
+ltype: ${rlhf_tune_hpms.tune_type}
+
+
+#dpoje3ea
+nm_vis: 4
+eval_metrics_only: false
+init_seeds_first: true
+
+train_tick_stop: 10
+
+data:
+  nrs: 64
+  upsample_64_to_128: true
+  downsample_pcd_points: true
+  n_point_samples_per_pcd_batch: 2048
+  sample_points_face_area: false
+  center_points: true
+  unit_scale_points: true #j87azjo4
+#rlhf_tune_hpms.accum_steps
+rlhf_tune_hpms:
+  lambda_rwd_model: 1.0 #e-1 #1.0 #e-1 #0.0 #1.0 #1e-1
+  lambda_nose_hard: 0.0 #1.0 #0.0 #1.0
+  update_emas_gdepth: true
+  rwd_type: clamped #clamped #pairs #pairs
+  tune_type: ${rlhf_tune_hpms.rwd_type}
+  resume_kimg: 2053 #2048
+  lambda_dmap_l1:  0.0 #1e-2 #0.0 #1e-2
+  lambda_sigma_l1:  1e-2 #1e-1 #1.0 #0.0 #1.0 #1e-1 #1e-2  #0.0 #1e-2 
+  n_comparisons: 4
+  batch_size: 16 #3 #4
+  accum_steps: 16
+  scale_sigma_vals: 1.0
+  gen_c_mult_rwd: 1.0 #changed this one
+  G_gain_scale: 1.0 #0.5 #1.0 #1.0 #1e-1 #compensate for very small batch size
+  D_gain_scale: 1.0 #0.5 #1.0 #1.0 #1e-1 #compensate for very small batch size
+  G_depth_gain: 1.0
+  gamma: 20
+  update_G_ema_every_tick: false
+  G_sample_noise_mode: 'const'
+  G_sample_truncation_psi: 1.0 #0.7
+  G_sample_truncation_cutoff: 14
+  G_sample_camera_type: zeros
+  augmentations:
+    _target_: data.custom_transforms.transforms_composition_helper
+    dtype: sigma_field_256
+    instantiated_transforms:
+      normalise_sigma_self:
+        _target_: data.custom_transforms.normalise_sigma_self
+        min_norm: 0.0
+        max_norm: 100.0
+
+
+normalise_scalar_rwd: True
+rescale_to: 10
+
+
+
+clamp_rwd: True
+rwd_clamp_max: 10.0 #pairs #5.0
+#rwd_clamp_min: !!null
+rwd_clamp_min: -10
+EVALUATE_METRICS: False
+#rwd_model_id: f12n5jti #pointnetall, cos act
+#rwd_id_final_tuned_weights: /home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/reward_model_training/reward_model_framework/core_modules/RWD_MODELS_FOR_TUNING/f12n5jti/online_learning_trial/f12n5jti_retrain_9.pt
+#rwd_model_id: f12n5jti #resnet3d model, mean agg k83zfe1n  #w406mbr7
+#rwd_id_final_tuned_weights: /home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/reward_model_training/reward_model_framework/core_modules/RWD_MODELS_FOR_TUNING/f12n5jti/online_learning_trial/f12n5jti_retrain_14_wpt.pt
+#rwd_model_id: 34490xc1 #f12n5jti #resnet3d model, mean agg k83zfe1n  #w406mbr7
+rwd_model_id: 34490xc1 #retrain the model with the cosine activation, 6e-5 lr
+
+
+#34490xc1
+
+#rwd_model_id: 9mp3llqq #resnet3d model 
+#rwd_model_id: qyawqy8w #unet model
+#yhiewiof
+hpms_first_dmaps:
+  truncation_psi: 0.25
+  truncation_cutoff: 14 #
+#
+
+pretrained_modules:
+  old_G_ema: True     #true  #nb only do this is lambda_sigma_l1 > 0
+
+
+#nb this one was trained for 100 epo. 35pc accuracy on test.
+
+#u3i8pq1k
+
+#n_output_for_preference_study: 100
+# python train_rlhf.py experiment=eg3d_accum_sigma_field_512.yaml      
+# python train_rlhf.py experiment=eg3d_accum_sigma_field_512.yaml      
+
+#output_mesh_images_only: True
+
+
+click_legacy_args:
+  density_reg_every: 4
+  workers: 3
+  resume: /media/krillman/240GB_DATA/training_runs_2/01398-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl
+  #resume: /media/krillman/240GB_DATA/training_runs_2/01275-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl
+
+  #g_num_fp16_res: 4
+
+seedslist_visualisation: [2,3,4,5,6]
+
+#lambda_dmap_mse
+pair_seeds:
+  minseed: 400000
+  maxseed: 400200
+
+
+
+plot:
+  minseed: 300000
+  maxseed: 300200
+  batchsize: 4 #8
+
+
+
+
+
+#nm_vis: 10 #nm_vis=1
+# plot:
+#   maxseed: 300010

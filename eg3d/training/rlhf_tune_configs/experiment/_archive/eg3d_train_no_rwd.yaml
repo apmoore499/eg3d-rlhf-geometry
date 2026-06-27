@@ -1,0 +1,61 @@
+# @package _global_
+
+
+defaults:
+  - _self_
+  - experiment: null
+  - override /data: defaults
+  - override /rlhf_opt: original
+  - override /click_legacy_args: defaults
+
+
+click_legacy_args:
+  batch: 4
+
+#ithia2qx
+#
+
+# train_tick_stop: false
+
+
+train_tick_stop: 40    
+
+# nm_vis: 1
+# seedslist_visualisation: [1,2]
+
+
+# plot:
+#   maxseed: 300010
+
+
+data:
+  nrs: 128
+  upsample_64_to_128: false
+  downsample_pcd_points: true
+  n_point_samples_per_pcd_batch: 2048
+  sample_points_face_area: false
+  center_points: true
+  unit_scale_points: true
+
+rlhf_tune_hpms:
+  lambda_rwd_model: 0.0 #1e-3 #1.0
+  lambda_nose_hard: 0.0 #1.0
+  update_emas_gdepth: false
+
+#rwd_model_id: du91zfi5 #curvenet
+#rwd_model_id: az79xpzs #triple dmap newer one way better
+rwd_model_id: 8dyj589b #curvenet etc
+
+
+
+hpms_first_dmaps:
+  #truncation_psi: 0.7
+  #truncation_psi: 0.25 #these mesh are all very good but very low diversity
+  truncation_psi: 1.0 #same as for train...
+  truncation_cutoff: 14
+
+#nzbxpxni
+
+#vi78i1lp
+
+

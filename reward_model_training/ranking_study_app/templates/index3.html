@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Clicker</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+        }
+
+        #reset-button {
+            width: 100%;
+            padding: -10px 0px; /* Make the button twice as large in the vertical direction */
+            font-size: 16px;
+            background-color: red;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        #images-container {
+            background: url('{{ url_for('static', filename='joined_idx_10000.jpg') }}') no-repeat center center fixed;
+            background-size: 95% 90%;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(3, auto);
+/*            gap: 20px;*/
+
+/*            margin-top: 60px; /* Adjust the margin-top to create space for the reset button */*/
+        }
+
+        .clickable-image {
+            position: relative;
+            opacity: 0.8;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(128, 128, 128, 0.9); /* Grey overlay with 50% opacity */
+            display: none;
+        }
+
+        .letter {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            color: white;
+            display: none;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+
+    <div id="images-container">
+        {% for i in range(1, 7) %}
+            <div class="clickable-image" data-image="image{{ i }}">
+                <img src="{{ url_for('static', filename='dummy_images_transparent/image' + i|string + '.png') }}">
+                <div class="overlay"></div>
+                <div class="letter"></div>
+            </div>
+        {% endfor %}
+    </div>
+
+
+    <script>
+        var clickedCount = 0;
+
+        function resetImages() {
+            $('.overlay').hide();
+            $('.letter').hide();
+            console.log('Images reset.');
+            clickedCount = 0;
+        }
+
+        $(document).ready(function () {
+            $('.clickable-image').on('click', function () {
+                var clickedImage = $(this);
+                console.log('Clicked image: ' + clickedImage.data('image') + ', Letter: ' + letter);
+
+                // Check if the image already has a letter assigned
+                if (!clickedImage.data('letter')) {
+                    var letter = String.fromCharCode('A'.charCodeAt(0) + clickedCount);
+                    console.log('Clicked image: ' + clickedImage.data('image') + ', Letter: ' + letter);
+
+                    clickedImage.find('.overlay').show();
+                    clickedImage.find('.letter').text(letter).show();
+                    clickedImage.data('letter', letter); // Store the assigned letter in a data attribute
+                    clickedCount++;
+                }
+            });
+        });
+
+        $(document).ready(function () {
+        $('#change-bg-button').on('click', function () {
+            var newBgFilename = $('#new-bg-filename').val();
+
+            // Send a POST request to the Flask server with the new background image filename
+            $.post('/change_background', JSON.stringify({ new_bg_filename: newBgFilename }), function (data) {
+                if (data.success) {
+                    // Change the background image by adding the CSS class
+                    $('#background-container').addClass('background-image');
+                }
+            }, 'json');
+        });
+
+        // ...
+    });
+
+
+
+
+    </script>
+
+    <button id="reset-button" onclick="resetImages()">Reset Images</button>
+
+
+    <!-- <button id="reset-button" onclick="resetImages()">Reset Images</button> -->
+
+</body>
+</html>

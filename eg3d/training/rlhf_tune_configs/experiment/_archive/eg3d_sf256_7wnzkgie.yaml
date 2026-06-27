@@ -1,0 +1,18 @@
+# @package _global_
+
+defaults:
+  - eg3d_sf256_tuned_rmd_new_rwd_mod
+  - _self_
+
+rwd_model_id: 7wnzkgie
+rwd_id_final_tuned_weights: null
+
+rlhf_tune_hpms:
+  augmentations:
+    _target_: core_modules.data.custom_transforms.transforms_composition_helper
+    dtype: sigma_field_256
+    instantiated_transforms:
+      normalise_sigma_self:
+        _target_: core_modules.data.custom_transforms.normalise_sigma_self
+        min_norm: 0.0
+        max_norm: 100.0

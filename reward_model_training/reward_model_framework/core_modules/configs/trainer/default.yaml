@@ -1,0 +1,23 @@
+
+defaults:
+  - _self_
+  - profiler: null
+
+
+_target_: lightning.pytorch.trainer.Trainer
+default_root_dir: ${paths.root_dir}/reward_model_training/reward_model_framework/core_modules/outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+
+min_epochs: 1 # prevents early stopping
+max_epochs: 30
+check_val_every_n_epoch: 1
+deterministic: False
+accelerator: gpu
+devices: 1
+precision: 32
+enable_checkpointing: True
+benchmark: True
+#precision=16, gpus=1, amp_backend='native', amp_level='O2'
+#profiler: null
+
+#profiler = PyTorchProfiler(dirpath='/media/krillman/240GB_DATA/codes2/SSL_GCM/src/profiling',filename='profile_x_newer_ptorch.log',row_limit=None)

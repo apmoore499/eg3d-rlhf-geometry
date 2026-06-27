@@ -1,0 +1,40 @@
+# @package _global_
+#
+# Cheap, quiet preset for RLHF smoke runs. Apply ON TOP of an experiment:
+#
+#   python train_rlhf.py experiment=<exp>.yaml +smoke=on
+#
+# It shrinks the batch so a run reaches tick 0 quickly and disables the
+# expensive *reporting / evaluation* paths (FID/KID, reward-distribution
+# plotting + combined epoch analysis, the preference-study render, W&B, and
+# snapshotting). It deliberately leaves `init_seeds_first` on so the
+# reward-loss path (reference-embedding init + reward scoring) is still
+# exercised end to end -- that is the point of an RLHF smoke.
+#
+# Because `+smoke=on` is appended after `experiment=...` in the defaults
+# list, these values win over the experiment config. Any inline CLI override
+# still wins over this preset.
+
+# --- stop early -------------------------------------------------------------
+train_tick_stop: 0          # finish after tick 0
+network_snapshot_ticks: 1000000  # don't dump network snapshots mid-smoke
+render_final_vis: false     # skip the heavy end-of-training mesh render
+
+# --- silence expensive reporting / evaluation -------------------------------
+using_wandb: false
+EVALUATE_METRICS: false
+eval_metrics_only: false
+plot_rwd_dist: false        # skips plot_rwd_dist_top_bottom + run_combined_epoch_analysis
+export_first_images: false
+export_indiv_dmaps: false
+output_mesh_images_only: false
+n_output_for_preference_study: 1
+
+# --- tiny, fast batch -------------------------------------------------------
+rlhf_tune_hpms:
+  batch_size: 1             # click_legacy_args.batch / mbstd_group follow this
+  accum_steps: 1
+
+click_legacy_args:
+  workers: 0
+  metrics: []

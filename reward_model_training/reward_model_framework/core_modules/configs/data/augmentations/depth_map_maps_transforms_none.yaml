@@ -1,0 +1,15 @@
+maps_transforms:
+  laplace: [False, False, False]
+  hipass: [False, False, False]
+  normalise_sides_crop: [False, False, False]
+  run_lowpass_sides: [False, False, False]
+
+model_maps_transforms: ${data.augmentations.maps_transforms}
+
+train:
+  _target_: torch.nn.Identity
+
+val: ${data.augmentations.train}
+test: ${data.augmentations.train}
+tune: ${data.augmentations.train}
+goodmesh_augment: null

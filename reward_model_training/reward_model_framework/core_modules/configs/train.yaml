@@ -1,0 +1,96 @@
+defaults:
+  - _self_
+  - data: data_defaults
+#  - batch_augmentations: default
+  - callbacks: default
+  - model: point_net_1
+  - trainer: default
+  - logger: wandb # set logger here or use command line (e.g. `python train.py logger=tensorboard`)
+  - loss: all_losses
+  - hydra: default #try set logging here, see if it works
+  - paths: default #required for hydra yaml to work
+  - external: null
+  - experiment: null
+  - hparams_search: null
+  - optional local: default
+  - debug: null
+  - scheduler: null #cosine
+  - optimizer: null
+  - augmentations: null
+
+
+
+
+
+
+
+# data:
+#   batch_augmentations_config: default
+
+
+
+
+
+
+
+
+
+#plot_goodbad_meshes: True
+#export_dloaders_only: False
+#compare_pairs_or_scalar_reward: pairs
+#subset_count_to_ten: False
+#plot_tsne: False
+# multirun https://stackoverflow.com/questions/70619014/specify-hydra-multirun-sweeps-in-a-config-file
+
+hydra:
+  run:
+    dir: ${trainer.default_root_dir}
+
+
+batch_size_all: 4
+
+trainer:
+  max_epochs: 5
+  limit_train_batches: null
+  limit_val_batches: null
+  limit_test_batches: null
+
+
+
+dloader:
+  batch_size_train: ${batch_size_all} #2 #8
+  batch_size_val: ${batch_size_all}
+  batch_size_test: ${batch_size_all}
+  num_workers: 4
+  pin_memory: True
+  prefetch_factor: 2
+
+# tags to help you identify your experiments
+# you can overwrite this in experiment configs
+# overwrite from command line with `python train.py tags="[first_tag, second_tag]"`
+tags: ["dev"]
+
+# set False to skip model training
+train: True
+# evaluate on test set, using best model weights achieved during training
+# lightning chooses best weights based on the metric specified in checkpoint callback
+test: True
+
+# simply provide checkpoint path to resume training
+ckpt_path: null
+
+# seed for random number generators in pytorch, numpy and python.random
+seed: 42
+torch_matmul_precision: high
+train_on: datamodule_third
+using_wandb: true
+optuna_tuning: null
+sync: true #this one determine whether we sync result or not. ie uploaad.
+thumbnail_export_size: 5000
+task_name: "train"
+
+test_on_first: false
+test_on_third: true
+
+
+backupcode: false

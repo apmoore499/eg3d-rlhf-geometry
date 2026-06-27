@@ -1,0 +1,144 @@
+defaults:
+  - _self_
+  - experiment: null
+  - data: defaults
+
+
+
+
+
+
+click_legacy_args:
+  cfg: ffhq
+  gpus: 1
+
+  gen_pose_cond: True
+  mbstd-group: 1
+  tick: 1
+  resume: /home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/pkl_pt/eg3d_1/ffhq512-128.pkl #original checkpoint!
+  #resume: /media/krillman/240GB_DATA/training_runs_2/00180-ffhq-FFHQ_512_4995-gpus1-batch4-gamma25/network-snapshot-002033.pkl #tuned rwd model!
+  #resume: /media/krillman/240GB_DATA/training_runs_2/00197-ffhq-FFHQ_512_4995-gpus1-batch4-gamma25/eg3d_checkpoint_fine_tuned_without_rwd_model_6_epoch.pkl #tuned eg3d without any rwd, just trainign loop
+  neural_rendering_resolution_final: 128
+  resume_kimg: 2028
+
+  outdir: /media/krillman/240GB_DATA/training_runs_2
+  rlhf_config_fn: /home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/eg3d_rlhf_hpms_dm3.yaml
+  data: /media/krillman/DISK5_1TB/t2_ffhq/eg3d_for_dataset/dataset_preprocessing/ffhq/FFHQ_512_4995.zip
+  batch: 4 #2 for triple dmap
+  gamma: 25
+  mbstd_group: ${click_legacy_args.batch}
+
+
+#------------------------
+
+wandb:
+  setup:
+      project: eg3d_rlhf_tune
+      entity: apmoore251
+      mode: online
+  watch:
+      log: all
+      log_freq: 100
+
+  project: eg3d_rlhf_tune
+  entity: apmoore251
+  mode: online
+  run_id: run_id_str
+
+
+
+
+rwd_model_id: dgf7735p #triple dmap
+rwd_model_data_type: pointnet_all
+
+
+
+
+#plot_rwd_dist: False
+plot_rwd_dist: True
+#loss.hydra_cfg.plot_rwd_dist
+
+
+output_mesh_images_only: False
+
+pretrained_modules:
+  old_G: False
+  old_G_ema: False
+  LPIPS: False
+
+
+clamp_rwd: True
+rwd_clamp_max: 0.0
+#rwd_clamp_min: !!null
+rwd_clamp_min: -100
+
+#n_samples_for_rwd_offset: 100
+
+#python train_rlhf.py rlhf_tune_hpms.lambda_dmap_l1=0.0001,0.001,0.01,0.0 rlhf_tune_hpms.lambda_lpips=0.0001,0.001,0.01,0.0 rlhf_tune_hpms.lambda_dmap_mse=0.0001,0.001,0.01,0.0 --multirun
+
+
+# plot:
+#   minseed: 300000
+#   maxseed: 300010
+#   batchsize: 8
+
+# number_of_meshes_to_visualise: 4
+# seedslist_visualisation: [1,2,3,4]
+
+
+#lambda_dmap_mse
+
+
+plot:
+  minseed: 300000
+  maxseed: 300030
+  batchsize: 4 #8
+number_of_meshes_to_visualise: 3
+seedslist_visualisation: [1,2,3,4,5,6,7,8,9,10]
+
+
+
+rlhf_tune_hpms:
+  lambda_dmap_l1:  0.0
+  lambda_lpips: 0.0
+  lambda_dmap_mse: 0.0
+  lambda_rwd_model: 1.0
+  hard_nose_depth: 2.40 #2.35 #2.25 hard lim #depth values less than this will be openalised. ie nose will nto be alllowed to go to limit of scenew (forweard())
+  lambda_nose: 0.0
+  lambda_nose_hard: 0.0
+  update_emas_gdepth: True #updaaating EMA weights when do pass for depth
+  margin_for_rwd: 0.0 #between 0 and 0.5
+  tune_type: clamped #median  #can be clamped, PPO, unclamped, others. clamped=we just penalise negative values below the mean reweard, calc at start of training. PPO follows PPO algo. neg_softplus is a curvy version of clamped. median = we ask for the median value to be zero.
+  set_rwd_affine_offset: true
+  scalar_sp: -2
+
+# rlhf_opt:
+#   type: SAM #original should be either SAM ie sharpness aware, or adam like in orig EG3D optimisation loop, maybe others.  
+#   rho: 0.05
+#   adaptive: False
+
+rlhf_opt:
+  type: SAM #original should be either SAM ie sharpness aware, or adam like in orig EG3D optimisation loop, maybe others.  
+  rho: 0.1
+  adaptive: True
+
+
+seed: 42
+train_tick_stop: 10 #6
+using_wandb: True
+export_first_images: False
+EVALUATE_METRICS: False
+
+#-----------------------
+#python train_rlhf.py data.n_point_samples_per_pcd_batch=2048,4096 rlhf_tune_hpms.lambda_dmap_l1=0.0001,0.001,0.01,0.0 rlhf_tune_hpms.lambda_lpips=0.0001,0.001,0.01,0.0 rlhf_tune_hpms.lambda_dmap_mse=0.0001,0.001,0.01,0.0 --multirun
+
+
+
+data:
+  nrs: 128
+  upsample_64_to_128: false
+  downsample_pcd_points: true
+  n_point_samples_per_pcd_batch: 2048
+  sample_points_face_area: false
+  center_points: true
+  unit_scale_points: true

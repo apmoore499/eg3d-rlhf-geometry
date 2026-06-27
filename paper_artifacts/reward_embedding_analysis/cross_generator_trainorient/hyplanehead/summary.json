@@ -1,0 +1,13 @@
+{
+  "label": "hyplanehead",
+  "sigma_root": "/home/krillman/Documents/eg3dredo/HyPlaneHead/hyplanehead_sigma_cubes_for_reward/trunc0.70",
+  "robust_norm": false,
+  "clip_pct": null,
+  "flip_axis0": true,
+  "n": 100,
+  "mean": -1.3517398944497108,
+  "median": -1.4368259906768799,
+  "std": 0.38143707218980827,
+  "min": -2.0848069190979004,
+  "max": -0.26480740308761597
+}

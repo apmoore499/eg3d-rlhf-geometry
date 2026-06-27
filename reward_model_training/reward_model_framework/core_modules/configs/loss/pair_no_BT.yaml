@@ -1,0 +1,10 @@
+return_global_embedding: True
+lambda_abs_sym_loss: 0.0
+lambda_BT:  0.0 #1e-3 #0.0 #1e-3
+lambda_pairs: 1.0 #0.0
+lambda_scalar_rwd: 1e-3 #1e-3 #1e-3 #0.0
+lambda_reg_rwd_vals: 1e-8 #0.0 #1e-8 #l2 loss
+lambda_agg_features_l2: 0.0 #for agg features make sure not too high magnitude
+lambda_recon: 1.0
+recon_type: 'mse' #mse or l1...
+normalise_recon: false

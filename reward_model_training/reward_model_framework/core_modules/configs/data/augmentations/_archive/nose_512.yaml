@@ -1,0 +1,61 @@
+
+train:
+  _target_: core_modules.data.custom_transforms.transforms_composition_helper
+  dtype: nose_512
+  instantiated_transforms:
+    clamp_sigma:
+      _target_: core_modules.data.custom_transforms.clamp_sigma
+      min_clamp: -7.0
+      max_clamp: 25.0
+    threshold_ray_sigma_after_surface:
+      _target_: core_modules.data.custom_transforms.threshold_ray_sigma_after_surface
+      threshold: 25.0
+    normalise_sigma:
+      _target_: core_modules.data.custom_transforms.normalise_sigma
+      min_norm: 0.0
+      max_norm: 1.0
+    pad_sigma_before_and_after_random:
+      _target_: core_modules.data.custom_transforms.pad_sigma_before_and_after_random
+      max_len: 40
+
+val:
+  _target_: core_modules.data.custom_transforms.transforms_composition_helper
+  dtype: nose_512
+  instantiated_transforms:
+    clamp_sigma:
+      _target_: core_modules.data.custom_transforms.clamp_sigma
+      min_clamp: -7.0
+      max_clamp: 25.0
+    threshold_ray_sigma_after_surface:
+      _target_: core_modules.data.custom_transforms.threshold_ray_sigma_after_surface
+      threshold: 25.0
+    normalise_sigma:
+      _target_: core_modules.data.custom_transforms.normalise_sigma
+      min_norm: 0.0
+      max_norm: 1.0
+    pad_sigma_before_and_after_random:
+      _target_: core_modules.data.custom_transforms.pad_sigma_before_and_after_random
+      max_len: 40
+
+
+test:
+  _target_: core_modules.data.custom_transforms.transforms_composition_helper
+  dtype: nose_512
+  instantiated_transforms:
+    clamp_sigma:
+      _target_: core_modules.data.custom_transforms.clamp_sigma
+      min_clamp: -7.0
+      max_clamp: 25.0
+    threshold_ray_sigma_after_surface:
+      _target_: core_modules.data.custom_transforms.threshold_ray_sigma_after_surface
+      threshold: 25.0
+    normalise_sigma:
+      _target_: core_modules.data.custom_transforms.normalise_sigma
+      min_norm: 0.0
+      max_norm: 1.0
+    pad_sigma_before_and_after_random:
+      _target_: core_modules.data.custom_transforms.pad_sigma_before_and_after_random
+      max_len: 40
+
+
+

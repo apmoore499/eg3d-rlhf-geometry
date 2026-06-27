@@ -1,0 +1,22 @@
+# NEW config group option (does NOT touch click_legacy_args/defaults.yaml).
+# Selects the PanoHead fine-tune: swaps arch -> panohead so train_rlhf.py
+# builds the vendored PanoHead TriPlaneGenerator + MaskDualDiscriminatorV2,
+# resumes from the PanoHead checkpoint, and reuses the SAME mirrored FFHQ
+# data zip the EG3D tune uses. Small kimg/tick for a dry-run smoke pass.
+cfg: ffhq
+gpus: 1
+gen_pose_cond: True
+arch: panohead   # <-- ONLY this config sets arch; default configs never do.
+tick: 1
+kimg: 1
+resume: ${oc.env:PANOHEAD_PKL,../../../PanoHead/models/easy-khair-180-gpc0.8-trans10-025000.pkl}
+neural_rendering_resolution_final: 128
+resume_kimg: ${rlhf_tune_hpms.resume_kimg}
+outdir: ${oc.env:EG3D_RLHF_TRAINING_RUNS_DIR,../paper_artifacts/_external_training_runs}
+# Reuse the exact mirrored FFHQ zip from click_legacy_args/defaults.yaml.
+data: ${oc.env:EG3D_RLHF_DATASET_ZIP,../paper_artifacts/_external_data/eg3d_w_mirrore.zip}
+batch: ${rlhf_tune_hpms.batch_size}
+gamma: ${rlhf_tune_hpms.gamma}
+mbstd_group: ${click_legacy_args.batch}
+metrics: [fid1k_partial]
+dry_run: True

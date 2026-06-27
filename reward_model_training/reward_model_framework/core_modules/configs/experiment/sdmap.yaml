@@ -1,0 +1,113 @@
+# @package _global_
+defaults:
+  - override /model: depth_map_resnet50_2048
+  - override /trainer: default
+  - override /data: data_defaults
+  - override /data/augmentations: depth_map_maps_transforms_none #pair_aug_tune #sigma_256_augment_clamp_zero #default #sigma_256_self_norm
+  - override /loss: all_losses #pair_no_BT #all_losses #pair_no_BT #no BT, normalising it leads to very high magnitude outputs.....not sure why. its because of softplus activation. activation must be cos.
+  - override /callbacks: default ##_pacc
+  - override /model/optimizer: adam #adamW
+  - override /model/scheduler: null #cosine_warm_rsts
+# all parameters below will be merged with parameters from default configurations set above
+# this allows you to overwrite only specified parameters
+
+
+tags: ["single depth map","resnet-50","depth map"]
+
+trainer:
+  min_epochs: 1
+  max_epochs: 2
+  profiler: null #"advanced"
+  num_sanity_val_steps: 0
+  # smoke run: one batch per split so we just confirm a full train/val/test runs
+  # end-to-end and saves a run_config with the bundled tune augmentation slot.
+  limit_train_batches: 1
+  limit_val_batches: 1
+  limit_test_batches: 1
+
+
+
+dloader:
+  num_workers: 6
+  prefetch_factor: 2
+
+
+
+model:
+  n_dmaps: 1
+
+  swa: null
+  external:
+    maps_transforms: ${data.augmentations.model_maps_transforms}
+      # laplace: [False,False,False]
+      # hipass: [False,False,False]
+      # normalise_sides_crop: [False,False,False]
+      # run_lowpass_sides: [False,False,False]
+  
+  act_type: 'softplus'
+
+
+
+
+
+
+batch_size_all: 8
+prop_data: 0.05
+train_ct_partition: false 
+
+
+
+#train_on: datamodule_third
+#train_on: datamodule_first_binary
+train_on: datamodule_third
+
+goodseed_pred_prob:  1.0    #   if random sample of p(uniform~(0,1))<:  goodseed_pred_prob, and goodseed in batch, keep goodseed
+badseed_pred_prob:  1.0     #   if random sample of p(uniform~(0,1))<:  badseed_pred_prob, and badseeds in batch, keep badseeds
+augment_orig_prob:   0.0     #   do we want to augment the original batch of seeds? if p(uniform~(0,1))<:  augment_orig_prob then augment,
+                            #   and insert this into the batch such that b: [gs,a(s1),s1,...]
+                            #   b: [gs,a(s1),s1,...]
+augment_good_prob:   0.0     #   do we want to augment any goodseeds in batch? if p(uniform~(0,1))<: augment_good_prob, augment, and
+                            #   insert this into the batch such that b: [a(gs),gs,s1,...]
+keep_all_orig_prob:   1.0    #   do we want to keep all orig seeds in batch? if p(uniform~(0,1))<: keep_all_orig_prob, then keep
+keep_all_good_prob:   1.0    #   do we want to keep all good seeds in batch? if p(uniform~(0,1))<: keep_all_good_prob, then keep
+sample_seed_pair_from_rankings: False #if batch such that b=[s1,s2,s3...], subsample down to b=[s_i,s_j] s.t. j-1>1
+
+
+data:
+  #augmentations: ${data.augmentations}
+  dset_dict:
+    
+    selected_dtypes: ['single_dmap']   
+    proportion_of_data_to_use: ${prop_data}
+
+    badseeds_models: 
+
+
+    goodmeshes:
+      # NB: total n good meshes is 98
+      # Therefore, can be leq 98
+      # do not use perceantages integer only
+      n_train: 700 #40
+      n_test: 150
+      n_val: 150 #10
+      p_add: 1.0
+
+    remove_middle_data: true
+    row_size_to_keep: 2
+
+
+    include_goodseed: true
+
+
+
+test: True
+sync: True
+sync_model_weights: False
+optuna_tuning: False
+log_net_debug: False
+#logger.wandb.offline: False
+swa: False
+
+
+
+

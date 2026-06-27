@@ -1,0 +1,50 @@
+# see eg data/batch_augmentations/defualt.yaml for info on what each do
+
+goodseed_pred_prob:   1.0
+badseed_pred_prob:   1.0
+augment_orig_prob:   1.0
+augment_good_prob:   1.0
+keep_all_orig_prob:   1.0
+keep_all_good_prob:   1.0
+sample_seed_pair_from_rankings: False
+
+train:
+  goodseed_pred_prob: ${goodseed_pred_prob}
+  badseed_pred_prob: ${badseed_pred_prob}
+  augment_orig_prob: ${augment_orig_prob}
+  augment_good_prob: ${augment_good_prob}
+  keep_all_orig_prob: ${keep_all_orig_prob}
+  keep_all_good_prob: ${keep_all_good_prob}
+  sample_seed_pair_from_rankings: ${sample_seed_pair_from_rankings}
+
+
+val:
+  goodseed_pred_prob: ${goodseed_pred_prob}
+  badseed_pred_prob: ${badseed_pred_prob}
+  augment_good_prob: ${augment_good_prob}
+  augment_orig_prob: ${augment_orig_prob}
+  keep_all_orig_prob: ${keep_all_orig_prob}
+  keep_all_good_prob: ${keep_all_good_prob}
+  sample_seed_pair_from_rankings: ${sample_seed_pair_from_rankings}
+
+
+
+test:
+  goodseed_pred_prob: 1.0 #${goodseed_pred_prob}
+  badseed_pred_prob: 1.0 #${badseed_pred_prob}
+  augment_good_prob: false #${augment_good_prob}
+  augment_orig_prob: false #${augment_orig_prob}
+  keep_all_orig_prob: 1.0 #${keep_all_orig_prob}
+  keep_all_good_prob: 1.0 #${keep_all_good_prob}
+  sample_seed_pair_from_rankings: False
+
+
+
+# test:
+#   goodseed_pred_prob: ${goodseed_pred_prob}
+#   badseed_pred_prob: ${badseed_pred_prob}
+#   augment_good_prob: ${augment_good_prob}
+#   augment_orig_prob: ${augment_orig_prob}
+#   keep_all_orig_prob: ${keep_all_orig_prob}
+#   keep_all_good_prob: ${keep_all_good_prob}
+#   sample_seed_pair_from_rankings: ${sample_seed_pair_from_rankings}

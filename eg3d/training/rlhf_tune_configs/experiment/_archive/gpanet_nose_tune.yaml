@@ -1,0 +1,52 @@
+# @package _global_
+
+
+defaults:
+  - _self_
+  - experiment: null
+  - override /data: defaults
+  - override /rlhf_opt: original
+  - override /click_legacy_args: defaults
+
+
+
+train_tick_stop: 15 
+
+
+
+data:
+  nrs: 128
+  upsample_64_to_128: false
+  downsample_pcd_points: true
+  n_point_samples_per_pcd_batch: 2048
+  sample_points_face_area: false
+  center_points: true
+  unit_scale_points: true
+
+rlhf_tune_hpms:
+  lambda_rwd_model: 1e-4
+  lambda_nose_hard: 1.0
+  update_emas_gdepth: true
+  batch_size: 4
+  tune_type: pairs_patches
+
+  
+
+
+
+rwd_model_id: 55oaa881 #curvenet #pcd_as_pt
+
+hpms_first_dmaps:
+  truncation_psi: 0.7
+  truncation_cutoff: 14
+
+
+# rwd_model_id: hczy09dq #gpa#net, just looking at nose region
+
+# hpms_first_dmaps:
+#   truncation_psi: 0.7
+#   truncation_cutoff: 14
+
+
+
+#

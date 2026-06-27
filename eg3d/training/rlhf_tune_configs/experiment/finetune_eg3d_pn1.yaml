@@ -1,0 +1,21 @@
+# @package _global_
+#
+# Point-cloud reward fine-tune. Overrides base_config (the null default) with the
+# reward ON. The dtype (PointNet1 / PointNet2 / CurveNet) is derived from the
+# reward-model id, so one config serves all three pcd backbones (CurveNet wants
+# rlhf_tune_hpms.batch_size=2). The pcd normalisation transform is inherited from the
+# reward model's recorded `tune` slot. Reward-path depth is rendered natively at 128.
+#   python train_rlhf.py experiment=finetune_eg3d_pn1 rwd_model_id=<pcd_id>
+
+rwd_model_id: 541b13pt          # pcd PointNet1 (recent, 2026-06-19)
+train_tick_stop: 10
+
+data:
+  nrs: 128
+
+rlhf_tune_hpms:
+  lambda_rwd_model: 0.1
+  lambda_sigma_l1: 1.0
+  gen_c_mult_rwd: 0.0
+  G_sample_truncation_psi: 0.7
+  update_G_ema_every_tick: true

@@ -1,0 +1,6 @@
+profiler:
+  _target_: lightning.pytorch.profilers.PyTorchProfiler #nb don't use advancedprofiler
+  dirpath: ${trainer.default_root_dir}
+  filename: profiler_advanced.log
+  row_limit: None
+  group_by_input_shapes: True

@@ -1,0 +1,50 @@
+# @package _global_
+
+
+defaults:
+  - _self_
+  - experiment: null
+  - override /data: defaults
+  - override /rlhf_opt: original
+  - override /click_legacy_args: defaults
+
+
+train_tick_stop: 12
+#dpoje3ea
+#kioezies
+data:
+  nrs: 128
+  upsample_64_to_128: false
+  downsample_pcd_points: true
+  n_point_samples_per_pcd_batch: 2048
+  sample_points_face_area: false
+  center_points: true
+  unit_scale_points: true
+
+rlhf_tune_hpms:
+  lambda_rwd_model: 1e-4
+  lambda_nose_hard: 1.0
+  update_emas_gdepth: true
+  rwd_type: pairs
+  resume_kimg: 2048
+  lambda_dmap_l1:  1e-2
+
+rwd_model_id: tywevhcd #pcd_as_pt_no_transform, pointnet2
+
+hpms_first_dmaps:
+  truncation_psi: 1.0
+  truncation_cutoff: 14
+
+
+
+# #u3i8pq1k
+
+
+# train_tick_stop: false
+
+# nm_vis: 1
+# seedslist_visualisation: [1,2]
+
+
+# plot:
+#   maxseed: 300010

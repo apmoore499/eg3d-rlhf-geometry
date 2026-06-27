@@ -1,0 +1,73 @@
+# @package _global_
+# PointNet1 on the unified `point_cloud_entire` dtype, with the pcd train/val/
+# test/tune augmentation slots (subsample->center->mean-scale, +scale/jitter on
+# train). Quick smoke config: prop_data 0.05 + 1 batch per split. Once this runs
+# clean, point_net_2 / curve_net reuse this verbatim (only `/model` differs).
+defaults:
+  - override /model: point_net_1
+  - override /trainer: default
+  - override /data: data_defaults
+  - override /data/augmentations: point_cloud_entire
+  - override /loss: all_losses
+  - override /callbacks: default
+  - override /model/optimizer: adam
+  - override /model/scheduler: null
+
+tags: ["point cloud", "pointnet", "point_cloud_entire"]
+
+trainer:
+  min_epochs: 1
+  max_epochs: 2
+  profiler: null
+  num_sanity_val_steps: 0
+  # smoke run: one batch per split so we just confirm it runs end-to-end
+  limit_train_batches: 1
+  limit_val_batches: 1
+  limit_test_batches: 1
+
+dloader:
+  num_workers: 6
+  prefetch_factor: 2
+
+model:
+  swa: null
+  act_type: 'softplus'
+
+batch_size_all: 4
+prop_data: 0.05
+train_ct_partition: false
+
+train_on: datamodule_third
+
+goodseed_pred_prob: 1.0
+badseed_pred_prob: 1.0
+augment_orig_prob: 0.0
+augment_good_prob: 0.0
+keep_all_orig_prob: 1.0
+keep_all_good_prob: 1.0
+sample_seed_pair_from_rankings: False
+
+data:
+  dset_dict:
+    selected_dtypes: ['point_cloud_entire']
+    proportion_of_data_to_use: ${prop_data}
+
+    badseeds_models:
+
+    goodmeshes:
+      n_train: 700
+      n_test: 150
+      n_val: 150
+      p_add: 1.0
+
+    remove_middle_data: true
+    row_size_to_keep: 2
+
+    include_goodseed: true
+
+test: True
+sync: True
+sync_model_weights: False
+optuna_tuning: False
+log_net_debug: False
+swa: False

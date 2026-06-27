@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Page Title</title>
+    <style>
+        #images-container {
+            background: url('{{ url_for('static', filename='background.jpg') }}') no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            align-items: center;
+            min-height: 100vh; /* Set a minimum height for the container */
+            position: relative;
+        }
+
+        .clickable-image {
+            position: relative;
+            margin: 10px;
+            /* Add additional styles for each clickable image */
+        }
+
+        img {
+            width: 100%; /* Make the image fill its container */
+            height: auto;
+            display: block;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* Semi-transparent black overlay */
+            /* Add additional styles for the overlay */
+        }
+
+        .letter {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 24px;
+            /* Add additional styles for the letter */
+        }
+    </style>
+</head>
+<body>
+    <div id="images-container">
+        {% for i in range(1, 7) %}
+            <div class="clickable-image" data-image="image{{ i }}">
+                <img src="{{ url_for('static', filename='dummy_images/image' + i|string + '.jpg') }}">
+                <div class="overlay"></div>
+                <div class="letter">{{ i }}</div>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

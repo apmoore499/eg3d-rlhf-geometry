@@ -1,0 +1,97 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py experiment=example
+
+defaults:
+  - override /model: point_cloud_curve_net
+  - override /trainer: default
+  - override /data: data_defaults
+  - override /loss: all_losses
+
+# all parameters below will be merged with parameters from default configurations set above
+# this allows you to overwrite only specified parameters
+
+tags: ["sam_optimiser"]
+
+trainer:
+  min_epochs: 1
+  max_epochs: 5
+  profiler: null #"advanced"
+  num_sanity_val_steps: 0
+  #val_check_interval: 0.25
+
+agg_type: max
+
+model:
+  _target_: core_modules.models.modules_pointnet.PointnetOneModNonLinearHeads
+  name: PointnetOneModNonLinearHeads
+  feature_transform: False
+  spatial_transform_3d: True
+  agg_type: ${agg_type} ##"cummax_mean": "cumsum_norm" "cummax_std"
+  normtype: batch_norm
+
+  mlp_global:
+    input_size: 2048
+    activation_type: selu
+    normalisation_type: none
+
+
+
+
+  optimizer:
+    _target_: torch.optim.Adam
+    _partial_: true
+    lr:           1e-5
+    weight_decay: 1e-4
+
+
+
+
+
+  # optimizer:
+  #   _target_: sharpness_aware_optimiser.SAM
+  #   _partial_: true
+  #   lr: 0.039452414071175945
+  #   adaptive: true
+  #   rho: 0.1
+
+
+  # scheduler:
+  #   _target_: torch.optim.lr_scheduler.CosineAnnealingLR
+  #   _partial_: true
+  #   eta_min: 1e-6
+
+  
+batch_size_all: 8
+
+train_on: datamodule_third
+
+data:
+  dset_dict:
+    selected_dtypes: ['point_cloud_entire']
+    proportion_of_data_to_use: 1.0
+
+    
+
+
+test: True
+sync: True
+sync_model_weights: False
+optuna_tuning: False
+
+log_net_debug: False
+#logger.wandb.offline: False
+
+
+
+
+
+
+
+
+
+
+#trainer.max_epochs=1
+
+# loss:

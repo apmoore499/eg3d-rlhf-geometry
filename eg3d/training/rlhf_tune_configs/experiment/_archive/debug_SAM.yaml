@@ -1,0 +1,16 @@
+
+
+plot:
+  minseed: 300000
+  maxseed: 300010
+  batchsize: 8
+
+#lambda_dmap_mse
+#seedslist_visualisation: [1,2]
+
+number_of_meshes_to_visualise: 2
+seedslist_visualisation: [1,2]
+
+
+rlhf_opt:
+  type: SAM #original should be either SAM ie sharpness aware, or adam like in orig EG3D optimisation loop, maybe others.  

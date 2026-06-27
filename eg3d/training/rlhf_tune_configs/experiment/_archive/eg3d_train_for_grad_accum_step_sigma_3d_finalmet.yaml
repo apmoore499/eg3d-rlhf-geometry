@@ -1,0 +1,99 @@
+# @package _global_
+
+
+defaults:
+  - _self_
+  - experiment: null
+  - override /data: defaults
+  - override /rlhf_opt: original
+  - override /click_legacy_args: defaults
+
+
+#dpoje3ea
+nm_vis: 4
+eval_metrics_only: true
+init_seeds_first: true
+
+train_tick_stop: 20
+
+data:
+  nrs: 64
+  upsample_64_to_128: true
+  downsample_pcd_points: true
+  n_point_samples_per_pcd_batch: 2048
+  sample_points_face_area: false
+  center_points: true
+  unit_scale_points: true #j87azjo4
+#rlhf_tune_hpms.accum_steps
+rlhf_tune_hpms:
+  lambda_rwd_model: 1e-3
+  lambda_nose_hard: 0.0 #1.0
+  update_emas_gdepth: true
+  rwd_type: pairs
+  resume_kimg: 2067
+  lambda_dmap_l1:  0.0 #1e-2 #0.0 #1e-2
+  lambda_sigma_l1:  0.0 #1.0 #1e-1 #1e-2 #0.0 #1e-2
+  n_comparisons: 4
+  batch_size: 4
+  accum_steps: 4
+  scale_sigma_vals: 1.0
+  G_gain_scale: 1.0 #0.5 #1.0 #1.0 #1e-1 #compensate for very small batch size
+  D_gain_scale: 1.0 #0.5 #1.0 #1.0 #1e-1 #compensate for very small batch size
+  G_depth_gain: 1.0
+  update_G_ema_every_tick: false
+  gamma: 20
+
+clamp_rwd: True
+rwd_clamp_max: 0.0
+#rwd_clamp_min: !!null
+rwd_clamp_min: -100
+EVALUATE_METRICS: True
+
+
+rwd_model_id: qmf9bkx1 #qmf9bkx1 #pcd_as_pt_no_transform, pointnet2 #qmf9bkx1
+#yhiewiof
+hpms_first_dmaps:
+  truncation_psi: 0.25
+  truncation_cutoff: 14
+
+
+
+
+pretrained_modules:
+  old_G_ema: false #nb only do this is lambda_sigma_l1 > 0
+
+
+#nb this one was trained for 100 epo. 35pc accuracy on test.
+
+#u3i8pq1k
+
+#n_output_for_preference_study: 100
+
+
+
+#output_mesh_images_only: True
+
+click_legacy_args:
+  density_reg_every: 1
+  #resume: #/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/pkl_pt/eg3d_1/ffhq512-128.pkl #original checkpoint!
+  resume: /media/krillman/240GB_DATA/training_runs_2/01038-ffhq-eg3d_w_mirrore-gpus1-batch4-gamma20/network-snapshot-002067_LAST.pkl
+seedslist_visualisation: [2,3,4,5,6]
+
+#lambda_dmap_mse
+pair_seeds:
+  minseed: 400000
+  maxseed: 400200
+
+
+
+plot:
+  minseed: 300000
+  maxseed: 300200
+  batchsize: 4 #8
+
+
+
+
+#nm_vis: 10 #nm_vis=1
+# plot:
+#   maxseed: 300010

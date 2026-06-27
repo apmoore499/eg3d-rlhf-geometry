@@ -1,0 +1,5 @@
+
+_target_: torch.optim.AdamW #change from AdamW etc
+_partial_: true
+lr:           1e-5
+weight_decay: 1e-4

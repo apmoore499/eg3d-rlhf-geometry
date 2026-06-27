@@ -1,0 +1,13 @@
+{
+  "label": "spherehead",
+  "sigma_root": "/home/krillman/Documents/eg3dredo/SphereHead/spherehead_sigma_cubes_for_reward/trunc0.70",
+  "robust_norm": false,
+  "clip_pct": null,
+  "flip_axis0": true,
+  "n": 100,
+  "mean": -3.1428273153305053,
+  "median": -3.0999093055725098,
+  "std": 0.5341157885253318,
+  "min": -4.745224952697754,
+  "max": -0.9167742729187012
+}

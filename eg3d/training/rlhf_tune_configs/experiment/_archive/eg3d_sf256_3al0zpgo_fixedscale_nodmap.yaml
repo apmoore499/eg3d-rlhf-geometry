@@ -1,0 +1,108 @@
+# @package _global_
+
+
+defaults:
+  - _self_
+  - experiment: null
+  - override /data: defaults
+  - override /rlhf_opt: original
+  - override /click_legacy_args: defaults
+  - override /click_legacy_args: defaults
+
+
+ltype: ${rlhf_tune_hpms.tune_type}
+
+nm_vis: 4
+eval_metrics_only: false
+init_seeds_first: true
+
+train_tick_stop: 20
+network_snapshot_ticks: 1
+
+data:
+  nrs: 64
+  upsample_64_to_128: true
+  downsample_pcd_points: true
+  n_point_samples_per_pcd_batch: 2048
+  sample_points_face_area: false
+  center_points: true
+  unit_scale_points: true
+
+rlhf_tune_hpms:
+  lambda_rwd_model: 1.0
+  lambda_nose_hard: 0.0
+  update_emas_gdepth: true
+  rwd_type: clamped
+  tune_type: ${rlhf_tune_hpms.rwd_type}
+  resume_kimg: 2048
+  lambda_dmap_l1: 0.0
+  lambda_dmap_forward_mse: 0.0
+  lambda_sigma_l1: 1e-2
+  lambda_sigma_front_growth: 0.0
+  n_comparisons: 4
+  batch_size: 16
+  accum_steps: 16
+  scale_sigma_vals: 1.0
+  gen_c_mult_rwd: 1.0
+  G_gain_scale: 1.0
+  D_gain_scale: 1.0
+  G_depth_gain: 1.0
+  gamma: 20
+  update_G_ema_every_tick: false
+  G_sample_noise_mode: 'random'
+  G_sample_truncation_psi: 1.0
+  G_sample_truncation_cutoff: 14
+  dmap_reg_camera_mode: triple
+  dmap_reg_resolution: 128
+  dmap_reg_noise_mode: 'random'
+  dmap_reg_truncation_psi: 1.0
+  dmap_reg_truncation_cutoff: 14
+  dmap_forward_depth_threshold: 2.6
+  dmap_forward_margin: 0.01
+  dmap_forward_center_sigma_x: 0.22
+  dmap_forward_center_sigma_y: 0.26
+  dmap_forward_center_x: 0.0
+  dmap_forward_center_y: 0.0
+  sigma_front_growth_shape_res: 64
+  sigma_positive_flip_margin: 0.0
+  sigma_positive_flip_old_threshold: 0.0
+  rwd_sigma_pads_config_path: /home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/reward_model_training/static_configs/pads_vals_front_full_rear40.yaml
+  G_sample_camera_type: zeros
+  augmentations:
+    _target_: core_modules.data.custom_transforms.transforms_composition_helper
+    dtype: sigma_field_256
+    instantiated_transforms:
+      clamp_scale_sigma_fixed:
+        _target_: core_modules.data.custom_transforms.clamp_scale_sigma_fixed
+        min_clamp: 0.0
+        max_clamp: 100.0
+        out_min: 0.0
+        out_max: 100.0
+
+clamp_rwd: True
+rwd_clamp_max: 10
+rwd_clamp_min: -10
+EVALUATE_METRICS: True
+rwd_model_id: 3al0zpgo
+
+hpms_first_dmaps:
+  truncation_psi: 0.25
+  truncation_cutoff: 14
+
+pretrained_modules:
+  old_G_ema: True
+
+click_legacy_args:
+  density_reg_every: 4
+  workers: 3
+
+seedslist_visualisation: [2,3,4,5,6]
+
+pair_seeds:
+  minseed: 400000
+  maxseed: 400200
+
+plot:
+  minseed: 300000
+  maxseed: 300200
+  batchsize: 4

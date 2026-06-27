@@ -1,0 +1,3 @@
+
+nrs: 64                            # reward-path depth render resolution consumed by the active RLHF loss path
+upsample_64_to_128: true           # upsample 64x64 reward-path depths to 128x128 in DST.format_gen_out_for_rwd_input

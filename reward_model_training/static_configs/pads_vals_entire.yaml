@@ -1,0 +1,13 @@
+# Sigma-volume crop "slab": *_pad = fraction trimmed inward from each face of the
+# EG3D sigma density field (0 = keep full; larger = tighter crop). front/rear =
+# depth axis (face / back of head), top/bot = vertical, lhs/rhs = horizontal.
+# shape_res = sigma sampling resolution. Loaded by
+# MeshUtilsDataClass.get_samples_coordinates_from_pads_vals_dict(pads_vals=...).
+# "entire": near-whole volume, light 0.1 front crop, @ res 256.
+bot_pad: 0.25
+front_pad: 0.1
+lhs_pad: 0.25
+rear_pad: 0.4
+rhs_pad: 0.25
+top_pad: 0.2
+shape_res: 256

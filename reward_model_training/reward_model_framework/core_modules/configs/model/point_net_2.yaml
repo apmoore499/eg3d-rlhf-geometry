@@ -1,0 +1,92 @@
+defaults:
+  - mlps: default
+  - _self_
+  - optimizer: null
+  - scheduler: null
+
+
+_target_: core_modules.models.modules_pointnet.PointNetTwo
+
+name: PointNetTwo
+
+add_self_loops: False
+use_residual_gconv_layers: False
+#  _target_: core_modules.models.all_models.scalar_reward_pointnet2
+#   name: scalar_reward_pointnet2_mean_agg
+#   add_self_loops: false
+#   n_features: 0
+#   n_fourier_freq: 0
+#   aggr:
+
+global_feature_size: 512
+
+
+n_features: 0
+n_fourier_freq: 0
+# `aggr` is the PointNet++ backbone aggregation (consumed by Pointnet2_RWD).
+aggr:
+- mean
+
+# `act_type` drives the reward-head MLPs (mlp_global/pairs/BT/scalar_rwd, via
+# `${model.act_type}` in mlps/default). The PointNet++ backbone conv layers use
+# `mlp_settings.activation_type` below instead — these are independent knobs.
+# Best-performing config: heads cos, backbone relu.
+act_type: 'cos'
+
+mlp_settings:
+  normalisation_type: 'batch_norm' #layer norm if small batch; not needed here
+  activation_type: 'relu' #pointnet++ backbone conv activation
+
+
+
+
+
+
+  # _target_: core_modules.models.all_models.scalar_reward_pointnet2
+  # name: scalar_reward_pointnet2_mean_agg
+  # add_self_loops: false
+  # n_features: 0
+  # n_fourier_freq: 0
+  # aggr:
+  # - mean
+  # mlp_global:
+  #   _target_: core_modules.models.utils_base.MLP
+  #   input_size: 1024
+  #   output_size: 1
+  #   hidden_sizes:
+  #   - 1024
+  #   - 256
+  #   - 32
+  #   dropout_rate: 0.15
+  #   use_dropout: false
+  #   normalisation_type: none
+  #   activation_type: relu
+  # use_residual_gconv_layers: false
+  # use_residual_block_kaming: false
+  # mlp_settings:
+  #   normalisation_type: batch_norm
+  #   activation_type: relu
+
+
+
+
+
+
+
+
+
+
+
+# 4-MLP reward head comes from `mlps: default`; only the per-backbone
+# input_size is set here.
+mlp_global:
+  input_size: 1024
+
+return_global_embedding: true
+compile: false
+external: null
+loss: null
+swa: True
+swa_start: 1 #start stochastic weight avg at this epo number
+scheduler: null
+

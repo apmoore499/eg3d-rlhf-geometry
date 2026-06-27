@@ -1,0 +1,186 @@
+
+
+upper_norm: 100
+
+
+
+
+
+
+
+
+
+train:
+  good_example:
+
+
+    _target_: core_modules.data.custom_transforms.transforms_composition_helper_random
+    dtype: sigma_field_256
+
+
+    p_apply: [0.5,0.5,0.5,1.0,1.0]
+    instantiated_transforms:
+
+      smooth_front_of_face_transform:
+        _target_: core_modules.data.custom_transforms.smooth_front_of_face_transform
+        quantile: 10
+        k: -2
+        ps: 0.1
+
+
+      smooth_nose_only:
+        _target_: core_modules.data.custom_transforms.smooth_nose_only
+
+      smooth_median_entire:
+        _target_: core_modules.data.custom_transforms.smooth_nose_only
+
+      mouth_corner_smoothe:
+        _target_: core_modules.data.custom_transforms.mouth_corner_smoothe
+
+
+      normalise_sigma_self:
+        _target_: core_modules.data.custom_transforms.normalise_sigma_self
+        min_norm: 0.0
+        max_norm: ${data.augmentations.upper_norm}
+
+
+
+  bad_example: 
+    _target_: core_modules.data.custom_transforms.transforms_composition_helper
+    dtype: sigma_field_256
+    instantiated_transforms:
+
+
+
+
+      smooth_front_of_face_transform_bad:
+        _target_: core_modules.data.custom_transforms.smooth_front_of_face_transform_bad
+
+
+
+
+      normalise_sigma_self:
+        _target_: core_modules.data.custom_transforms.normalise_sigma_self
+        min_norm: 0.0
+        max_norm: ${data.augmentations.upper_norm}
+
+
+
+
+
+
+val:
+  good_example:
+
+
+    _target_: core_modules.data.custom_transforms.transforms_composition_helper
+    dtype: sigma_field_256
+    instantiated_transforms:
+
+
+
+      smooth_front_of_face_transform:
+        _target_: core_modules.data.custom_transforms.smooth_front_of_face_transform
+        quantile: 10
+        k: -2
+        ps: 0.1
+
+      mouth_corner_smoothe:
+        _target_: core_modules.data.custom_transforms.mouth_corner_smoothe
+
+
+
+
+
+      normalise_sigma_self:
+        _target_: core_modules.data.custom_transforms.normalise_sigma_self
+        min_norm: 0.0
+        max_norm: ${data.augmentations.upper_norm}
+
+
+
+  bad_example: 
+    _target_: core_modules.data.custom_transforms.transforms_composition_helper
+    dtype: sigma_field_256
+    instantiated_transforms:
+
+
+
+
+      smooth_front_of_face_transform_bad:
+        _target_: core_modules.data.custom_transforms.smooth_front_of_face_transform_bad
+
+
+
+
+      normalise_sigma_self:
+        _target_: core_modules.data.custom_transforms.normalise_sigma_self
+        min_norm: 0.0
+        max_norm: ${data.augmentations.upper_norm}
+
+
+
+
+
+
+test:
+
+
+  good_example:
+
+
+    _target_: core_modules.data.custom_transforms.transforms_composition_helper
+    dtype: sigma_field_256
+    instantiated_transforms:
+
+      smooth_front_of_face_transform:
+        _target_: core_modules.data.custom_transforms.smooth_front_of_face_transform
+        quantile: 10
+        k: -2
+        ps: 0.1
+
+      mouth_corner_smoothe:
+        _target_: core_modules.data.custom_transforms.mouth_corner_smoothe
+
+
+
+      normalise_sigma_self:
+        _target_: core_modules.data.custom_transforms.normalise_sigma_self
+        min_norm: 0.0
+        max_norm: ${data.augmentations.upper_norm}
+
+
+
+
+  bad_example: 
+    _target_: core_modules.data.custom_transforms.transforms_composition_helper
+    dtype: sigma_field_256
+    instantiated_transforms:
+
+  
+
+      smooth_front_of_face_transform_bad:
+        _target_: core_modules.data.custom_transforms.smooth_front_of_face_transform_bad
+
+
+
+
+      normalise_sigma_self:
+        _target_: core_modules.data.custom_transforms.normalise_sigma_self
+        min_norm: 0.0
+        max_norm: ${data.augmentations.upper_norm}
+
+
+
+
+goodmesh_augment: null
+
+
+
+
+
+
+
+
+
+

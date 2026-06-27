@@ -1,0 +1,2 @@
+wandb_images_logger:
+  _target_: core_modules.utils.logging_utils.LogImagesCallback

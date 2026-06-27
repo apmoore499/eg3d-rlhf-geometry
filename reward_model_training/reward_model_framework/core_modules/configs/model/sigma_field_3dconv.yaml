@@ -1,0 +1,55 @@
+# 3D-conv reward net over a regular sigma-density grid.
+# Consumes a sigma field volume (compatible with sigma_field_64 / 128 / 256 —
+# the resolution is chosen by the experiment's selected_dtypes, NOT here; the
+# backbone pools to a fixed `final_size_out`). Augmentations are a downstream
+# hyperparameter and live in the experiment via `override /data/augmentations`.
+defaults:
+  - mlps: default
+  - _self_
+  - optimizer: null
+  - scheduler: null
+
+_target_: core_modules.models.modules_conv3d.Conv3DNetworkEnsemble
+name: sigma_field_3dconv
+
+global_feature_size: 512
+
+act_type: 'softplus'
+
+# 4-MLP reward head comes from `mlps: default`; only the per-backbone
+# input_size is set here (the 3D-conv backbone pools to final_size_out).
+mlp_global:
+  input_size: ${model.Conv3DModule.final_size_out}
+
+Conv3DModule:
+  _target_: core_modules.models.modules_unet3d.ResidualUNetSE3D
+  in_channels: 1
+  out_channels: 8
+  layer_order: gcr
+  f_maps: [8, 16, 32, 64, 128, 256]
+  num_groups: 8
+  final_sigmoid: false
+  is_segmentation: false
+  final_size_out: 8192
+  forward_type: 'entire'
+  crop_each_to_positive_only: False
+  conv_padding: 1 # try with no padding, usually it's set to 1.
+  conv_kernel_size: 3 # ResidualUNetSE3D supports 3 but not 7 with this architecture
+  softplus_sigma_reconstruction: False
+  n_channels_for_recon: 4
+  n_channels_for_feature: 4
+  recon_pool_type: 'max'
+  feature_pool_type: 'max'
+  final_sigma_decoder_initialise_minimal_noise: True
+
+return_global_embedding: true
+compile: false
+
+external: null
+optimizer: null
+scheduler: null
+
+loss: null
+
+swa: True
+swa_start: 1 # start stochastic weight avg at this epoch number

@@ -1,0 +1,59 @@
+
+# take eg original batch of seeds
+# [gs,s1,s2,s3,s4,s5,s6,bs1,bs2]
+
+
+
+goodseed_pred_prob:  1.0    #   if random sample of p(uniform~(0,1))<:  goodseed_pred_prob, and goodseed in batch, keep goodseed
+badseed_pred_prob:  1.0     #   if random sample of p(uniform~(0,1))<:  badseed_pred_prob, and badseeds in batch, keep badseeds
+augment_orig_prob:   0.0     #   do we want to augment the original batch of seeds? if p(uniform~(0,1))<:  augment_orig_prob then augment,
+                            #   and insert this into the batch such that b: [gs,a(s1),s1,...]
+                            #   b: [gs,a(s1),s1,...]
+augment_good_prob:   0.0     #   do we want to augment any goodseeds in batch? if p(uniform~(0,1))<: augment_good_prob, augment, and
+                            #   insert this into the batch such that b: [a(gs),gs,s1,...]
+keep_all_orig_prob:   1.0    #   do we want to keep all orig seeds in batch? if p(uniform~(0,1))<: keep_all_orig_prob, then keep
+keep_all_good_prob:   1.0    #   do we want to keep all good seeds in batch? if p(uniform~(0,1))<: keep_all_good_prob, then keep
+sample_seed_pair_from_rankings: False #if batch such that b=[s1,s2,s3...], subsample down to b=[s_i,s_j] s.t. j-1>1
+
+
+
+train:
+  goodseed_pred_prob: ${..goodseed_pred_prob}
+  badseed_pred_prob: ${..badseed_pred_prob}
+  augment_orig_prob: ${..augment_orig_prob}
+  augment_good_prob: ${..augment_good_prob}
+  keep_all_orig_prob: ${..keep_all_orig_prob}
+  keep_all_good_prob: ${..keep_all_good_prob}
+  sample_seed_pair_from_rankings: ${..sample_seed_pair_from_rankings}
+
+
+val:
+  goodseed_pred_prob: ${..goodseed_pred_prob}
+  badseed_pred_prob: ${..badseed_pred_prob}
+  augment_good_prob: ${..augment_good_prob}
+  augment_orig_prob: ${..augment_orig_prob}
+  keep_all_orig_prob: ${..keep_all_orig_prob}
+  keep_all_good_prob: ${..keep_all_good_prob}
+  sample_seed_pair_from_rankings: ${..sample_seed_pair_from_rankings}
+
+
+
+test:
+  goodseed_pred_prob: 1.0 #${goodseed_pred_prob}
+  badseed_pred_prob: 1.0 #${badseed_pred_prob}
+  augment_good_prob: false #${augment_good_prob}
+  augment_orig_prob: false #${augment_orig_prob}
+  keep_all_orig_prob: 1.0 #${keep_all_orig_prob}
+  keep_all_good_prob: 1.0 #${keep_all_good_prob}
+  sample_seed_pair_from_rankings: False
+
+
+
+# test:
+#   goodseed_pred_prob: ${goodseed_pred_prob}
+#   badseed_pred_prob: ${badseed_pred_prob}
+#   augment_good_prob: ${augment_good_prob}
+#   augment_orig_prob: ${augment_orig_prob}
+#   keep_all_orig_prob: ${keep_all_orig_prob}
+#   keep_all_good_prob: ${keep_all_good_prob}
+#   sample_seed_pair_from_rankings: ${sample_seed_pair_from_rankings}

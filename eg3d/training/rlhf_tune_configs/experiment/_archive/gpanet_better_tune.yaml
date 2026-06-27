@@ -1,0 +1,38 @@
+# @package _global_
+
+
+defaults:
+  - _self_
+  - experiment: null
+  - override /data: defaults
+  - override /rlhf_opt: original
+  - override /click_legacy_args: defaults
+
+#this one is trained on better dataset. we select all 6-tuples and pull out best and worst rank only. higher test acc.
+
+train_tick_stop: 15 
+
+
+data:
+  nrs: 128
+  upsample_64_to_128: false
+  downsample_pcd_points: true
+  n_point_samples_per_pcd_batch: 2048
+  sample_points_face_area: false
+  center_points: true
+  unit_scale_points: true
+
+rlhf_tune_hpms:
+  lambda_rwd_model: 1e-1
+  lambda_nose_hard: 1.0
+  update_emas_gdepth: true
+
+rwd_model_id: u8ze5xi8 #gpanet
+
+hpms_first_dmaps:
+  truncation_psi: 0.7
+  truncation_cutoff: 14
+
+
+
+#xt3cov1g  u8ze5xi8 oduj1s85

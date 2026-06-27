@@ -1,0 +1,21 @@
+# @package _global_
+#
+# Single-depth-map reward fine-tune. Overrides base_config (the null default) with
+# the reward ON and the hard-nose depth penalty (lambda_nose_hard) that depth-map
+# reward models use. Renders the reward-path depth natively at 128.
+#   python train_rlhf.py experiment=finetune_eg3d_sdmap rwd_model_id=8nqtzmdn
+
+rwd_model_id: se9l433b          # single dmap (recent, 2026-06-20)
+
+data:
+  nrs: 128
+  upsample_64_to_128: false
+
+rlhf_tune_hpms:
+  lambda_rwd_model: 1.0
+  lambda_nose_hard: 1.0         # depth-map models penalise the nose spike
+  lambda_sigma_l1: 0.0          # no sigma anchor for the dmap path
+  gen_c_mult_rwd: 0.0
+
+pretrained_modules:
+  old_G_ema: false              # no sigma_l1 anchor here, so no EMA reference needed

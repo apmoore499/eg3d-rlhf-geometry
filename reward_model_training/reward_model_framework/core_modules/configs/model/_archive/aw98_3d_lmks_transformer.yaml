@@ -1,0 +1,119 @@
+
+defaults:
+  - _self_
+  - optimizer: null
+  - scheduler: null
+
+  
+_target_: core_modules.models.modules_aw98.aw98_transformer
+name: aw98_transformer_3D
+#name: helloe
+normtype: 'batch_norm'
+
+
+
+act_type: 'cos'
+n_kpts: 98
+cross_attention_dropout: 0.4
+embed_dim: 128
+external: null
+encoder_dropout: 0.0
+
+global_feature_size: ${multiply:${model.n_kpts},${model.embed_dim}} #98*128
+
+
+
+mlp_transformer:
+  _target_: core_modules.models.utils_base.MLP
+  input_size: ${multiply:${model.embed_dim},2}
+  output_size: 2
+  hidden_sizes: [512,512]
+  dropout_rate: 0.15
+  use_dropout: False
+  normalisation_type: 'none'
+  activation_type: 'softplus'
+  norm_first_layer: False
+  residual: True
+
+
+
+sel_region_for_masking: null
+
+
+
+
+mlp_global:
+  _target_: core_modules.models.utils_base.MLP
+  input_size: ${model.n_kpts}
+  output_size: ${model.n_kpts}
+  hidden_sizes: [512, 512]
+  #hidden_sizes: [512, 512]
+  dropout_rate: 0.15
+  use_dropout: False
+  normalisation_type: 'none'
+  activation_type: ${model.act_type}
+  norm_first_layer: False
+  residual: True
+
+
+mlp_pairs:
+  _target_: core_modules.models.utils_base.MLP
+  input_size: ${multiply:${model.mlp_global.output_size},2}  
+  output_size: 2
+  hidden_sizes: [256, 128]
+  dropout_rate: 0.15
+  use_dropout: False
+  normalisation_type: 'none'
+  activation_type: ${model.act_type}
+  norm_first_layer: False
+  residual: True
+
+
+rescale_global_to_output_size: 32
+
+
+mlp_BT:
+  _target_: core_modules.models.utils_base.MLP
+  input_size: 32
+  output_size: 1
+  hidden_sizes: [32, 32]
+  dropout_rate: 0.15
+  use_dropout: False
+  normalisation_type: 'none'
+  activation_type: ${model.act_type}
+  norm_first_layer: False
+  residual: True
+
+
+mlp_scalar_rwd:
+  _target_: core_modules.models.utils_base.MLP
+  input_size: 32
+  output_size: 1
+  hidden_sizes: [32, 32]
+  dropout_rate: 0.15
+  use_dropout: False
+  normalisation_type: 'none'
+  activation_type: ${model.act_type}
+  norm_first_layer: False
+  residual: True
+
+
+  
+return_global_embedding: True
+scheduler: null
+optimizer: null
+compile: False
+
+loss:
+  return_global_embedding: True
+  lambda_abs_sym_loss: 0.0
+  lambda_BT:  1e-3 #0.0 #1e-3
+  lambda_pairs: 10.0 #0.0
+  lambda_scalar_rwd: 1e-3 #1e-3 #0.0
+  lambda_reg_rwd_vals: 1e-8 #0.0 #1e-8 #l2 loss
+  lambda_agg_features_l2: 0.0 #for agg features make sure not too high magnitude
+
+
+
+swa: True
+swa_start: 1 #start stochastic weight avg at this epo number

@@ -1,0 +1,50 @@
+# @package _global_
+
+
+defaults:
+  - _self_
+  - experiment: null
+  - override /data: defaults
+  - override /rlhf_opt: original
+  - override /click_legacy_args: defaults
+
+
+click_legacy_args:
+  batch: 1
+
+
+
+# train_tick_stop: false
+
+# nm_vis: 1
+# seedslist_visualisation: [1,2]
+
+
+# plot:
+#   maxseed: 300010
+#do94sx6t
+
+data:
+  nrs: 128
+  upsample_64_to_128: false
+  #batch: #2 #${click_legacy_args.batch}
+
+rlhf_tune_hpms:
+  lambda_rwd_model: 1.0
+  lambda_nose_hard: 1.0
+  update_emas_gdepth: false
+
+#rwd_model_id: du91zfi5 #curvenet
+#rwd_model_id: az79xpzs #triple dmap newer one way better
+rwd_model_id: vi78i1lp #triple dmap with the masks etc
+
+
+
+hpms_first_dmaps:
+  truncation_psi: 0.7
+  #truncation_psi: 0.25
+  truncation_cutoff: 14
+
+#nzbxpxni
+
+#vi78i1lp

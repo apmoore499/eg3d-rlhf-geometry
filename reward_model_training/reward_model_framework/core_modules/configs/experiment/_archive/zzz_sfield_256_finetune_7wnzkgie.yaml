@@ -1,0 +1,9 @@
+# @package _global_
+defaults:
+  - zzz_sfield_256
+  - _self_
+
+# Continue training from the sigma-field-256 reward model produced on 2026-05-18.
+ckpt_path: ${paths.rwd_model_dir}/7wnzkgie/best_model.pt
+
+tags: ["sigma field 256", "sigma volume", "3d conv net", "finetune", "7wnzkgie"]
