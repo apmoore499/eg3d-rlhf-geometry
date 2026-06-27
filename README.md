@@ -78,7 +78,7 @@ conda config --add channels conda-forge
 conda create -n hf_geom_eg3d_py39 python=3.9 -y
 conda activate hf_geom_eg3d_py39
 conda install -y -c pytorch -c nvidia pytorch=2.0.1 torchvision torchaudio pytorch-cuda=11.8
-conda install -y -c conda-forge pytorch-3dunet dlib
+conda install -y -c conda-forge pytorch-3dunet dlib "icu<74"
 python -m pip install uv
 python -m uv pip install fvcore iopath
 python -m pip install --no-index --no-cache-dir pytorch3d -f https://dl.fbaipublicfiles.com/pytorch3d/packaging/wheels/py39_cu118_pyt201/pytorch3d-0.7.4-cp39-cp39-linux_x86_64.whl

@@ -302,15 +302,16 @@ class UniversalRWDModel(LightningModule):
         weights_type = self.weights_type
 
         #
-        kk = pd.concat([pd.DataFrame.from_dict(p, orient="index").transpose() for p in self.test_correct_list], axis=0, ignore_index=True)
-        kk = kk[(kk.epoch == self.trainer.current_epoch) & (kk.data == "test") & (kk.model_weights == weights_type) & (kk.dset_version == self.trainer.datamodule.dset_version)]
+        if self.test_correct_list:
+            kk = pd.concat([pd.DataFrame.from_dict(p, orient="index").transpose() for p in self.test_correct_list], axis=0, ignore_index=True)
+            kk = kk[(kk.epoch == self.trainer.current_epoch) & (kk.data == "test") & (kk.model_weights == weights_type) & (kk.dset_version == self.trainer.datamodule.dset_version)]
 
-        kkk = kk.set_index(["model_weights", "data", "type", "dset_version"])
-        joined_results = pd.concat([self.test_joined_results, kkk], axis=0, ignore_index=False)
+            kkk = kk.set_index(["model_weights", "data", "type", "dset_version"])
+            joined_results = pd.concat([self.test_joined_results, kkk], axis=0, ignore_index=False)
 
-        dup_idx = joined_results.index.duplicated()
-        assert np.all(dup_idx == False), "error you have duplicated rows in result table"
-        self.test_joined_results = joined_results
+            dup_idx = joined_results.index.duplicated()
+            assert np.all(dup_idx == False), "error you have duplicated rows in result table"
+            self.test_joined_results = joined_results
 
         return self
 
@@ -597,7 +598,7 @@ class UniversalRWDModel(LightningModule):
         self.id_logger.info(",".join(map(str, ids.tolist())))
 
     def run_forward_pass(self, batch, generate_heatmaps=False, return_global_vector=False, return_preds=True):
-        device = batch.file_batch.device
+        device = self.device
         X_dmap = batch.file_batch.to(device, non_blocking=False).squeeze(2)
         Lengths = batch.lens_batch.to(device, non_blocking=False)
         seeds = batch.ordered_seeds.to(device, non_blocking=False)
