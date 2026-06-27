@@ -24,8 +24,11 @@ import os
 from pathlib import Path
 
 import autoroot  # noqa: F401
+import matplotlib
 import numpy as np
 import torch
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 
 import legacy
 from analyze_snapshot_svd import force_torch_load_map_location_cpu, snapshot_kimg, snapshot_label
@@ -184,10 +187,6 @@ def write_csv(path: Path, rows: list[dict[str, object]]) -> None:
 
 def save_slice_figure(path: Path, sigma_base: torch.Tensor, sigma_target: torch.Tensor, density_delta: torch.Tensor) -> None:
     os.environ.setdefault("MPLCONFIGDIR", "/tmp/matplotlib-codex")
-    import matplotlib
-
-    matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
 
     idx = sigma_base.shape[0] // 2
     slices = [

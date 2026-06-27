@@ -16,12 +16,17 @@ Stage D is performed by reward_geometry_explainability.py with
 from __future__ import annotations
 
 import argparse
+import json as _json
 import sys
 from pathlib import Path
 from typing import Dict, List, Tuple
 
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 import numpy as np
 import torch
+from matplotlib.patches import Patch
 from PIL import Image, ImageDraw, ImageFont
 from omegaconf import OmegaConf
 from tqdm.auto import tqdm
@@ -564,7 +569,6 @@ def stage_c(device: torch.device) -> None:
         "named_face_fraction": named / total if total else 0.0,
         "aabbs_world": aabbs,
     }
-    import json as _json
     with open(MASKS_OUT_JSON, "w") as f:
         _json.dump(metadata, f, indent=2)
 
@@ -576,10 +580,6 @@ def stage_c(device: torch.device) -> None:
           f"of the cube; diagnostic + other absorb the rest.")
 
     # Visualisation: three mid-slices of the cube coloured by region.
-    import matplotlib
-    matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
-
     region_to_id = {k: i + 1 for i, k in enumerate(REGION_PRIORITY)}
     label_volume = np.zeros(cube_shape, dtype=np.int32)
     for k, m in masks.items():
@@ -605,7 +605,6 @@ def stage_c(device: torch.device) -> None:
         ax.set_xlabel(xlabel)
         ax.set_ylabel(ylabel)
     # Legend
-    from matplotlib.patches import Patch
     handles = [Patch(color=cmap(region_to_id[k]), label=k) for k in REGION_PRIORITY]
     fig.legend(handles=handles, loc="lower center", ncol=7, bbox_to_anchor=(0.5, -0.04))
     plt.suptitle(f"AW98 template partition (cube_shape={cube_shape}, "

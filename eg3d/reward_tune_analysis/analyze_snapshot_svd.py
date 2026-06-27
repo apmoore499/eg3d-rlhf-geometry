@@ -49,8 +49,11 @@ from pathlib import Path
 from typing import Iterable, Optional
 
 import autoroot  # noqa: F401
+import matplotlib
 import numpy as np
 import torch
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 
 import legacy
 
@@ -460,10 +463,6 @@ def make_aggregate_curve(spectra_by_layer: list[np.ndarray], points: int = 96) -
 
 def plot_summary(output_dir: Path, summaries: list[SnapshotSummary], spectra: dict[str, list[np.ndarray]]) -> None:
     os.environ.setdefault("MPLCONFIGDIR", "/tmp/matplotlib-codex")
-    import matplotlib
-
-    matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
 
     grouped: dict[str, list[SnapshotSummary]] = defaultdict(list)
     for row in summaries:

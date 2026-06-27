@@ -52,7 +52,6 @@ kept only as a compatibility alias:
 - reward embedding / explainability analysis
 - PanoHead / extension experiments
 - selected mesh-tail / cross-generator diagnostics
-- a few explicitly archived optional subfolders for non-paper side analyses
 
 It is still exploratory and should not be treated as the main public
 entrypoint, but the most obvious single-run debugging residue has already been
@@ -70,20 +69,13 @@ Representative categories:
   - `eg3d_tuned_reward_vs_truncation.py`
 - sigma-representation inspection:
   - `sigma_representation_checks/`
-- archived non-paper side analyses:
-  - `legacy_optional/demographic_checks/`
-- paper asset helpers:
-  - `paper_asset_utils/`
 
 ## Legacy / Non-Core Material
 
 Readers should treat these as historical or exploratory, not maintained public
 API:
 
-- temporary objects like `tmp.obj`
 - scripts written for a single run directory or a single snapshot id
-- archived demographic / accessory-confound checks that did not become part of
-  the main paper result surface
 
 ## Public Recommendation
 

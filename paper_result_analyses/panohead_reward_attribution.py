@@ -19,6 +19,9 @@ import sys
 from pathlib import Path
 from typing import Dict, List
 
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import torch
@@ -206,9 +209,6 @@ def main():
     print(f"[attr] saved region_top10_vs_bot10.csv + summary.json")
 
     # Plot
-    import matplotlib
-    matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
     fig, ax = plt.subplots(figsize=(13, 5))
     regions_plot = [r for r in region_priority if r not in ("other",)]
     xs = np.arange(len(regions_plot))

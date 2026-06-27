@@ -25,6 +25,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 import autoroot  # noqa: F401
 import numpy as np
+import pandas as pd
 import torch
 
 from core_modules.data.create_train_data import generation_utils as gen_utils
@@ -36,8 +37,6 @@ from core_modules.data.create_train_data.synthesize_landmarks import (
 
 def _load_seeds_from_csv(csv_path: Path) -> List[int]:
     try:
-        import pandas as pd
-
         df = pd.read_csv(csv_path, index_col=0)
         seeds: List[int] = []
         for col in df.columns:

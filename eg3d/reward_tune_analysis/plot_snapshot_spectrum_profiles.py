@@ -24,7 +24,10 @@ import os
 from collections import defaultdict
 from pathlib import Path
 
+import matplotlib
 import numpy as np
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 
 
 def parse_args() -> argparse.Namespace:
@@ -128,10 +131,6 @@ def main() -> None:
     args.output_dir.mkdir(parents=True, exist_ok=True)
 
     os.environ.setdefault("MPLCONFIGDIR", "/tmp/matplotlib-codex")
-    import matplotlib
-
-    matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
 
     run_curves: list[dict[str, object]] = []
 

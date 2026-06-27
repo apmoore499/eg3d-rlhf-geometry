@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import List, Tuple
 
 import numpy as np
+import pandas as pd
 import pyrender
 import torch
 import trimesh
@@ -251,7 +252,6 @@ def main():
     )
 
     # Select 3 top + 3 bottom by reward_panohead
-    import pandas as pd
     df = pd.read_csv(PER_SEED_CSV).sort_values("reward_panohead", ascending=False).reset_index(drop=True)
     top_seeds = df.head(3)["seed"].astype(int).tolist()
     bot_seeds = df.tail(3)["seed"].astype(int).tolist()

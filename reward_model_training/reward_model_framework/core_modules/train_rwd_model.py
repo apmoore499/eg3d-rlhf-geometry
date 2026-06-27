@@ -27,6 +27,7 @@ import subprocess
 
 matplotlib.use("agg")
 import numpy as np
+import pandas as pd
 from PIL import Image
 import torch
 import torch.nn as nn
@@ -121,8 +122,6 @@ def _dump_loader_batch_seeds_csv(loader, out_path):
     that ``dset_single_stream_ordered_minimal.__getitem__`` prepends to each
     sample under ``self.goodseed_pred_prob``.
     """
-    import pandas as pd
-
     batch_rows = []
     for batch in loader:
         seeds = batch.ordered_seeds.detach().cpu().numpy().reshape(-1).tolist()
@@ -155,7 +154,6 @@ def _save_final_metrics(*, model, trainer, datamodule, best_weights, collate_fn,
     `model.test_correct_list` by the logging callbacks, so we snapshot list
     lengths around each eval call and pick the new "pairs" row.
     """
-    import pandas as pd
     from core_modules.utils import rwd_model_utils as rmu
 
     goodseeds_set = set(rmu.GOODSEEDS)

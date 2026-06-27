@@ -17,15 +17,10 @@ The kept surface is selective:
   / explainability, mesh tails, and cross-generator transfer
 - a few exploratory scripts that still have clear explanatory value
 
-Subfolders now distinguish the surviving exploratory layers:
+The remaining subfolder is:
 
-- `legacy_optional/demographic_checks/`
-  Non-paper demographic / glasses side analyses kept only as archived optional
-  work.
 - `sigma_representation_checks/`
   Optional sigma-volume inspection helpers for slab crops and MRC exports.
-- `paper_asset_utils/`
-  Small one-off image formatting utilities used during paper figure assembly.
 
 If a script here is tied to a specific run directory, check whether there is a
 maintained equivalent under `eg3d/reward_tune_analysis/` before treating it as

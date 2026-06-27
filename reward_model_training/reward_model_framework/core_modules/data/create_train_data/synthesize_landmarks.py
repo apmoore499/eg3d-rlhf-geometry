@@ -21,8 +21,10 @@ try:
 except Exception:
     cv2 = None
 import numpy as np
+import pandas as pd
 import torch
 import torch.nn.functional as F
+import tqdm
 from PIL import Image, ImageDraw
 
 from core_modules.data.create_train_data import generation_utils as gen_utils
@@ -344,8 +346,6 @@ def main():
     # Optional: filter via CSV if provided.
     if args.seeds_csv is not None:
         try:
-            import pandas as pd
-
             df = pd.read_csv(args.seeds_csv, index_col=0)
             seeds_from_csv = []
             for col in df.columns:
@@ -360,8 +360,6 @@ def main():
         candidate_seeds = candidate_seeds.union(hiq_candidates)
 
     seeds = sorted(candidate_seeds)
-
-    import tqdm
 
     for seed in tqdm.tqdm(seeds):
         if has_all_landmarks(seed, out_dir, args.views):

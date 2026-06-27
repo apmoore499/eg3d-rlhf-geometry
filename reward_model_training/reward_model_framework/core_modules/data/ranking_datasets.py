@@ -10,11 +10,13 @@ from pathlib import Path
 
 import hydra
 import numpy as np
+import omegaconf
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
 from core_modules.data import all_data_types
 from core_modules.data import dset_loaders as dl
+from core_modules.data import misc_small_utils as msu
 from core_modules.data import ranking_utils as r_utils
 from core_modules.utils import misc_helpers as mh
 from core_modules.utils.pylogger_c import RankedLogger
@@ -211,8 +213,6 @@ class RankingDataBuilder:
 
     def set_ddir_and_seed_func(self):
         if self.dset_dict.dset_version in {"three", "inverted"}:
-            import core_modules.data.misc_small_utils as msu
-
             self.ddir_func = msu.ddir_func
             self.seed_func = msu.seed_func_default
 
@@ -315,8 +315,6 @@ class RankingDataBuilder:
 
         ba = batch_augmentations
         print(ba)
-
-        import omegaconf
 
         if isinstance(ba, str):
             if not ba.endswith(".yaml"):

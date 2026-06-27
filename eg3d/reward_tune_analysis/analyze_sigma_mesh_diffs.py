@@ -9,10 +9,13 @@ import math
 import os
 from pathlib import Path
 
+import matplotlib
 import numpy as np
 from scipy.spatial import cKDTree
 from skimage.measure import marching_cubes
 import trimesh
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 
 
 def parse_args() -> argparse.Namespace:
@@ -88,10 +91,6 @@ def symmetric_surface_distances(points_a: np.ndarray, points_b: np.ndarray) -> d
 
 def save_overlay(path: Path, points_a: np.ndarray, points_b: np.ndarray) -> None:
     os.environ.setdefault("MPLCONFIGDIR", "/tmp/matplotlib-codex")
-    import matplotlib
-
-    matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
 
     fig, axes = plt.subplots(1, 3, figsize=(14, 4))
     pairs = [

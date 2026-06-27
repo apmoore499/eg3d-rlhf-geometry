@@ -40,7 +40,6 @@ reward-tuning modifications.
 These are local scripts, notes, and archived tools created for this project.
 
 - `eg3d/reward_tune_analysis/`
-- `docs/reward_tune_notes/`
 - `docs/rlhf_reward_loss_surface_2026-06-24.md`
 
 ## Historical note

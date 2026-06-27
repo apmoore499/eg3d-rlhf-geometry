@@ -9,6 +9,7 @@ indices and feed the cropped tensor straight into the reward model.
 """
 from __future__ import annotations
 
+import argparse
 import json
 import sys
 from pathlib import Path
@@ -122,7 +123,6 @@ def _crop_full_cube_to_eg3d_pads(full_cube_xyz: torch.Tensor, tri_idx, full_res:
 
 
 def main():
-    import argparse
     ap = argparse.ArgumentParser()
     ap.add_argument("--panohead-trunc", type=float, default=0.7,
                     help="truncation_psi used when PanoHead σ cubes were extracted")
