@@ -20,7 +20,7 @@ from eg3d.torch_utils import misc
 # Project locations
 
 PROJECT_ROOT = Path(os.environ.get("PROJECT_ROOT", Path(__file__).resolve().parents[5]))
-DEFAULT_MODEL_PATH = PROJECT_ROOT / "pkl_pt/eg3d_1/ffhq512-128.pkl"
+DEFAULT_MODEL_PATH = Path(os.environ.get("E3D_RLHF_GENERATOR_PKL", os.environ.get("EG3D_RLHF_ORIG_PKL", str(PROJECT_ROOT / "pkl_pt/eg3d_1/ffhq512-128.pkl"))))
 DEFAULT_SAVE_DIR = Path(os.environ.get("E3D_RLHF_SAVE_DIR", str(PROJECT_ROOT / "generated_data")))
 DEFAULT_CHECK_DIR = Path(os.environ.get("E3D_RLHF_CHECK_DIR", str(DEFAULT_SAVE_DIR / "checking")))
 

@@ -21,10 +21,11 @@ class MethodSpec:
     use_solidify: bool
 
 
-METHODS = (
-    MethodSpec(name="cummax", level=30.0, use_solidify=True),
-    MethodSpec(name="legacy_sigma10", level=10.0, use_solidify=False),
-)
+METHODS_BY_NAME = {
+    "legacy_sigma10": MethodSpec(name="legacy_sigma10", level=10.0, use_solidify=False),
+    "cummax": MethodSpec(name="cummax", level=30.0, use_solidify=True),
+}
+DEFAULT_METHODS = ("legacy_sigma10",)
 
 
 def parse_args():
@@ -38,6 +39,16 @@ def parse_args():
     parser.add_argument("--truncation-psi", type=float, default=0.7)
     parser.add_argument("--truncation-cutoff", type=int, default=14)
     parser.add_argument("--win-size", type=int, default=4096)
+    parser.add_argument(
+        "--methods",
+        nargs="+",
+        choices=tuple(METHODS_BY_NAME.keys()),
+        default=list(DEFAULT_METHODS),
+        help=(
+            "Surface extraction methods to export. The public paper-facing path uses "
+            "legacy_sigma10 only; cummax is available for exploratory comparison."
+        ),
+    )
     return parser.parse_args()
 
 
@@ -45,6 +56,10 @@ def load_generator(network_pkl: str):
     da = generation_utils.set_defaults(generation_utils.DArgs())
     da.set_network_pkl(network_pkl)
     return generation_utils.load_pkl_G(da).cuda().eval()
+
+
+def resolve_methods(method_names):
+    return [METHODS_BY_NAME[name] for name in method_names]
 
 
 def sample_mesh(mesh_utils, G, ws, method: MethodSpec, shape_res: int, truncation_cutoff: int, truncation_psi: float):
@@ -148,9 +163,8 @@ def make_contact_sheet(compare_paths, out_path: Path, columns: int = 4):
     sheet.save(out_path, quality=92)
 
 
-def export_state(mesh_utils, G, state_name: str, snapshot_path: str, outdir: Path, seeds, shape_res: int, truncation_cutoff: int, truncation_psi: float, win_size: int, manifest_rows):
-    compare_paths_by_method = {method.name: [] for method in METHODS}
-    for method in METHODS:
+def export_state(mesh_utils, G, methods, state_name: str, snapshot_path: str, outdir: Path, seeds, shape_res: int, truncation_cutoff: int, truncation_psi: float, win_size: int, manifest_rows):
+    for method in methods:
         state_dir = outdir / method.name / state_name
         state_dir.mkdir(parents=True, exist_ok=True)
         for seed in seeds:
@@ -175,7 +189,6 @@ def export_state(mesh_utils, G, state_name: str, snapshot_path: str, outdir: Pat
                     "image_path": str(out_path),
                 }
             )
-    return compare_paths_by_method
 
 
 def main():
@@ -184,6 +197,7 @@ def main():
     outdir.mkdir(parents=True, exist_ok=True)
 
     seeds = list(range(args.start_seed, args.start_seed + args.num_seeds))
+    methods = resolve_methods(args.methods)
     mesh_utils = finetuning_utils.MeshUtilsDataClass()
     manifest_rows = []
 
@@ -196,7 +210,7 @@ def main():
         "shape_res": args.shape_res,
         "truncation_psi": args.truncation_psi,
         "truncation_cutoff": args.truncation_cutoff,
-        "methods": [method.__dict__ for method in METHODS],
+        "methods": [method.__dict__ for method in methods],
     }
     (outdir / "metadata.json").write_text(json.dumps(metadata, indent=2))
 
@@ -204,6 +218,7 @@ def main():
     export_state(
         mesh_utils=mesh_utils,
         G=baseline_G,
+        methods=methods,
         state_name="untuned",
         snapshot_path=args.baseline_pkl,
         outdir=outdir,
@@ -221,6 +236,7 @@ def main():
     export_state(
         mesh_utils=mesh_utils,
         G=tuned_G,
+        methods=methods,
         state_name="tuned",
         snapshot_path=args.tuned_pkl,
         outdir=outdir,
@@ -236,7 +252,7 @@ def main():
 
     compare_root = outdir / "compare"
     compare_root.mkdir(parents=True, exist_ok=True)
-    for method in METHODS:
+    for method in methods:
         compare_dir = compare_root / method.name
         compare_dir.mkdir(parents=True, exist_ok=True)
         compare_paths = []

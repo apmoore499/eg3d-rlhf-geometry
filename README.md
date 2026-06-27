@@ -111,6 +111,8 @@ The current maintained experiment configs are:
 
 - Reward-model data generation from an EG3D checkpoint:
   [generate_reward_training_data.sh](reward_model_training/reward_model_framework/core_modules/scripts/generate_reward_training_data.sh)
+- Public release verification (2-seed data generation, loader smoke, maintained reward-model one-batch forward smoke, released reward-model checkpoint load, and optional mesh-bank export):
+  [verify_public_release.py](reward_model_training/reward_model_framework/core_modules/scripts/verify_public_release.py)
 - Reward-model retraining sweep:
   [train_all_reward_models.sh](reward_model_training/reward_model_framework/core_modules/scripts/train_all_reward_models.sh)
 - Protected finetune verification across the five maintained RLHF configs:
@@ -178,7 +180,23 @@ bash core_modules/scripts/generate_reward_training_data.sh
 That launcher runs the maintained synthesis scripts for triple RGB views,
 triple depth maps, sigma-field 256 slabs, and AW98 landmarks. It requires a
 CUDA-capable environment, an external pretrained EG3D checkpoint, and
-substantial storage/time.
+substantial storage/time. Override the EG3D checkpoint with
+`E3D_RLHF_GENERATOR_PKL` (or the legacy `EG3D_RLHF_ORIG_PKL`) if it is not at
+`pkl_pt/eg3d_1/ffhq512-128.pkl`.
+
+For a maintained public-release verification pass, use:
+
+```sh
+cd reward_model_training/reward_model_framework
+python core_modules/scripts/verify_public_release.py \
+  --baseline-pkl /path/to/untuned.pkl \
+  --tuned-pkl /path/to/tuned.pkl
+```
+
+This writes a summary JSON under `/tmp/eg3d_rlhf_public_verify/` by default.
+The released reward-model checkpoint smoke expects `RWD_MODELS_DIR` to point at
+the external released artifact bundle. If you omit `--baseline-pkl` /
+`--tuned-pkl`, the mesh-bank export step is skipped.
 
 The main pretrained/tuned checkpoints used in the paper are also external to
 the repo. The public code supports:

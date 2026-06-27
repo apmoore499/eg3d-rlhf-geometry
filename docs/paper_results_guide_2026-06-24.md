@@ -146,15 +146,15 @@ Required assets:
 Expected outputs:
 
 - `metadata.json`
-- per-method image banks under `cummax/` and `legacy_sigma10/`
+- image banks under `legacy_sigma10/` for the paper-facing/user-study export path
 - `compare/` side-by-side before/after images
 - contact sheets
 - CSV manifest of exported images
 
 Notes:
 
-- the exporter currently supports two surface extraction methods:
-  `cummax` and `legacy_sigma10`
+- the maintained paper-facing export uses `legacy_sigma10`, matching the original marching-cubes-at-sigma-10 user-study geometry extraction
+- `cummax` remains available only as an explicit exploratory comparison mode because it distorts geometry relative to the user-study path
 - this is the maintained path for paper-style tuned-vs-untuned mesh exports
 
 ## Fast Verification Paths
@@ -174,6 +174,22 @@ python -m core_modules.train_rwd_model \
   trainer.limit_train_batches=2 trainer.limit_val_batches=2 \
   data.dset_dict.proportion_of_data_to_use=0.02
 ```
+
+### Public release verifier
+
+From `reward_model_training/reward_model_framework/`:
+
+```sh
+python core_modules/scripts/verify_public_release.py \
+  --baseline-pkl /path/to/untuned.pkl \
+  --tuned-pkl /path/to/tuned.pkl
+```
+
+This runs the maintained 2-seed data-generation smoke, the loader smoke, a
+one-batch forward pass through each maintained reward-model experiment, the
+released reward-model checkpoint load smoke, and an optional tiny tuned-vs-untuned
+mesh-bank export. It writes a JSON summary under `/tmp/eg3d_rlhf_public_verify/`
+by default.
 
 ### RLHF smoke
 
