@@ -84,11 +84,11 @@ EVALUATE_METRICS: False
 # p7m2gjvs <<<< immed across, only go for 5, latest mod but stop early. 
 rwd_model_id: f12n5jti #8nqtzmdn #ehme2rls #6bx8do1s #t5sjw6c2 #hmuz0rkk #y9rdlz1i #2tmz7m35 #nlz85nmt #3n7fne6z #9yekqug7 #k4fb7aa9 #oqluna4v #i33g8uxt #qzycqnmm #18evrwrz # f12n5jti #resnet3d model, mean agg k83zfe1n  #w406mbr7  #cjowd93t
 #8nqtzmdn
-#rwd_id_final_tuned_weights: /home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/reward_model_training/reward_model_framework/core_modules/RWD_MODELS_FOR_TUNING/f12n5jti/f12n5jti_retrain_1.pt
+#rwd_id_final_tuned_weights: /path/to/eg3d-rlhf-geometry/reward_model_training/reward_model_framework/core_modules/RWD_MODELS_FOR_TUNING/f12n5jti/f12n5jti_retrain_1.pt
 #rwd_model_id: f12n5jti #pointnetall, cos act
-#rwd_id_final_tuned_weights: /home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/reward_model_training/reward_model_framework/core_modules/RWD_MODELS_FOR_TUNING/f12n5jti/online_learning_trial/f12n5jti_retrain_9.pt
+#rwd_id_final_tuned_weights: /path/to/eg3d-rlhf-geometry/reward_model_training/reward_model_framework/core_modules/RWD_MODELS_FOR_TUNING/f12n5jti/online_learning_trial/f12n5jti_retrain_9.pt
 #rwd_model_id: f12n5jti #resnet3d model, mean agg k83zfe1n  #w406mbr7
-#rwd_id_final_tuned_weights: /home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/reward_model_training/reward_model_framework/core_modules/RWD_MODELS_FOR_TUNING/f12n5jti/online_learning_trial/f12n5jti_retrain_14_wpt.pt
+#rwd_id_final_tuned_weights: /path/to/eg3d-rlhf-geometry/reward_model_training/reward_model_framework/core_modules/RWD_MODELS_FOR_TUNING/f12n5jti/online_learning_trial/f12n5jti_retrain_14_wpt.pt
 #rwd_model_id: qzycqnmm #18evrwrz #x9z3iwde #et0ofuwq #7g0ot7iw #cxvmj6vk #rkvkbjj5 #25wb4hak #z47yaghv #95i2laka # tkfy5jde #4xaxdave #2ksth4g7 #94edp9qz #cfz4f34j #pyux3izo #4306f853 #zirhrbjj  #gqsfd8xk #lf78ypgc           #kjstlzu4    #mh6l48f5                  # yhaabw9i             #6kdg9esf      # mybllbdu #2qrx9yfy  #6m1qhigo #svvzbsws #5ya2espf # g1xew5jz #8d3v9950 #i0cgy2um ### mmro37my #8m4igjv6 #q9as7i67 #cjowd93t #resnet3d model, mean agg k83zfe1n  #w406mbr7  #cjowd93t
 #rwd_model_id: 9mp3llqq #resnet3d model 
 #rwd_model_id: qyawqy8w #unet model
@@ -116,9 +116,9 @@ pretrained_modules:
 click_legacy_args:
   density_reg_every: 4
   workers: 1
-  #resume: /media/krillman/240GB_DATA/training_runs_2/01275-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl
-  #resume: /media/krillman/240GB_DATA/training_runs_2/01360-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl
-  resume: /home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/pkl_pt/eg3d_1/ffhq512-128.pkl #/media/krillman/240GB_DATA/training_runs_2/01224-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002058_LAST.pkl #/media/krillman/240GB_DATA/training_runs_2/01226-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002058.pkl #/media/krillman/240GB_DATA/training_runs_2/01270-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002068_LAST.pkl
+  #resume: /path/to/data/training_runs_2/01275-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl
+  #resume: /path/to/data/training_runs_2/01360-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl
+  resume: /path/to/eg3d-rlhf-geometry/pkl_pt/eg3d_1/ffhq512-128.pkl #/path/to/data/training_runs_2/01224-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002058_LAST.pkl #/path/to/data/training_runs_2/01226-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002058.pkl #/path/to/data/training_runs_2/01270-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002068_LAST.pkl
   #g_num_fp16_res: 4
 
 seedslist_visualisation: [2,3,4,5,6]

@@ -4,7 +4,7 @@
 # Writes a run dir under training_runs_2.
 set -euo pipefail
 
-cd /home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/eg3d
+cd /path/to/eg3d-rlhf-geometry/eg3d
 
 conda run --no-capture-output -n hf_geom_eg3d_py39 \
   python train_rlhf.py \
@@ -15,4 +15,4 @@ conda run --no-capture-output -n hf_geom_eg3d_py39 \
     network_snapshot_ticks=1 \
     vis_shape_res=64 \
     'seedslist_visualisation=[2,3]' \
-    click_legacy_args.outdir=/media/krillman/240GB_DATA/training_runs_2
+    click_legacy_args.outdir=/path/to/data/training_runs_2

@@ -66,8 +66,8 @@ pretrained_modules:
 n_output_for_preference_study: 100
 
 click_legacy_args:
-  resume: /media/krillman/240GB_DATA/training_runs_2/00237-ffhq-FFHQ_512_4995-gpus1-batch4-gamma25_ORIG_FID_SSCORE/network-snapshot-002028.pkl
-  data: /media/krillman/DISK5_1TB/t2_ffhq/eg3d_for_dataset/dataset_preprocessing/ffhq/FFHQ_512_4995.zip
+  resume: /path/to/data/training_runs_2/00237-ffhq-FFHQ_512_4995-gpus1-batch4-gamma25_ORIG_FID_SSCORE/network-snapshot-002028.pkl
+  data: /media/user/DISK5_1TB/t2_ffhq/eg3d_for_dataset/dataset_preprocessing/ffhq/FFHQ_512_4995.zip
 
 
 eval_metrics_only: True

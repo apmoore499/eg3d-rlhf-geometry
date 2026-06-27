@@ -80,9 +80,9 @@ EVALUATE_METRICS: False
 # sel_idx='6tnwbbb9' #augment, no bad seed
 
 #rwd_model_id: f12n5jti #pointnetall, cos act
-#rwd_id_final_tuned_weights: /home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/reward_model_training/reward_model_framework/core_modules/RWD_MODELS_FOR_TUNING/f12n5jti/online_learning_trial/f12n5jti_retrain_9.pt
+#rwd_id_final_tuned_weights: /path/to/eg3d-rlhf-geometry/reward_model_training/reward_model_framework/core_modules/RWD_MODELS_FOR_TUNING/f12n5jti/online_learning_trial/f12n5jti_retrain_9.pt
 #rwd_model_id: f12n5jti #resnet3d model, mean agg k83zfe1n  #w406mbr7
-#rwd_id_final_tuned_weights: /home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/reward_model_training/reward_model_framework/core_modules/RWD_MODELS_FOR_TUNING/f12n5jti/online_learning_trial/f12n5jti_retrain_14_wpt.pt
+#rwd_id_final_tuned_weights: /path/to/eg3d-rlhf-geometry/reward_model_training/reward_model_framework/core_modules/RWD_MODELS_FOR_TUNING/f12n5jti/online_learning_trial/f12n5jti_retrain_14_wpt.pt
 rwd_model_id: 2ksth4g7 #94edp9qz #cfz4f34j #pyux3izo #4306f853 #zirhrbjj  #gqsfd8xk #lf78ypgc           #kjstlzu4    #mh6l48f5                  # yhaabw9i             #6kdg9esf      # mybllbdu #2qrx9yfy  #6m1qhigo #svvzbsws #5ya2espf # g1xew5jz #8d3v9950 #i0cgy2um ### mmro37my #8m4igjv6 #q9as7i67 #cjowd93t #resnet3d model, mean agg k83zfe1n  #w406mbr7  #cjowd93t
 #rwd_model_id: f12n5jti #resnet3d model, mean agg k83zfe1n  #w406mbr7  #cjowd93t
 #rwd_model_id: 9mp3llqq #resnet3d model 
@@ -111,7 +111,7 @@ pretrained_modules:
 click_legacy_args:
   density_reg_every: 4
   workers: 3
-  #resume: /media/krillman/240GB_DATA/training_runs_2/01275-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl
+  #resume: /path/to/data/training_runs_2/01275-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl
 
   #g_num_fp16_res: 4
 

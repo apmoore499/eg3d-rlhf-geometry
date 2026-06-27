@@ -64,7 +64,7 @@ pretrained_modules:
 n_output_for_preference_study: 100
 
 click_legacy_args:
-  resume: /media/krillman/240GB_DATA/training_runs_2/00973-ffhq-EG3D_FFHQ_ALL_NO_MIRROR-gpus1-batch2-gamma25/network-snapshot-001009_LAST.pkl
+  resume: /path/to/data/training_runs_2/00973-ffhq-EG3D_FFHQ_ALL_NO_MIRROR-gpus1-batch2-gamma25/network-snapshot-001009_LAST.pkl
 
 eval_metrics_only: True
 output_mesh_images_only: False

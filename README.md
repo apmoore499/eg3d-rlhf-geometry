@@ -66,6 +66,7 @@ Reward-model training can be reproduced from the released code and data. Full EG
 | [docs/reproducing_paper.md](docs/reproducing_paper.md) | map of paper results to scripts/configs, plus verification commands |
 | [docs/released_artifacts.md](docs/released_artifacts.md) | the released checkpoints and their loading contract |
 | [docs/camera_conventions.md](docs/camera_conventions.md) | camera pose / intrinsics conventions used throughout |
+| [docs/reward_model_design_notes.md](docs/reward_model_design_notes.md) | design choices not in the paper (loss heads; why non-sigma settings vary) |
 
 ## Setup
 
@@ -119,6 +120,8 @@ bash scripts/finetune_eg3d_reported_sfield.sh
 ```
 
 Fine-tuning configs: `finetune_eg3d_sfield`, `finetune_eg3d_sdmap`, `finetune_eg3d_tdmap`, `finetune_eg3d_pn1`, and `finetune_eg3d_null` (baseline).
+
+Hyperparameters for the non-sigma reward-model and fine-tuning configs are intentionally un-settled; see [docs/reward_model_design_notes.md](docs/reward_model_design_notes.md) for why.
 
 Export the before/after mesh comparison (tuned vs. original) used for the paper figures:
 

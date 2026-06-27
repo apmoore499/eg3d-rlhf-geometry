@@ -70,9 +70,9 @@ rwd_clamp_max: 10.0 #5.0
 rwd_clamp_min: -10
 EVALUATE_METRICS: True
 #rwd_model_id: f12n5jti #pointnetall, cos act
-#rwd_id_final_tuned_weights: /home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/reward_model_training/reward_model_framework/core_modules/RWD_MODELS_FOR_TUNING/f12n5jti/online_learning_trial/f12n5jti_retrain_9.pt
+#rwd_id_final_tuned_weights: /path/to/eg3d-rlhf-geometry/reward_model_training/reward_model_framework/core_modules/RWD_MODELS_FOR_TUNING/f12n5jti/online_learning_trial/f12n5jti_retrain_9.pt
 #rwd_model_id: f12n5jti #resnet3d model, mean agg k83zfe1n  #w406mbr7
-rwd_id_final_tuned_weights: /home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/reward_model_training/reward_model_framework/core_modules/RWD_MODELS_FOR_TUNING/fe909npy/fe909npy_retrain_8_w_indiv.pt
+rwd_id_final_tuned_weights: /path/to/eg3d-rlhf-geometry/reward_model_training/reward_model_framework/core_modules/RWD_MODELS_FOR_TUNING/fe909npy/fe909npy_retrain_8_w_indiv.pt
 rwd_model_id: fe909npy
 #rwd_model_id: 9mp3llqq #resnet3d model 
 #rwd_model_id: qyawqy8w #unet model
@@ -80,7 +80,7 @@ rwd_model_id: fe909npy
 hpms_first_dmaps:
   truncation_psi: 0.25
   truncation_cutoff: 14
-#/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/reward_model_training/reward_model_framework/core_modules/RWD_MODELS_FOR_TUNING/f12n5jti/online_learning_trial/f12n5jti_retrain_5.pt
+#/path/to/eg3d-rlhf-geometry/reward_model_training/reward_model_framework/core_modules/RWD_MODELS_FOR_TUNING/f12n5jti/online_learning_trial/f12n5jti_retrain_5.pt
 
 pretrained_modules:
   old_G_ema: True     #true  #nb only do this is lambda_sigma_l1 > 0

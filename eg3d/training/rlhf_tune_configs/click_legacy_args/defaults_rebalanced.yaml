@@ -7,9 +7,9 @@ resume: ${oc.env:EG3D_RLHF_ORIG_PKL,../pkl_pt/eg3d_1/ffhq512-128.pkl} # original
 neural_rendering_resolution_final: 128
 resume_kimg: ${rlhf_tune_hpms.resume_kimg} #2028
 outdir: ${oc.env:EG3D_RLHF_TRAINING_RUNS_DIR,../paper_artifacts/_external_training_runs}
-#data: /media/krillman/DISK5_1TB/t2_ffhq/eg3d_for_dataset/dataset_preprocessing/ffhq/FFHQ_512_4995.zip
+#data: /media/user/DISK5_1TB/t2_ffhq/eg3d_for_dataset/dataset_preprocessing/ffhq/FFHQ_512_4995.zip
 data: ${oc.env:EG3D_RLHF_REBALANCED_DATASET_ZIP,../paper_artifacts/_external_data/EG3D_FFHQ_ALL_NO_MIRROR.zip}
-#data: /media/krillman/DISK5_1TB/FFHQ-EG3D.zip
+#data: /media/user/DISK5_1TB/FFHQ-EG3D.zip
 batch: ${rlhf_tune_hpms.batch_size} #2 for triple dmap
 gamma: ${rlhf_tune_hpms.gamma} #2 for triple dmap
 mbstd_group: ${click_legacy_args.batch}

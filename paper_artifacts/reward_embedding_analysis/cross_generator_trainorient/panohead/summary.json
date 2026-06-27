@@ -1,6 +1,6 @@
 {
   "label": "panohead",
-  "sigma_root": "/home/krillman/Documents/eg3dredo/PanoHead/panohead_sigma_cubes_for_reward/trunc0.70",
+  "sigma_root": "/home/user/Documents/eg3dredo/PanoHead/panohead_sigma_cubes_for_reward/trunc0.70",
   "robust_norm": false,
   "clip_pct": null,
   "flip_axis0": true,

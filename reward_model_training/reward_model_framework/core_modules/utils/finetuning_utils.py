@@ -490,7 +490,7 @@ class MeshUtilsDataClass:
 
         # sigmas = np.flip(sigmas, 0)
 
-        # out_fn='/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/reward_model_training/reward_model_framework/core_modules/outputs/3d_feature_volume/run_model_volume_32C2.pt'
+        # out_fn='/path/to/eg3d-rlhf-geometry/reward_model_training/reward_model_framework/core_modules/outputs/3d_feature_volume/run_model_volume_32C2.pt'
 
         # torch.save(obj=list_to_ret,f=out_fn)
 
@@ -1209,7 +1209,7 @@ class MeshUtilsDataClass:
         import os
         import pathlib
 
-        pl = pathlib.Path("/media/krillman/1TB_DATA/NoW_challenge_16_04_2023/now_evaluation")
+        pl = pathlib.Path("/media/user/1TB_DATA/NoW_challenge_16_04_2023/now_evaluation")
         ll = list(pl.glob("output*/results/*.obj"))
         print("total n *.obj files:")
         print(len(ll))
@@ -2525,7 +2525,7 @@ def split_likely_main_mesh_component(mesh):
 
 
 def add_kobe_for_alpha_step(cmf):
-    uc = trimesh.load("/media/krillman/1TB_DATA/codes/HFGI3D/kobe.obj")
+    uc = trimesh.load("/media/user/1TB_DATA/codes/HFGI3D/kobe.obj")
     cmf = trimesh.boolean.union([cmf, uc])
     return cmf
 

@@ -132,12 +132,12 @@ click_legacy_args:
   arch: panohead
   gen_pose_cond: true
   tick: 1
-  resume: /home/krillman/Documents/eg3dredo/PanoHead/models/easy-khair-180-gpc0.8-trans10-025000.pkl
+  resume: /home/user/Documents/eg3dredo/PanoHead/models/easy-khair-180-gpc0.8-trans10-025000.pkl
   neural_rendering_resolution_final: 128
   resume_kimg: ${rlhf_tune_hpms.resume_kimg}
-  outdir: /media/krillman/240GB_DATA/training_runs_2
-  rlhf_config_fn: /home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/eg3d_rlhf_hpms_dm3.yaml
-  data: /media/krillman/DISK5_1TB/t2_ffhq/eg3d_for_dataset/eg3d_w_mirrore.zip
+  outdir: /path/to/data/training_runs_2
+  rlhf_config_fn: /path/to/eg3d-rlhf-geometry/eg3d_rlhf_hpms_dm3.yaml
+  data: /media/user/DISK5_1TB/t2_ffhq/eg3d_for_dataset/eg3d_w_mirrore.zip
   batch: ${rlhf_tune_hpms.batch_size}
   gamma: ${rlhf_tune_hpms.gamma}
   mbstd_group: ${click_legacy_args.batch}

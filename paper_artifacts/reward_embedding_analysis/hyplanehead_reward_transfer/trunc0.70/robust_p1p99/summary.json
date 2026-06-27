@@ -1,6 +1,6 @@
 {
   "label": "hyplanehead",
-  "sigma_root": "/home/krillman/Documents/eg3dredo/HyPlaneHead/hyplanehead_sigma_cubes_for_reward/trunc0.70",
+  "sigma_root": "/home/user/Documents/eg3dredo/HyPlaneHead/hyplanehead_sigma_cubes_for_reward/trunc0.70",
   "robust_norm": true,
   "clip_pct": "1,99",
   "n": 100,

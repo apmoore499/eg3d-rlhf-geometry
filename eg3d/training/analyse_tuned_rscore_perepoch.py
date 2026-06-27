@@ -129,5 +129,5 @@ def run_combined_epoch_analysis(rundir):
 
 
 if __name__ == "__main__":
-    rundir = Path("/media/krillman/240GB_DATA/training_runs_2/01427-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/")
+    rundir = Path("/path/to/data/training_runs_2/01427-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/")
     run_combined_epoch_analysis(rundir)

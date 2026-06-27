@@ -187,8 +187,8 @@ def create_img_of_ranked_meshes(df, seed_func, ddir_func, which_seeds="best", n_
     # extract the top n_meshes seeds and loss values
     sel_seeds = sorted_joined_all["seed"].head(n_meshes).tolist()
     sel_seeds = [int(i) for i in sel_seeds]
-    # meshdir = "/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/reward_model_training/notebooks/legacy/03122025_98lmks_fix/visualised_meshes"
-    meshdir = "/home/krillman/Documents/eg3dredo_data/visualisations"
+    # meshdir = "/path/to/eg3d-rlhf-geometry/reward_model_training/notebooks/legacy/03122025_98lmks_fix/visualised_meshes"
+    meshdir = "/home/user/Documents/eg3dredo_data/visualisations"
     meshdir = pathlib.Path(meshdir)
     seedmeshes = [meshdir.joinpath(f"mesh_cat_s_{seed_func(s)}.jpg") for s in sel_seeds]
     pics = []
@@ -336,10 +336,10 @@ def plot_overall_images(seedmeshes, pics):
         try:
             img1 = Image.open(s)  # .resize((200, 200))
         except:  # noqa: E722, W0702
-            # meshdir = "/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/reward_model_training/notebooks/legacy/03122025_98lmks_fix/visualised_meshes"
-            meshdir = "/home/krillman/Documents/eg3dredo_data/visualisations"
+            # meshdir = "/path/to/eg3d-rlhf-geometry/reward_model_training/notebooks/legacy/03122025_98lmks_fix/visualised_meshes"
+            meshdir = "/home/user/Documents/eg3dredo_data/visualisations"
             gg = list(pathlib.Path(meshdir).glob("mesh_cat_s_*.jpg"))
-            # gg = #glob.glob("/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/000_RLHF_AM/rlhf_meshes/*/mesh_cat_s_*.jpg")
+            # gg = #glob.glob("/path/to/eg3d-rlhf-geometry/000_RLHF_AM/rlhf_meshes/*/mesh_cat_s_*.jpg")
             img1 = Image.open(gg[0])  # .resize((200, 200))
             iii = np.array(img1)
             iii = np.ones_like(iii) * 255
@@ -484,7 +484,7 @@ import torchvision.transforms.v2 as v2
 import trimesh
 import autoroot  # noqa: F401
 
-# sys.path.append("/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/eg3d")
+# sys.path.append("/path/to/eg3d-rlhf-geometry/eg3d")
 
 
 from pandas_ods_reader import read_ods
@@ -755,7 +755,7 @@ def text_on_image(img, text, fontsize=100):
 
 # record a list of meshes to exclude, based on eyeballing
 def setup_seeds_for_good_meshes():
-    entire_spec_fn = "/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/000_RLHF_AM/mesh_outputs_spec_20_09_2023.ods"
+    entire_spec_fn = "/path/to/eg3d-rlhf-geometry/000_RLHF_AM/mesh_outputs_spec_20_09_2023.ods"
     output_types = read_ods(entire_spec_fn, sheet="outputs_basic", headers=True).output_type.values
     conditions_to_synth = ["rlhf_meshes_ffhqrebalanced512-128_tpsi_025"]
 
@@ -774,7 +774,7 @@ def setup_seeds_for_good_meshes():
     seeds_good_filtered = [s for s in seeds_good if s not in exclude_seeds]
     log.info("n good mesh")
     log.info(len(seeds_good_filtered))
-    seeds_good_fn = "/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/000_RLHF_AM/rlhf_meshes/rlhf_meshes_ffhqrebalanced512-128_tpsi_025_good_meshes_04_10_2023.pt"
+    seeds_good_fn = "/path/to/eg3d-rlhf-geometry/000_RLHF_AM/rlhf_meshes/rlhf_meshes_ffhqrebalanced512-128_tpsi_025_good_meshes_04_10_2023.pt"
     torch.save(obj=seeds_good_filtered, f=seeds_good_fn)
 
 
@@ -842,13 +842,13 @@ def precompute_dataset_to_npgz(names_of_pt):
         f.close()
 
         # dt=
-        # numpy.save(out_fn,dmaps_cat)#'/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/reward_model_training/compression_dl/data.npy', dmaps_cat)
-        # print(os.path.getsize('/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/reward_model_training/compression_dl/data.npy'))
+        # numpy.save(out_fn,dmaps_cat)#'/path/to/eg3d-rlhf-geometry/reward_model_training/compression_dl/data.npy', dmaps_cat)
+        # print(os.path.getsize('/path/to/eg3d-rlhf-geometry/reward_model_training/compression_dl/data.npy'))
         # 4000080 uncompressed size
         # subprocess.call(f'xz -9 --threads=8 {out_fn}', shell=True)
 
-        # numpy.save(out_fn,blens_list)#'/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/reward_model_training/compression_dl/data.npy', dmaps_cat)
-        # print(os.path.getsize('/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/reward_model_training/compression_dl/data.npy'))
+        # numpy.save(out_fn,blens_list)#'/path/to/eg3d-rlhf-geometry/reward_model_training/compression_dl/data.npy', dmaps_cat)
+        # print(os.path.getsize('/path/to/eg3d-rlhf-geometry/reward_model_training/compression_dl/data.npy'))
         # 4000080 uncompressed size
     # subprocess.call(f'xz -9 --threads=8 {out_fn}', shell=True)
 
@@ -1529,8 +1529,8 @@ def convert_draco_mesh_to_croppped_pt_geom_mesh_and_save(draco_fn):
 
 def create_point_clouds_from_dmap_and_save(nrs=256):
     ddir_list = [
-        "/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/000_RLHF_AM/rlhf_meshes/rlhf_meshes_ffhqrebalanced512-128_tpsi_025",
-        "/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/000_RLHF_AM/rlhf_meshes/rlhf_meshes_ffhq512-128_const_noise_t1_augment",
+        "/path/to/eg3d-rlhf-geometry/000_RLHF_AM/rlhf_meshes/rlhf_meshes_ffhqrebalanced512-128_tpsi_025",
+        "/path/to/eg3d-rlhf-geometry/000_RLHF_AM/rlhf_meshes/rlhf_meshes_ffhq512-128_const_noise_t1_augment",
     ]
 
     for data_dir in ddir_list:
@@ -1569,8 +1569,8 @@ def get_xyz_from_lmk(ll):
 
 def create_export_mediapipe_lmks_as_pt():
     ddir_list = [
-        "/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/000_RLHF_AM/rlhf_meshes/rlhf_meshes_ffhqrebalanced512-128_tpsi_025",
-        "/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/000_RLHF_AM/rlhf_meshes/rlhf_meshes_ffhq512-128_const_noise_t1_augment",
+        "/path/to/eg3d-rlhf-geometry/000_RLHF_AM/rlhf_meshes/rlhf_meshes_ffhqrebalanced512-128_tpsi_025",
+        "/path/to/eg3d-rlhf-geometry/000_RLHF_AM/rlhf_meshes/rlhf_meshes_ffhq512-128_const_noise_t1_augment",
     ]
 
     ddir = ddir_list[0]

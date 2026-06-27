@@ -1,6 +1,6 @@
 # @package _global_
 # Verbatim copy of 01446 hydra_cfg.yaml with lambda_sigma_front_growth: 1.0 added.
-# Source: /media/krillman/240GB_DATA/training_runs_2/01446-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/hydra_cfg.yaml
+# Source: /path/to/data/training_runs_2/01446-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/hydra_cfg.yaml
 
 wandb:
   setup:
@@ -115,12 +115,12 @@ click_legacy_args:
   gpus: 1
   gen_pose_cond: true
   tick: 1
-  resume: /home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/pkl_pt/eg3d_1/ffhq512-128.pkl
+  resume: /path/to/eg3d-rlhf-geometry/pkl_pt/eg3d_1/ffhq512-128.pkl
   neural_rendering_resolution_final: 128
   resume_kimg: ${rlhf_tune_hpms.resume_kimg}
-  outdir: /media/krillman/240GB_DATA/training_runs_2
-  rlhf_config_fn: /home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/eg3d_rlhf_hpms_dm3.yaml
-  data: /media/krillman/DISK5_1TB/t2_ffhq/eg3d_for_dataset/eg3d_w_mirrore.zip
+  outdir: /path/to/data/training_runs_2
+  rlhf_config_fn: /path/to/eg3d-rlhf-geometry/eg3d_rlhf_hpms_dm3.yaml
+  data: /media/user/DISK5_1TB/t2_ffhq/eg3d_for_dataset/eg3d_w_mirrore.zip
   batch: ${rlhf_tune_hpms.batch_size}
   gamma: ${rlhf_tune_hpms.gamma}
   mbstd_group: ${click_legacy_args.batch}

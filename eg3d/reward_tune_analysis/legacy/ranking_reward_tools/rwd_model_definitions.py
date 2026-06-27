@@ -37,7 +37,7 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 from camera_utils import FOV_to_intrinsics, LookAtPoseSampler
 
-RLHF_DIR = "/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/000_RLHF_AM"
+RLHF_DIR = "/path/to/eg3d-rlhf-geometry/000_RLHF_AM"
 RLHF_DIR = RLHF_DIR.replace("##", "000")
 
 from typing import Any, Dict, List, Optional, Tuple, Union
@@ -619,7 +619,7 @@ from facenet_pytorch import InceptionResnetV1 as inception_resnet_v1_fnet
 
 # arcface
 
-sys.path.append("/media/krillman/1TB_DATA/codes/HFGI3D/inversion/scripts/")
+sys.path.append("/media/user/1TB_DATA/codes/HFGI3D/inversion/scripts/")
 
 
 # import id_loss_module_3DGIPO as id_loss_module_3DGIPO

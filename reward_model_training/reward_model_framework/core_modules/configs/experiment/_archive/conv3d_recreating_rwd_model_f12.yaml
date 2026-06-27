@@ -25,7 +25,7 @@ trainer:
 
   #overfit
 train_ct_partition: false
-#ckpt_path: /home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/reward_model_training/reward_model_framework/core_modules/RWD_MODELS_FOR_TUNING/f12n5jti/best_model.pt
+#ckpt_path: /path/to/eg3d-rlhf-geometry/reward_model_training/reward_model_framework/core_modules/RWD_MODELS_FOR_TUNING/f12n5jti/best_model.pt
 
 
 loss:
@@ -37,8 +37,8 @@ dloader:
   num_workers: 6
   prefetch_factor: 2
 
-#/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/reward_model_training/reward_model_framework/core_modules/models/modules_unet3d.py
-#/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/reward_model_training/reward_model_framework/core_modules/configs/experiment/3dconv_net_sigma_512_unet3d.yaml
+#/path/to/eg3d-rlhf-geometry/reward_model_training/reward_model_framework/core_modules/models/modules_unet3d.py
+#/path/to/eg3d-rlhf-geometry/reward_model_training/reward_model_framework/core_modules/configs/experiment/3dconv_net_sigma_512_unet3d.yaml
 
 model:
   act_type: 'softplus'

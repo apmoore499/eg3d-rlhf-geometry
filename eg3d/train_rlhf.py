@@ -336,8 +336,8 @@ def parse_comma_separated_list(s):
 
 #     classifier = PointNetRankMesh(feature_transform=True)
 
-#     #model_dir = '/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/eg3d/models_rlhf_23_06_2023_rxy_1'
-#     #model_dir = '/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/eg3d/models_rlhf_02_07_2023_pnet_bk/'
+#     #model_dir = '/path/to/eg3d-rlhf-geometry/eg3d/models_rlhf_23_06_2023_rxy_1'
+#     #model_dir = '/path/to/eg3d-rlhf-geometry/eg3d/models_rlhf_02_07_2023_pnet_bk/'
 
 #     #mparams=dict(conditional_model=False, dmap_only_mod=True, dmap_chans=1)
 
@@ -493,7 +493,7 @@ def main_legacy_click(**kwargs):
     # POINT NET CLASSIFIER
 
     # classifier = PointNetRankMesh(feature_transform=True)
-    # classifier.load_state_dict(torch.load('/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/eg3d/pointnet_rankmesh_BEST_21_06_2023.PTH'))
+    # classifier.load_state_dict(torch.load('/path/to/eg3d-rlhf-geometry/eg3d/pointnet_rankmesh_BEST_21_06_2023.PTH'))
     # classifier.eval()
 
     # CONDITIONAL DMAP CLASSIFIER
@@ -509,7 +509,7 @@ def main_legacy_click(**kwargs):
     #     #if rlhf_opts.reward_model_type=='depth_map':
 
     #         #reward_model_name: models_rlhf_11_07_2023_first_3dmap_nrs_64.pkl     #directory where state dict stored
-    # #reward_models_dir: /home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/##_RLHF_AM/optimal_reward_models/
+    # #reward_models_dir: /path/to/eg3d-rlhf-geometry/##_RLHF_AM/optimal_reward_models/
 
     #     full_model_path=os.path.join(rlhf_opts.reward_models_dir,rlhf_opts.reward_model_name)
 
@@ -803,11 +803,11 @@ def main_legacy_click(**kwargs):
 def main_hydra(hydracfg: DictConfig) -> None:
     # legacy_args=[
     #                     "--outdir",
-    #                     "/media/krillman/240GB_DATA/training_runs_2",
+    #                     "/path/to/data/training_runs_2",
     #                     "--cfg",
     #                     "ffhq",
     #                     "--data",
-    #                     "/media/krillman/DISK5_1TB/t2_ffhq/eg3d_for_dataset/dataset_preprocessing/ffhq/FFHQ_512_4995.zip",
+    #                     "/media/user/DISK5_1TB/t2_ffhq/eg3d_for_dataset/dataset_preprocessing/ffhq/FFHQ_512_4995.zip",
     #                     "--gpus",
     #                     "1",
     #                     "--batch",
@@ -815,7 +815,7 @@ def main_hydra(hydracfg: DictConfig) -> None:
     #                     "--gamma",
     #                     "25",
     #                     "--rlhf_config_fn",
-    #                     "/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/eg3d_rlhf_hpms_dm3.yaml",
+    #                     "/path/to/eg3d-rlhf-geometry/eg3d_rlhf_hpms_dm3.yaml",
     #                     "--gen_pose_cond",
     #                     "True",
     #                     "--mbstd-group",
@@ -823,7 +823,7 @@ def main_hydra(hydracfg: DictConfig) -> None:
     #                     "--tick",
     #                     "1",
     #                     "--resume",
-    #                     "/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/pkl_pt/eg3d_1/ffhq512-128.pkl",
+    #                     "/path/to/eg3d-rlhf-geometry/pkl_pt/eg3d_1/ffhq512-128.pkl",
     #                     "--neural_rendering_resolution_final",
     #                     "128",
     #                     "--resume_kimg",
@@ -934,8 +934,8 @@ def main_hydra(hydracfg: DictConfig) -> None:
 
 #     if hydra_cfg_path is None:
 #         assert False, 'hydra_cfg_path is None'
-#         #/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/eg3d/training/cfg_rlhf_tune_AM/rlhf_tune.yaml
-#         #/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/eg3d/training/cfg_rlhf_tune_AM/rlhf_tune.yaml
+#         #/path/to/eg3d-rlhf-geometry/eg3d/training/cfg_rlhf_tune_AM/rlhf_tune.yaml
+#         #/path/to/eg3d-rlhf-geometry/eg3d/training/cfg_rlhf_tune_AM/rlhf_tune.yaml
 #     hydra.initialize(config_path=hydra_cfg_path, job_name="rlhf_tune",version_base=None)
 #     cfg = hydra.compose("rlhf_tune.yaml")#, overrides=["db=mysql", "db.user=${oc.env:USER}"])
 #     print(OmegaConf.to_yaml(cfg, resolve=True))

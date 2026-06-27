@@ -18,7 +18,7 @@
 # import tqdm
 # import trimesh
 
-# sys.path.append('/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/eg3d')
+# sys.path.append('/path/to/eg3d-rlhf-geometry/eg3d')
 # import cv2
 # from camera_utils import FOV_to_intrinsics, LookAtPoseSampler
 # from pandas_ods_reader import read_ods

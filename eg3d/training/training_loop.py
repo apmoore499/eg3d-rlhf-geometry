@@ -455,12 +455,12 @@ def save_image_grid(img, fname, drange, grid_size):
 # import src as rlhf_src
 
 # reward_model_pnet=rlhf_src.models.point_cloud.scalar_reward_pointnet2()
-# reward_model_pnet.load_state_dict(torch.load('/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/reward_model_training/reward_model_framework/core_modules/tmp/best_model.pt'))
+# reward_model_pnet.load_state_dict(torch.load('/path/to/eg3d-rlhf-geometry/reward_model_training/reward_model_framework/core_modules/tmp/best_model.pt'))
 
 
 # def get_canonical_dmap_cams_for_rlhf():
 
-#     tdmap_cams=torch.load('/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/reward_model_training/static_configs/triple_dmap_cameras.pt',map_location=torch.device('cpu'))
+#     tdmap_cams=torch.load('/path/to/eg3d-rlhf-geometry/reward_model_training/static_configs/triple_dmap_cameras.pt',map_location=torch.device('cpu'))
 #     canon_cam=tdmap_cams[1].unsqueeze(0)
 #     c=canon_cam
 #     cam2world_matrix = c[:, :16].view(-1, 4, 4)
@@ -1626,7 +1626,7 @@ def training_loop(
 
     # output 100 meshes
 
-    # /media/krillman/240GB_DATA/training_runs_2/00180-ffhq-FFHQ_512_4995-gpus1-batch4-gamma25/network-snapshot-002033.pkl
+    # /path/to/data/training_runs_2/00180-ffhq-FFHQ_512_4995-gpus1-batch4-gamma25/network-snapshot-002033.pkl
     # train_tick_stop
 
     if loss.hydra_cfg.get("eval_metrics_only", False):

@@ -10,7 +10,7 @@ import torch
 # to synthesise the meshes 26_07_2023
 
 
-sys.path.append("/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/eg3d")
+sys.path.append("/path/to/eg3d-rlhf-geometry/eg3d")
 
 # os.chdir()
 
@@ -657,7 +657,7 @@ def synthesise_mesh_from_G(G, seed, outdir, cur_nimg, shape_res=512, remove_mrc=
 
     da.outdir = outdir
 
-    # da.network_pkl='/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/training-runs/00070-ffhq-eg3d_rebal_02_07_2023_10k_uniform_yaws-gpus1-batch2-gamma50_mse_pixelwise_sigma_reg/network-snapshot-000200.pkl'
+    # da.network_pkl='/path/to/eg3d-rlhf-geometry/training-runs/00070-ffhq-eg3d_rebal_02_07_2023_10k_uniform_yaws-gpus1-batch2-gamma50_mse_pixelwise_sigma_reg/network-snapshot-000200.pkl'
 
     da.seed = seed
     da.truncation_psi = 0.7
@@ -666,7 +666,7 @@ def synthesise_mesh_from_G(G, seed, outdir, cur_nimg, shape_res=512, remove_mrc=
 
     # od=da.network_pkl.split('/')[-1].replace('.pkl','')
 
-    # da.outdir='/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/rlhf_meshes_ffhq512-128_RLMODEL'
+    # da.outdir='/path/to/eg3d-rlhf-geometry/rlhf_meshes_ffhq512-128_RLMODEL'
 
     # os.makedirs(da.outdir,exist_ok=True)
     # seed=100

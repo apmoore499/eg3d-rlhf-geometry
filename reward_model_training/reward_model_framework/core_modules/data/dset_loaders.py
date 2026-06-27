@@ -44,7 +44,7 @@ from sklearn.model_selection import train_test_split
 import sys
 import autoroot  # noqa: F401
 
-# sys.path.append("/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/eg3d")
+# sys.path.append("/path/to/eg3d-rlhf-geometry/eg3d")
 # breakpoint()
 from eg3d.training.volumetric_rendering.ray_sampler import RaySampler
 

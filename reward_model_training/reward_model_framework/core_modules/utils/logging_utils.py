@@ -1302,4 +1302,4 @@ def back_up_run_code(run_folder):
     backup_files(src_dir, run_folder, EXT_LIST, exclude=EXCLUDE)
 
 
-# BK_DIR='/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/reward_model_training/reward_model_framework/core_modules/bka'
+# BK_DIR='/path/to/eg3d-rlhf-geometry/reward_model_training/reward_model_framework/core_modules/bka'

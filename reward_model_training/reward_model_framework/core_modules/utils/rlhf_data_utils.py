@@ -159,7 +159,7 @@ def create_pcd_dsets_for_contrastive():
         train=str(DATASET_CACHE_DIR / "train_dset_closs_03.pt"),
         val=str(DATASET_CACHE_DIR / "valtest_dset_closs_03.pt"),
     )
-    # test='/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/reward_model_training/notebooks/legacy/test_dset_03_10_2023_10112_pcd_g_p1.pt')
+    # test='/path/to/eg3d-rlhf-geometry/reward_model_training/notebooks/legacy/test_dset_03_10_2023_10112_pcd_g_p1.pt')
 
     torch.save(obj=train_dataset, f=names_of_pt["train"])
     torch.save(obj=val_dataset, f=names_of_pt["val"])

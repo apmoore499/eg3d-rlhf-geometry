@@ -15,11 +15,11 @@ ranking_idx = 0
 
 
 def get_composed_fn(i):
-    return f"/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/000_RLHF_AM/composed_for_binary_ranking/rlhf_meshes_ffhq512-128_const_noise_t1/composed_{i}.jpg"
+    return f"/path/to/eg3d-rlhf-geometry/000_RLHF_AM/composed_for_binary_ranking/rlhf_meshes_ffhq512-128_const_noise_t1/composed_{i}.jpg"
 
 
 def copy_im(current_im, ranking_idx):
-    new_folder_name = f"/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/000_RLHF_AM/composed_for_binary_ranking/rlhf_meshes_ffhq512-128_const_noise_t1/binary_ranking_{ranking_idx}"
+    new_folder_name = f"/path/to/eg3d-rlhf-geometry/000_RLHF_AM/composed_for_binary_ranking/rlhf_meshes_ffhq512-128_const_noise_t1/binary_ranking_{ranking_idx}"
     try:
         shutil.copy(current_im, new_folder_name)
     except:
@@ -33,7 +33,7 @@ def batch_tensor(in_tensor):
 
 
 def copy_code(ranking_idx):
-    new_folder_name = f"/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/000_RLHF_AM/composed_for_binary_ranking/rlhf_meshes_ffhq512-128_const_noise_t1/binary_ranking_{ranking_idx}"
+    new_folder_name = f"/path/to/eg3d-rlhf-geometry/000_RLHF_AM/composed_for_binary_ranking/rlhf_meshes_ffhq512-128_const_noise_t1/binary_ranking_{ranking_idx}"
     all_to_copy = glob.glob(boilerplate_dir + "*")
     for fn in all_to_copy:
         shutil.copy(fn, new_folder_name)
@@ -44,7 +44,7 @@ def get_seed_from_jpg(fn):
 
 
 def init_rankings_csv(ranking_idx):
-    new_folder_name = f"/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/000_RLHF_AM/composed_for_binary_ranking/rlhf_meshes_ffhq512-128_const_noise_t1/binary_ranking_{ranking_idx}"
+    new_folder_name = f"/path/to/eg3d-rlhf-geometry/000_RLHF_AM/composed_for_binary_ranking/rlhf_meshes_ffhq512-128_const_noise_t1/binary_ranking_{ranking_idx}"
 
     all_in_folder = glob.glob(new_folder_name + "/*.jpg")
 
@@ -82,7 +82,7 @@ def init_rankings_csv(ranking_idx):
 
 # get all the ranigns...
 def get_ranking_folder(r):
-    return f"/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/000_RLHF_AM/composed_for_binary_ranking/rlhf_meshes_ffhq512-128_const_noise_t1/binary_ranking_{r}/"
+    return f"/path/to/eg3d-rlhf-geometry/000_RLHF_AM/composed_for_binary_ranking/rlhf_meshes_ffhq512-128_const_noise_t1/binary_ranking_{r}/"
 
 
 def get_rankings_csv(r):
@@ -579,9 +579,9 @@ def split_out_and_save(names_of_pt, rankings_df_sub, dict_of_depth_pt, m_psi_par
     if using_3dmm_gt:
         mm_partitions_df = [
             999998,
-            "/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/000_RLHF_AM/rlhf_meshes/3dmm_mean_shape/999998_composed.jpg",
-            "/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/000_RLHF_AM/rlhf_meshes/3dmm_mean_shape/seed999998.json",
-            "/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/000_RLHF_AM/rlhf_meshes/3dmm_mean_shape/seed999998_three_dmaps.json",
+            "/path/to/eg3d-rlhf-geometry/000_RLHF_AM/rlhf_meshes/3dmm_mean_shape/999998_composed.jpg",
+            "/path/to/eg3d-rlhf-geometry/000_RLHF_AM/rlhf_meshes/3dmm_mean_shape/seed999998.json",
+            "/path/to/eg3d-rlhf-geometry/000_RLHF_AM/rlhf_meshes/3dmm_mean_shape/seed999998_three_dmaps.json",
         ]
 
         mm_partitions_df = pd.DataFrame(mm_partitions_df).transpose()

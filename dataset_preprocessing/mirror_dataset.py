@@ -35,7 +35,7 @@ def flip_yaw(pose_matrix):
     return flipped
 
 
-# python mirror_dataset.py --source=/media/krillman/240GB_DATA/ffhq_noodling/ffhq_zips/all
+# python mirror_dataset.py --source=/path/to/data/ffhq_noodling/ffhq_zips/all
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

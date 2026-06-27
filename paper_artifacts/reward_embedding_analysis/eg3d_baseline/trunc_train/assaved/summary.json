@@ -1,6 +1,6 @@
 {
   "label": "eg3d",
-  "sigma_root": "/home/krillman/Documents/eg3dredo_data",
+  "sigma_root": "/home/user/Documents/eg3dredo_data",
   "robust_norm": false,
   "clip_pct": null,
   "flip_axis0": false,

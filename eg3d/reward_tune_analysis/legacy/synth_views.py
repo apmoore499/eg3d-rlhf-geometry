@@ -24,42 +24,42 @@ from pathlib import Path as plp
 
 da = generation_utils.DArgs()
 da = generation_utils.set_defaults(da)
-# da.set_network_pkl('/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/pkl_pt/eg3d_1/ffhq512-128.pkl')
-G_fn = "/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/000_RLHF_AM/rlhf_training-runs/archived/00070-ffhq-eg3d_rebal_02_07_2023_10k_uniform_yaws-gpus1-batch2-gamma50_mse_pixelwise_sigma_reg/network-snapshot-000200.pkl"
+# da.set_network_pkl('/path/to/eg3d-rlhf-geometry/pkl_pt/eg3d_1/ffhq512-128.pkl')
+G_fn = "/path/to/eg3d-rlhf-geometry/000_RLHF_AM/rlhf_training-runs/archived/00070-ffhq-eg3d_rebal_02_07_2023_10k_uniform_yaws-gpus1-batch2-gamma50_mse_pixelwise_sigma_reg/network-snapshot-000200.pkl"
 
 
-G_fn = "/media/krillman/240GB_DATA/training_runs_2/01281-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl"
-# G_fn='/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/000_RLHF_AM/rlhf_training-runs/archived/00070-ffhq-eg3d_rebal_02_07_2023_10k_uniform_yaws-gpus1-batch2-gamma50_mse_pixelwise_sigma_reg/network-snapshot-000200.pkl'
+G_fn = "/path/to/data/training_runs_2/01281-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl"
+# G_fn='/path/to/eg3d-rlhf-geometry/000_RLHF_AM/rlhf_training-runs/archived/00070-ffhq-eg3d_rebal_02_07_2023_10k_uniform_yaws-gpus1-batch2-gamma50_mse_pixelwise_sigma_reg/network-snapshot-000200.pkl'
 
-# G_fn='/media/krillman/240GB_DATA/training_runs_2/01275-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl'
-# G_fn='/media/krillman/240GB_DATA/training_runs_2/01298-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl'
-# G_fn='/media/krillman/240GB_DATA/training_runs_2/01299-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl'
-# G_fn='/media/krillman/240GB_DATA/training_runs_2/01300-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl'
+# G_fn='/path/to/data/training_runs_2/01275-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl'
+# G_fn='/path/to/data/training_runs_2/01298-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl'
+# G_fn='/path/to/data/training_runs_2/01299-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl'
+# G_fn='/path/to/data/training_runs_2/01300-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl'
 
-# G_fn='/media/krillman/240GB_DATA/training_runs_2/01301-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl'
-# G_fn='/media/krillman/240GB_DATA/training_runs_2/01302-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl'
+# G_fn='/path/to/data/training_runs_2/01301-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl'
+# G_fn='/path/to/data/training_runs_2/01302-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl'
 
-# G_fn='/media/krillman/240GB_DATA/training_runs_2/01303-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl'
+# G_fn='/path/to/data/training_runs_2/01303-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl'
 
-# G_fn='/media/krillman/240GB_DATA/training_runs_2/01305-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl'
+# G_fn='/path/to/data/training_runs_2/01305-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl'
 
 
 G_list = [
-    "/media/krillman/240GB_DATA/training_runs_2/01275-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl",
-    "/media/krillman/240GB_DATA/training_runs_2/01298-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl",
-    "/media/krillman/240GB_DATA/training_runs_2/01299-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl",
-    "/media/krillman/240GB_DATA/training_runs_2/01300-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl",
-    "/media/krillman/240GB_DATA/training_runs_2/01301-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl",
-    "/media/krillman/240GB_DATA/training_runs_2/01302-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl",
-    "/media/krillman/240GB_DATA/training_runs_2/01303-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl",
-    "/media/krillman/240GB_DATA/training_runs_2/01305-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl",
+    "/path/to/data/training_runs_2/01275-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl",
+    "/path/to/data/training_runs_2/01298-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl",
+    "/path/to/data/training_runs_2/01299-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl",
+    "/path/to/data/training_runs_2/01300-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl",
+    "/path/to/data/training_runs_2/01301-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl",
+    "/path/to/data/training_runs_2/01302-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl",
+    "/path/to/data/training_runs_2/01303-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl",
+    "/path/to/data/training_runs_2/01305-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl",
 ]
 
 
-G_list = ["/media/krillman/240GB_DATA/training_runs_2/01306-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl"]
-G_list = ["/media/krillman/240GB_DATA/training_runs_2/01307-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl"]
+G_list = ["/path/to/data/training_runs_2/01306-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl"]
+G_list = ["/path/to/data/training_runs_2/01307-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002053.pkl"]
 
-G_list = ["/media/krillman/240GB_DATA/training_runs_2/01310-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002058_LAST.pkl"]
+G_list = ["/path/to/data/training_runs_2/01310-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002058_LAST.pkl"]
 from core_modules.utils import finetuning_utils
 
 MUDC = finetuning_utils.MeshUtilsDataClass()
@@ -96,7 +96,7 @@ pk = {
 
 
 def main(G_fn):
-    # orig_G_fn='/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/pkl_pt/eg3d_1/ffhq512-128.pkl'
+    # orig_G_fn='/path/to/eg3d-rlhf-geometry/pkl_pt/eg3d_1/ffhq512-128.pkl'
 
     da.set_network_pkl(G_fn)
     da.G = generation_utils.load_pkl_G(da).cuda()
@@ -113,7 +113,7 @@ def main(G_fn):
         ws = da.G.mapping(z=z, c=MUDC.canonical_pose, truncation_cutoff=14, truncation_psi=0.7)
         solid_mesh = MUDC.sample_sigmas_to_trimesh_from_ws_and_solidify(da.G, ws, conditioning_params=MUDC.canonical_pose, truncation_cutoff=14, truncation_psi=0.7, bordermain=30, bordersides=60, borderback=80, level=LEVEL, shape_res=SHAPE_RES)
     #
-    # MUDC.export_sample_mrc(sigmas=sigs, out_fn=f'/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/000_RLHF_AM/rlhf_training-runs/archived/00070-ffhq-eg3d_rebal_02_07_2023_10k_uniform_yaws-gpus1-batch2-gamma50_mse_pixelwise_sigma_reg/t1_s_{seed}_G_{os.path.basename(G_fn).replace(".pkl",".mrc")}')
+    # MUDC.export_sample_mrc(sigmas=sigs, out_fn=f'/path/to/eg3d-rlhf-geometry/000_RLHF_AM/rlhf_training-runs/archived/00070-ffhq-eg3d_rebal_02_07_2023_10k_uniform_yaws-gpus1-batch2-gamma50_mse_pixelwise_sigma_reg/t1_s_{seed}_G_{os.path.basename(G_fn).replace(".pkl",".mrc")}')
     # vis=MUDC.visualise_mesh(solid_mesh,ply_fn='hi.ok',save=False,azimuth_angle_initial=-35,azimuth_angle_interval=70,translate=[0.5,0.5,0.5],zoom=1.8,n_angles=3,win_size=2048,opacity_cube=0.1)
     # pk['specular']=SPECULAR
 

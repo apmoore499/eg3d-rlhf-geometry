@@ -41,7 +41,7 @@ from tqdm import tqdm
 
 import pickle
 
-RLHF_DIR = "/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/000_RLHF_AM"
+RLHF_DIR = "/path/to/eg3d-rlhf-geometry/000_RLHF_AM"
 RLHF_DIR = RLHF_DIR.replace("##", "000")
 PROJECT_ROOT = Path(os.environ["PROJECT_ROOT"])
 REWARD_MODEL_TRAINING_DIR = PROJECT_ROOT / "reward_model_training"
@@ -226,7 +226,7 @@ def imd_to_xyz(image_depth, ray_origins, ray_directions, neural_rendering_resolu
 
 import sys
 
-sys.path.append("/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/eg3d")
+sys.path.append("/path/to/eg3d-rlhf-geometry/eg3d")
 from training.volumetric_rendering.ray_sampler import RaySampler
 
 
@@ -2087,7 +2087,7 @@ def train_contrastive_save_rwd_model(dset_dict_dirs, model_name, model_class, pl
 
     # SEED=25401
 
-    # pt_pcd_fn=f'/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/000_RLHF_AM/rlhf_meshes/rlhf_meshes_ffhq512-128_const_noise_t1_augment/pcd_as_pt_s_{SEED}.pt'
+    # pt_pcd_fn=f'/path/to/eg3d-rlhf-geometry/000_RLHF_AM/rlhf_meshes/rlhf_meshes_ffhq512-128_const_noise_t1_augment/pcd_as_pt_s_{SEED}.pt'
 
     # ptc=torch.load(pt_pcd_fn).cpu().detach().numpy()
 
@@ -2819,7 +2819,7 @@ def new_reward_model(model_name, model_class, model_kwargs):
 def plot_rwd_dists_pcd(reward_model, da):
     mname_str = da.MODEL_NAME
 
-    # reward_model,da=load_rwd_mdl(f'/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/000_RLHF_AM/optimal_reward_models/{mname_str}.pkl')
+    # reward_model,da=load_rwd_mdl(f'/path/to/eg3d-rlhf-geometry/000_RLHF_AM/optimal_reward_models/{mname_str}.pkl')
 
     if not hasattr(da, "interpolation_mode"):
         da.interpolation_mode = "nearest"  # quick hack
@@ -2827,7 +2827,7 @@ def plot_rwd_dists_pcd(reward_model, da):
     #    print('hello')
 
     #    mname_str=['rwd_model_3dmap_facenet512_new_data2_10112_w_goodmesh_bilinear_epo_30_bs_256_hls_256_nh_4'][0]
-    # state_dict=torch.load(os.path.join(f'/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/000_RLHF_AM/rlhf_reward_models/{mname_str}/model_state_epo_19.pth'))
+    # state_dict=torch.load(os.path.join(f'/path/to/eg3d-rlhf-geometry/000_RLHF_AM/rlhf_reward_models/{mname_str}/model_state_epo_19.pth'))
     # reward_model.load_state_dict(state_dict)
     # reward_model.eval()
 
@@ -3023,7 +3023,7 @@ def plot_rwd_dists_pcd(reward_model, da):
     # dmaps_const_t025 = torch.load(_precomputed_path("pretrained_pkl_dmaps_1000_128_const_noise_t025.pt"))
     # seeds_dict_unseen = torch.load(_precomputed_path("pretrained_pkl_dmaps_unseen_200k_to_300k_128.pt"))
 
-    model_dir = os.path.join("/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/000_RLHF_AM/rlhf_reward_models", mname_str)
+    model_dir = os.path.join("/path/to/eg3d-rlhf-geometry/000_RLHF_AM/rlhf_reward_models", mname_str)
 
     # #reward_model.affine_scale=nn.Parameter(torch.tensor(1.0))
     # #reward_model.affine_offset=nn.Parameter(torch.tensor(0.0))
@@ -3132,7 +3132,7 @@ def plot_rwd_dists_pcd(reward_model, da):
 def plot_rwd_dists_xtra(reward_model, da):
     mname_str = da.MODEL_NAME
 
-    # reward_model,da=load_rwd_mdl(f'/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/000_RLHF_AM/optimal_reward_models/{mname_str}.pkl')
+    # reward_model,da=load_rwd_mdl(f'/path/to/eg3d-rlhf-geometry/000_RLHF_AM/optimal_reward_models/{mname_str}.pkl')
 
     if not hasattr(da, "interpolation_mode"):
         da.interpolation_mode = "nearest"  # quick hack
@@ -3140,7 +3140,7 @@ def plot_rwd_dists_xtra(reward_model, da):
     #    print('hello')
 
     #    mname_str=['rwd_model_3dmap_facenet512_new_data2_10112_w_goodmesh_bilinear_epo_30_bs_256_hls_256_nh_4'][0]
-    # state_dict=torch.load(os.path.join(f'/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/000_RLHF_AM/rlhf_reward_models/{mname_str}/model_state_epo_19.pth'))
+    # state_dict=torch.load(os.path.join(f'/path/to/eg3d-rlhf-geometry/000_RLHF_AM/rlhf_reward_models/{mname_str}/model_state_epo_19.pth'))
     # reward_model.load_state_dict(state_dict)
     # reward_model.eval()
 
@@ -3272,7 +3272,7 @@ def plot_rwd_dists_xtra(reward_model, da):
     gaussian_samples = get_gaussian_mean_rwds(named_rwds["seen"])
 
     named_rwds["gaussian_samples"] = gaussian_samples
-    model_dir = os.path.join("/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/000_RLHF_AM/rlhf_reward_models", mname_str)
+    model_dir = os.path.join("/path/to/eg3d-rlhf-geometry/000_RLHF_AM/rlhf_reward_models", mname_str)
 
     rwds_dfs = []
 
@@ -4850,7 +4850,7 @@ def get_optimiser(reward_model, LR=1e-4, WEIGHT_DECAY=1e-5):
 
 def form_pcd_path(seed, condition):
     sd = f"seed{seed:04d}"
-    return f"/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/{condition}/{sd}.pcd"
+    return f"/path/to/eg3d-rlhf-geometry/{condition}/{sd}.pcd"
 
 
 def form_json_path_three_dmaps(seed, condition):
@@ -5500,7 +5500,7 @@ class ContrastiveLoss(nn.Module):
 
 
 def get_ranking_folder(r):
-    return f"/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/000_RLHF_AM/composed_for_binary_ranking/rlhf_meshes_ffhq512-128_const_noise_t1/binary_ranking_{r}/"
+    return f"/path/to/eg3d-rlhf-geometry/000_RLHF_AM/composed_for_binary_ranking/rlhf_meshes_ffhq512-128_const_noise_t1/binary_ranking_{r}/"
 
 
 def get_rankings_csv(r):
@@ -6171,7 +6171,7 @@ class dset_smulti_stream(torch.utils.data.Dataset):
 
 
 
-# entire_spec_fn = "/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/000_RLHF_AM/mesh_outputs_spec_20_09_2023.ods"
+# entire_spec_fn = "/path/to/eg3d-rlhf-geometry/000_RLHF_AM/mesh_outputs_spec_20_09_2023.ods"
 # expname = "rlhf_meshes_ffhq512-128_const_noise_t1_augment"
 # expnames_spec = read_ods(entire_spec_fn, sheet="eg3d_model_experiment_settings", headers=True).set_index("condition")
 
@@ -6185,7 +6185,7 @@ class dset_smulti_stream(torch.utils.data.Dataset):
 #         if starts.loc[e] <= query_val <= ends.loc[e]:
 #             relevant_condition = e
 #             expname = str(relevant_condition)
-#             ddir = f"/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/000_RLHF_AM/rlhf_meshes/{expname}"
+#             ddir = f"/path/to/eg3d-rlhf-geometry/000_RLHF_AM/rlhf_meshes/{expname}"
 #             return ddir
 #     assert False, f"error an appropriate condition not found for seed query val {query_val}"
 

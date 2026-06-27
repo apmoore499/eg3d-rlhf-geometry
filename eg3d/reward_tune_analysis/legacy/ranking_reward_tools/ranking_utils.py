@@ -179,7 +179,7 @@ def convert_all_png_to_jpg(png_in_dir):
 
 
 def get_all_meshes_for_binary(select_only=None):
-    rlhf_meshes_dir = "/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/000_RLHF_AM/rlhf_meshes"
+    rlhf_meshes_dir = "/path/to/eg3d-rlhf-geometry/000_RLHF_AM/rlhf_meshes"
     rlhf_ffhq_folders = [f"{rlhf_meshes_dir}/{f}" for f in os.listdir(rlhf_meshes_dir) if "ffhq" in f]
 
     print(select_only)
@@ -265,7 +265,7 @@ def create_pairs_for_ranking_df():
 
 
 def get_cposed_fn(seed):
-    cposed_fn = f"/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/000_RLHF_AM/rlhf_meshes/rlhf_meshes_ffhq512-128_const_noise_t1/composed_for_ranking/{seed}_composed.jpg"
+    cposed_fn = f"/path/to/eg3d-rlhf-geometry/000_RLHF_AM/rlhf_meshes/rlhf_meshes_ffhq512-128_const_noise_t1/composed_for_ranking/{seed}_composed.jpg"
     return cposed_fn
 
 
@@ -320,13 +320,13 @@ random.seed(42)
 torch.manual_seed(42)
 
 
-RLHF_DIR = "/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/000_RLHF_AM"
+RLHF_DIR = "/path/to/eg3d-rlhf-geometry/000_RLHF_AM"
 RLHF_MODELS_DIR_SIMCLR = f"{RLHF_DIR}/models_simclr_pretrained"
 IMAGE_SCALING = 0.5
 RATINGS_fn = "ratings_01_08_2023.ods"
 RWD_DATA_FORMATTED_fn = "rwd_training_data_single_dmap_extra_cases_02_08_2023_expanded.csv"
 current_composition_name = "rlhf_meshes_ffhq512-128_const_noise_t1"
-composed_dir = os.path.join("/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/000_RLHF_AM", "composed_for_binary_ranking")
+composed_dir = os.path.join("/path/to/eg3d-rlhf-geometry/000_RLHF_AM", "composed_for_binary_ranking")
 current_composed_dir = os.path.join(composed_dir, current_composition_name)
 pairs_for_ranking_df_fn = os.path.join(current_composed_dir, "pairs_to_be_ranked.csv")
 

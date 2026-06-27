@@ -178,7 +178,7 @@ class ImportanceRenderer(torch.nn.Module):
         #             out=out,
         #             sample_directions=sample_directions)
 
-        # out_fn='/home/krillman/Documents/eg3dredo/supp_plus_code/eg3d_rlhf_code/reward_model_training/reward_model_framework/core_modules/outputs/3d_feature_volume/run_model_volume_32C.pt'
+        # out_fn='/path/to/eg3d-rlhf-geometry/reward_model_training/reward_model_framework/core_modules/outputs/3d_feature_volume/run_model_volume_32C.pt'
 
         # torch.save(obj=retval,f=out_fn)
 
