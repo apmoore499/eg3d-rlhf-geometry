@@ -1,3 +1,19 @@
+EG3D RLHF Geometry — Licensing summary
+=======================================================================
+
+This repository began as a fork of NVIDIA's EG3D and is released, as a whole,
+under the NVIDIA Source Code License for EG3D, reproduced in full below. Use is
+non-commercial / research only. The released checkpoints — the fine-tuned
+generator and the reward model trained on EG3D-derived geometry — are
+derivatives of EG3D and carry the same terms.
+
+Third-party components bundled in or depended on by this repository, including
+ashleve's Lightning-Hydra-Template (MIT) on which the reward-model framework was
+built, are credited in THIRD_PARTY_NOTICES.md, each under its own license.
+
+=======================================================================
+
+
 Copyright (c) 2021-2022, NVIDIA Corporation & affiliates. All rights
 reserved.
 

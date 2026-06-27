@@ -79,3 +79,6 @@ sftp-config.json
 # machine-specific editor config (absolute paths, theme, local tooling)
 .vscode/
 
+# README figure (kept despite the *.jpg rule above)
+!docs/before_vs_after_visualised_sample_seed_2_web.jpg
+

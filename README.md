@@ -1,216 +1,155 @@
-# RLHF for 3D Face Geometry (EG3D + learned reward model)
+# EG3D RLHF Geometry
 
-Improving the **3D geometry** of an EG3D face generator with reinforcement
-learning from human feedback (RLHF). EG3D produces gorgeous multi-view images,
-but the underlying density field often contains geometric artefacts ("floaters",
-distorted surfaces) that the 2D renders hide. This project learns a **reward
-model from human preference rankings over generated meshes**, then **fine-tunes
-the EG3D generator** to maximise that reward — yielding cleaner geometry while
-preserving image quality.
+Improving the 3D geometry of [EG3D](https://github.com/NVlabs/eg3d), a 3D-aware GAN, using human preference supervision.
 
-This is research code from my PhD (Generative AI, mathematics). It accompanies
-<!-- TODO: paper/thesis title + link (CVPR 2025 submission) -->.
+Paper: arXiv link coming soon.
 
-> **Status — research code, honestly labelled.** This is a fork of
-> [EG3D](https://github.com/NVlabs/eg3d) plus a reward-model training framework.
-> It was built to run the experiments and produce the paper results, not as a
-> polished library. The best-performing reward model and the fine-tuned EG3D
-> generator are **not** included, and the (large) training data lives outside
-> the repo. What you *can* do quickly is inspect the method, regenerate the
-> maintained data representations from external checkpoints, and run the smoke
-> pipelines below once the required external assets are in place.
->
-> Public-scope summary:
-> [public_release_scope_2026-06-24.md](docs/public_release_scope_2026-06-24.md)
+## Overview
 
----
+EG3D produces strong rendered views, but the underlying geometry often contains unrealistic surface distortions and implausible shapes that are easy to miss in the 2D images. These defects are usually obvious to a human looking at the extracted mesh. The approach here is to learn a geometry-sensitive reward model from quality rankings of samples drawn from the pretrained generator, and then fine-tune EG3D against that reward model. In spirit this is similar to RLHF, though it is not reinforcement learning per se — the reward enters as a differentiable regulariser on the generator update rather than through a policy-gradient method such as PPO.
 
-## What's the idea (in three steps)
+The work proceeded in three stages:
 
-1. **Generate & rank.** Sample meshes from EG3D and collect human preference
-   rankings of their geometry (best→worst within small groups).
-2. **Learn a reward model.** Train a Bradley-Terry / scalar reward model on a 3D
-   representation of each mesh. Several representations + backbones were explored
-   (sigma/density field → 3D-conv/UNet3D, point cloud → PointNet/PointNet++/
-   CurveNet, depth map → ResNet, landmarks). **The winner: the sigma-density
-   field at res 256 through a 3D-conv backbone.**
-3. **RLHF fine-tune.** Optimise the EG3D generator against the frozen reward
-   model (plus regularisers) so its extracted geometry scores higher.
+1. Sample geometry from a pretrained EG3D generator and collect human rankings over shape quality;
+2. Train a reward model on a geometry-derived representation of those rankings;
+3. Fine-tune EG3D so the generator produces geometry that scores better under the learned reward.
 
-The reward model consumes a cropped "slab" of the EG3D **sigma density volume**
-(see `reward_model_training/static_configs/pads_vals_*.yaml`) and outputs a
-scalar reward / preference logit.
+Most of the effort went into comparing 3D representations for both the reward model and the fine-tuning loop. Reward models that operate in the 2D domain or on a 2D-derived 3D representation (for example a point cloud lifted from a depth map) are sometimes accurate as standalone rankers, but unstable when used to drive fine-tuning. The representation that worked in both settings is a cropped 3D sigma-density field sampled directly from the radiance field, at resolution 256.
 
----
+## Result
 
-## Repo map (where to look)
+Geometry from the fine-tuned generator was preferred by human raters in 74% of pairwise comparisons against the original EG3D, while the RGB renders remain consistent with the original. Identity is preserved for fixed latent codes. An example is shown below: before fine-tuning (left) and after (right), with the extracted mesh on top and the RGB render underneath. The released fine-tuned checkpoint is the model used to synthesise the geometry reported in the paper.
 
-| Path | What |
-|------|------|
-| `eg3d/` | The EG3D fork: generator, training, and the **RLHF fine-tuning loop**. Entry point `eg3d/train_rlhf.py`; the RLHF loss is in `eg3d/training/loss.py`; the training loop in `eg3d/training/training_loop.py`. |
-| `reward_model_training/reward_model_framework/core_modules/` | The **reward-model framework** (Hydra + PyTorch Lightning). Entry point `train_rwd_model.py`. |
-| `reward_model_training/reward_model_framework/core_modules/data/` | Data pipeline. The core class is `dset_loaders.dset_single_stream_ordered_minimal`; representations are catalogued in `configs/data/data_defaults.yaml`. |
-| `reward_model_training/reward_model_framework/core_modules/models/` | Reward-model backbones (`modules_conv3d`, `modules_pointnet`, `modules_curvenet`, `modules_depthmap`, …) on a shared `UniversalRWDModel` base. |
-| `reward_model_training/reward_model_framework/core_modules/configs/` | Hydra configs: `experiment/`, `model/`, `data/`. |
-| `reward_model_training/reward_model_framework/core_modules/data/create_train_data/` | Data synthesis from a trained EG3D checkpoint (`generation_utils.py`, `synthesize_*.py`). |
-| `eg3d/reward_tune_analysis/` | Curated project-local analysis, export, and verification scripts for reward tuning. |
-| `paper_result_analyses/` | Optional paper-linked post-hoc analyses and figure-generation work. |
-| `paper_artifacts/` | Small tracked paper-supporting result artifacts kept separate from source code. |
-| `docs/` | Curated paper-facing docs, quickstarts, and release-scope notes. |
+![Geometry before (left) and after (right) fine-tuning, seed 2](docs/before_vs_after_visualised_sample_seed_2_web.jpg)
 
----
 
-## Quickstart — run a smoke
+## Tech stack
 
-Two independent pipelines, each with a fast end-to-end smoke (built so the code
-is verifiable without the full data/compute). Environment: `hf_geom_eg3d_py39`
-(see Setup).
+- EG3D fork (PyTorch) for generation and the fine-tuning loop.
+- Reward-model training framework built on Hydra and PyTorch Lightning. A shared model base is used across representations: a representation-specific backbone produces global features, and shallow MLP heads decode them into preference logits over paired samples.
+- End-to-end runnable on a single RTX 4090.
 
-**Reward-model training** (winner config on a tiny data fraction, GPU):
-```sh
-cd reward_model_training/reward_model_framework
-python -m core_modules.train_rwd_model \
-  experiment=sfield_256 \
-  logger=csv callbacks=public_local using_wandb=false test=false dloader.num_workers=0 trainer.max_epochs=1 \
-  trainer.limit_train_batches=2 trainer.limit_val_batches=2 \
-  data.dset_dict.proportion_of_data_to_use=0.02
-```
-This local-first path writes checkpoints under the Hydra run dir (`logs/...` by
-default) and keeps WandB fully optional.
+## What is released
 
-**EG3D RLHF fine-tuning** (reusable smoke preset; reaches `tick 0` and exits):
-```sh
-cd eg3d
-python train_rlhf.py experiment=finetune_eg3d_sfield \
-  +smoke=on click_legacy_args.outdir=/tmp/eg3d_rlhf_smoke
-```
-With `using_wandb=false`, the RLHF run stays fully local: each run directory
-stores `training_options.json`, `hydra_cfg.yaml`, network snapshots, preview
-images, and any enabled reward-histogram / mesh export artifacts.
+This repository contains the code for:
 
-(Startup prints some benign TensorFlow/TensorBoard import warnings; the real run
-begins at the `Training options:` line.)
+- Extracting the 3D representations from EG3D;
+- Training reward models over those representations (experiment configs, run with Hydra);
+- Fine-tuning EG3D against a trained reward model (experiment configs, run with Hydra);
+- The post-hoc analysis and mesh-export scripts used for the paper figures.
 
-### Maintained experiment surface
+The ranked dataset metadata used to build the reward-model training data is included. Two checkpoints are distributed as GitHub Release assets:
 
-The current maintained experiment configs are:
+- The sigma-field reward model (`reward-model-7wnzkgie-sfield256.zip`);
+- The fine-tuned EG3D generator (`eg3d-finetuned-sfield-run01446-network-snapshot-002068_LAST.pkl`).
 
-- reward-model training:
-  `sfield_256`, `sdmap`, `tdmap`,
-  `pcd_cvnet_point_cloud_entire`,
-  `pcd_pnet_point_cloud_entire`,
-  `pcd_pnet2_point_cloud_entire`
-- EG3D RLHF fine-tuning:
-  `finetune_eg3d_null`,
-  `finetune_eg3d_sfield`,
-  `finetune_eg3d_sdmap`,
-  `finetune_eg3d_tdmap`,
-  `finetune_eg3d_pn1`
+Reward-model training can be reproduced from the released code and data. Full EG3D fine-tuning cannot be reproduced as-is: it requires the original FFHQ images, which are not redistributed here and, as far as I know, are not available online — they must be re-synthesised from scratch following the [original EG3D repository](https://github.com/NVlabs/eg3d). The baseline EG3D checkpoint (`ffhq512-128.pkl`) is also external and comes from there.
 
-### Paper-facing entrypoints
+## Repository layout
 
-- Reward-model data generation from an EG3D checkpoint:
-  [generate_reward_training_data.sh](reward_model_training/reward_model_framework/core_modules/scripts/generate_reward_training_data.sh)
-- Public release verification (2-seed data generation, loader smoke, maintained reward-model one-batch forward smoke, released reward-model checkpoint load, and optional mesh-bank export):
-  [run_public_release_verifier.sh](reward_model_training/reward_model_framework/core_modules/scripts/run_public_release_verifier.sh)
-- Reward-model retraining sweep:
-  [train_all_reward_models.sh](reward_model_training/reward_model_framework/core_modules/scripts/train_all_reward_models.sh)
-- Protected finetune verification across the five maintained RLHF configs:
-  [run_protected_finetune_one_tick.sh](eg3d/reward_tune_analysis/scripts/run_protected_finetune_one_tick.sh)
-- Reported sigma-field tuning launcher:
-  [sfield_reported_run.sh](eg3d/reward_tune_analysis/scripts/sfield_reported_run.sh)
-- Before/after tuned-vs-untuned mesh-bank export:
-  [export_snapshot_mesh_bank.py](eg3d/reward_tune_analysis/scripts/export_snapshot_mesh_bank.py)
+| Path | Contents |
+|---|---|
+| `eg3d/` | EG3D fork plus the RLHF fine-tuning loop (`train_rlhf.py`) and the mesh-export / analysis scripts |
+| `reward_model_training/` | Hydra + Lightning reward-model framework, the data-generation scripts, and the ranked-preference metadata |
+| `dataset_preprocessing/` | EG3D dataset preprocessing (inherited from upstream) |
+| `external/` | bundled third-party components (e.g. the dlib landmark model, point-cloud backbones) |
+| `paper_artifacts/`, `paper_result_analyses/` | optional post-hoc analyses behind the paper figures (UMAP, SHAP, cross-generator transfer) |
+| `docs/` | documentation (see below) |
 
-See also:
-[paper_results_guide_2026-06-24.md](docs/paper_results_guide_2026-06-24.md)
+## Documentation
 
-## Tests
-
-Pytest smokes that exercise the **real** pipeline (no mocks):
-```sh
-cd reward_model_training/reward_model_framework
-python -m pytest core_modules/tests/ -v
-```
-- `test_data_types_loadable.py` — every live representation loads from the data dir.
-- `test_backbone_train_smoke.py` — each backbone (Conv3D/UNet3D, PointNet,
-  PointNet++, CurveNet) trains+validates+tests for a couple of batches through
-  the real trainer. Known issues are marked `xfail` with their cause.
-
----
+| Doc | Topic |
+|---|---|
+| [docs/data_generation.md](docs/data_generation.md) | rebuild the reward-model training inputs from an EG3D checkpoint |
+| [docs/reward_models.md](docs/reward_models.md) | train reward models; the representation/backbone experiment configs |
+| [docs/finetuning.md](docs/finetuning.md) | fine-tune EG3D from any reward model; the reported run and smoke runs |
+| [docs/reproducing_paper.md](docs/reproducing_paper.md) | map of paper results to scripts/configs, plus verification commands |
+| [docs/released_artifacts.md](docs/released_artifacts.md) | the released checkpoints and their loading contract |
+| [docs/camera_conventions.md](docs/camera_conventions.md) | camera pose / intrinsics conventions used throughout |
 
 ## Setup
 
-EG3D's stack (CUDA extensions, PyTorch3D) makes the environment fiddly. The env
-used for the commands above is `hf_geom_eg3d_py39` (Python 3.9). The original
-paper environment was `hf_geom_eg3d` (Python 3.8); install steps:
+Tested with Python 3.9, CUDA 11.8, PyTorch 2.0.1. The full environment:
 
 ```sh
+git clone https://github.com/apmoore499/eg3d-rlhf-geometry
+cd eg3d-rlhf-geometry
 conda config --add channels conda-forge
-conda create -n hf_geom_eg3d python=3.8
-conda activate hf_geom_eg3d
-conda install -y pytorch=2.0.1 torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia
-
-# uv for the rest (https://github.com/astral-sh/uv)
+conda create -n hf_geom_eg3d_py39 python=3.9 -y
+conda activate hf_geom_eg3d_py39
+conda install -y -c pytorch -c nvidia pytorch=2.0.1 torchvision torchaudio pytorch-cuda=11.8
 python -m pip install uv
 python -m uv pip install fvcore iopath
-python -m pip install --no-index --no-cache-dir pytorch3d \
-  -f https://dl.fbaipublicfiles.com/pytorch3d/packaging/wheels/py38_cu118_pyt201/pytorch3d-0.7.4-cp38-cp38-linux_x86_64.whl
+python -m pip install --no-index --no-cache-dir pytorch3d -f https://dl.fbaipublicfiles.com/pytorch3d/packaging/wheels/py39_cu118_pyt201/pytorch3d-0.7.4-cp39-cp39-linux_x86_64.whl
 python -m uv pip install -r requirements.txt
 ```
-A few analysis scripts also expect
-`external/dlib/shape_predictor_5_face_landmarks.dat` (dlib 5-point landmarks,
-tracked in the repo) and PyGeM (`git clone
-https://github.com/mathLab/PyGeM`).
 
-## Data
+`external/dlib/shape_predictor_5_face_landmarks.dat` is tracked in the repo and used by the landmark path. A few optional analysis scripts also expect [PyGeM](https://github.com/mathLab/PyGeM).
 
-The training data is large and **external** to the repo. The reward-model data
-(per-seed sigma fields / depth maps) defaults to `RWD_DATA_DIR`
-(`~/Documents/eg3dredo_data`). Override via the env var or Hydra
-`paths.rwd_data_dir`. Other path overrides: `STATIC_CONFIGS_DIR`,
-`RWD_MODELS_DIR`, `RUNS_SUMMARY_CSV` (mirrored by `paths.*` in Hydra). To
-regenerate the maintained reward-model inputs from an EG3D checkpoint, use:
+## Download the released models
+
+```sh
+gh release download --repo apmoore499/eg3d-rlhf-geometry --pattern 'reward-model-7wnzkgie-sfield256.zip' --dir external_assets
+gh release download --repo apmoore499/eg3d-rlhf-geometry --pattern 'eg3d-finetuned-sfield-run01446-network-snapshot-002068_LAST.pkl' --dir external_assets
+```
+
+The reward model loads from a bundle directory holding both `best_model.pt` and `release_config.yaml`, so the tune-time data transforms stay coupled to the weights rather than being redeclared at inference time. The loader looks for that bundle under `RWD_MODELS_FOR_TUNING/<id>/`, so unzip it there:
+
+```sh
+unzip external_assets/reward-model-7wnzkgie-sfield256.zip -d reward_model_training/reward_model_framework/core_modules/RWD_MODELS_FOR_TUNING/
+```
+
+This gives `RWD_MODELS_FOR_TUNING/7wnzkgie/{best_model.pt,release_config.yaml}`, which the loader picks up with no further configuration. The fine-tuned generator `.pkl` needs no special placement — it is passed directly to the analysis scripts (see below).
+
+## Running the experiments
+
+Reward-model training is launched through Hydra by selecting an `experiment`. Train the reported sigma-field reward model:
 
 ```sh
 cd reward_model_training/reward_model_framework
-bash core_modules/scripts/generate_reward_training_data.sh
+python -m core_modules.train_rwd_model experiment=sfield_256
 ```
 
-That launcher runs the maintained synthesis scripts for triple RGB views,
-triple depth maps, sigma-field 256 slabs, and AW98 landmarks. It requires a
-CUDA-capable environment, an external pretrained EG3D checkpoint, and
-substantial storage/time. Override the EG3D checkpoint with
-`E3D_RLHF_GENERATOR_PKL` (or the legacy `EG3D_RLHF_ORIG_PKL`) if it is not at
-`pkl_pt/eg3d_1/ffhq512-128.pkl`.
+Other reward-model configs: `sdmap` (single depth map), `tdmap` (triple depth map), and `pcd_pnet_point_cloud_entire`, `pcd_pnet2_point_cloud_entire`, `pcd_cvnet_point_cloud_entire` (full point cloud with PointNet, PointNet++, and [CurveNet](https://github.com/tiangexiang/CurveNet) backbones).
 
-For a maintained public-release verification pass, use:
+Run the reported sigma-field fine-tuning:
 
 ```sh
-bash reward_model_training/reward_model_framework/core_modules/scripts/run_public_release_verifier.sh /path/to/tuned.pkl
+cd eg3d
+bash reward_tune_analysis/scripts/sfield_reported_run.sh
 ```
 
-By default this writes all outputs under
-`release_verification_outputs/public_release_smoke/` in the public worktree.
-The wrapper auto-detects the sibling working-repo baseline checkpoint and reward-model bundle when they are available locally. Override them with the `PUBLIC_RELEASE_VERIFY_*` env vars if needed.
+Fine-tuning configs: `finetune_eg3d_sfield`, `finetune_eg3d_sdmap`, `finetune_eg3d_tdmap`, `finetune_eg3d_pn1`, and `finetune_eg3d_null` (baseline).
 
-The main pretrained/tuned checkpoints used in the paper are also external to
-the repo. The curated public release artifact plan is documented in
-[released_artifacts.md](docs/released_artifacts.md). For the released sigma reward-model bundle, the maintained public loading contract is `best_model.pt` + `release_config.yaml`. The public code supports:
+Export the before/after mesh comparison (tuned vs. original) used for the paper figures:
 
-- training reward models from external preference-derived geometry data
-- fine-tuning EG3D from an external pretrained generator checkpoint
-- exporting paper-style before/after mesh banks from external snapshot `.pkl`
-  files
+```sh
+cd eg3d
+python reward_tune_analysis/scripts/export_snapshot_mesh_bank.py --baseline-pkl /path/to/ffhq512-128.pkl --tuned-pkl /path/to/network-snapshot-002068_LAST.pkl
+```
 
----
+## License
 
-## Notes
+Non-commercial research use, under the NVIDIA Source Code License for EG3D — see
+[`LICENSE.txt`](LICENSE.txt). Bundled third-party components are credited in
+[`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
 
-- Built originally during a from-scratch learning curve; recently refactored for
-  reproducibility (reusable smoke presets, a real-trainer test suite, an audited
-  config catalog). See `docs/` for the public run guides and release scope.
-- Upstream EG3D: https://github.com/NVlabs/eg3d (see its license).
+## Citation
 
-<!-- TODO (author to fill): paper/thesis title + link; author name + contact;
-     a before/after geometry result figure; license. -->
+If you use this code or the released models, please cite the paper (arXiv link
+coming soon):
+
+```bibtex
+@misc{moore2026eg3drlhf,
+  title         = {Using Human Feedback to Fine-Tune Implicit 3D Face Geometry},
+  author        = {Moore, Archer P. and Gong, Mingming and Hodgkinson, Liam},
+  year          = {2026},
+  eprint        = {2026.XXXXX},   % fill in once the arXiv preprint is posted
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CV}
+}
+```
+
+## Contact
+
+Archer Moore — archerplmoore@gmail.com · [@apmoore499](https://github.com/apmoore499)

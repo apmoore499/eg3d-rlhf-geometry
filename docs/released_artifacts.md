@@ -1,111 +1,35 @@
-# Released Artifacts
+# Released artifacts
 
-This document defines the curated checkpoint artifacts intended for the public
-GitHub release of this project.
+Two checkpoints are distributed as GitHub Release assets; the untuned EG3D
+baseline is external (NVIDIA). Each released asset is below GitHub's 2 GiB
+per-asset limit. See the [README](../README.md#download-the-released-models) for
+the download commands.
 
-## Release Channel
+## 1. Sigma-field reward model
 
-The primary release channel should be **GitHub Releases** for the public repo.
-This project's released checkpoints are each below GitHub's per-asset `2 GiB`
-limit, so GitHub Releases provides a simple public download path without
-requiring a Hugging Face account.
+- **Asset:** `reward-model-7wnzkgie-sfield256.zip` (~49 MB)
+- The reported sigma-field reward model used by the EG3D fine-tuning path.
+- **Loading contract:** the loader reads a bundle directory containing
+  `best_model.pt` + `release_config.yaml`, which keeps the tune-time data
+  transforms coupled to the weights. Unzip to
+  `reward_model_training/reward_model_framework/core_modules/RWD_MODELS_FOR_TUNING/7wnzkgie/`.
+- Optional inspection files may be bundled (`datamodule_third.pt`,
+  `model_example_input.pt`); they are not required for loading or inference.
 
-## Curated Release Assets
+## 2. Fine-tuned EG3D snapshot
 
-### 1. Sigma reward-model bundle
+- **Asset:** `eg3d-finetuned-sfield-run01446-network-snapshot-002068_LAST.pkl`
+  (~361 MB)
+- The reported fine-tuned EG3D generator, used for tuned-vs-untuned geometry
+  export and consumed directly by the analysis scripts (no special placement).
 
-Recommended asset filename:
+## 3. Untuned baseline (external)
 
-- `reward-model-7wnzkgie-sfield256.zip`
+- `ffhq512-128.pkl` — the pretrained EG3D FFHQ checkpoint, the starting point for
+  fine-tuning and the paired baseline for mesh export. Obtain it from the
+  upstream [EG3D repository](https://github.com/NVlabs/eg3d) / NVIDIA NGC.
 
-Purpose:
-
-- released sigma-volume reward model used by the reported EG3D RLHF fine-tuning
-  path
-- verified by the public release smoke through a real checkpoint load and real
-  forward pass
-
-Recommended zip layout:
-
-```text
-7wnzkgie/
-  best_model.pt
-  release_config.yaml
-  datamodule_third.pt            # optional
-  model_example_input.pt         # optional
-```
-
-Minimal contents required by the maintained public path:
-
-- `best_model.pt`
-- `release_config.yaml`
-
-Optional helper files that can be bundled for inspection/debugging but are not
-required for loading or forward inference:
-
-- `datamodule_third.pt`
-- `model_example_input.pt`
-
-Deprecated file that should not be the public loading contract:
-
-- `run_config.yaml`
-
-Contents **not** required for the maintained public runtime and therefore not
-necessary to release by default:
-
-- `val_gv_epoch_*.csv`
-
-Current local source bundle:
-
-- `reward_model_training/reward_model_framework/core_modules/RWD_MODELS_FOR_TUNING/7wnzkgie/`
-
-Approximate size of required files:
-
-- `best_model.pt`: `49 MB`
-- `release_config.yaml`: small text yaml
-- `datamodule_third.pt`: `99 KB` (optional)
-- `model_example_input.pt`: `27 MB` (optional)
-
-### 2. Fine-tuned EG3D snapshot
-
-Recommended asset filename:
-
-- `eg3d-finetuned-sfield-run01446-network-snapshot-002068_LAST.pkl`
-
-Purpose:
-
-- reported fine-tuned EG3D snapshot used for tuned-vs-untuned geometry export
-- consumed by the public mesh-bank export and public release verifier
-
-Current local source file:
-
-- `/media/krillman/240GB_DATA/training_runs_2/01446-ffhq-eg3d_w_mirrore-gpus1-batch16-gamma20/network-snapshot-002068_LAST.pkl`
-
-Approximate size:
-
-- `361 MB`
-
-### 3. Untuned baseline EG3D snapshot
-
-This is a required dependency, but it does **not** need to be mirrored as a
-project-owned GitHub Release asset if you prefer to point users at the existing
-upstream/public checkpoint.
-
-Baseline expected by the maintained public path:
-
-- `ffhq512-128.pkl`
-
-Current local path used in verification:
-
-- `pkl_pt/eg3d_1/ffhq512-128.pkl`
-
-Upstream source:
-
-- NVIDIA NGC EG3D checkpoints
-
-## Expected Download Layout
-
-Recommended layout after downloading the public release assets:
+## Suggested local layout
 
 ```text
 external_assets/
@@ -116,69 +40,13 @@ external_assets/
     7wnzkgie/
       best_model.pt
       release_config.yaml
-      datamodule_third.pt
-      model_example_input.pt
 ```
 
-## Script Expectations
+## Scripts that consume these
 
-### Public release verifier
-
-Script:
-
-- `reward_model_training/reward_model_framework/core_modules/scripts/run_public_release_verifier.sh`
-
-Inputs:
-
-- tuned EG3D snapshot `.pkl`
-- untuned baseline EG3D snapshot `.pkl`
-- released reward-model directory containing `7wnzkgie/`
-- the maintained loader prefers `release_config.yaml` inside that bundle
-
-Environment / arguments:
-
-- first positional argument: tuned `.pkl`
-- `PUBLIC_RELEASE_VERIFY_BASELINE_PKL`: optional override for untuned baseline
-- `PUBLIC_RELEASE_VERIFY_RWD_MODELS_DIR` or `RWD_MODELS_DIR`: parent directory
-  containing `7wnzkgie/`
-
-### Mesh-bank export
-
-Script:
-
-- `eg3d/reward_tune_analysis/scripts/export_snapshot_mesh_bank.py`
-
-Inputs:
-
-- `--baseline-pkl`
-- `--tuned-pkl`
-
-Public-path note:
-
-- the paper-facing export should use `legacy_sigma10`
-- `cummax` is exploratory only and should not be treated as the public
-  user-study geometry path
-
-### RLHF fine-tuning
-
-Main runtime uses:
-
-- untuned baseline EG3D checkpoint as the generator starting point
-- released reward-model bundle as the scoring model
-
-The exact fine-tune config lineage for the reported sigma run is documented in:
-
-- `docs/paper_results_guide_2026-06-24.md`
-- `docs/rlhf_reward_loss_surface_2026-06-24.md`
-
-## Public Release Notes
-
-When creating the GitHub Release, include a short note that says:
-
-- `reward-model-7wnzkgie-sfield256.zip` is the released sigma-volume reward
-  model bundle, with `best_model.pt` + `release_config.yaml` as the maintained
-  loading contract
-- `eg3d-finetuned-sfield-run01446-network-snapshot-002068_LAST.pkl` is the
-  released tuned EG3D snapshot used in the paper-aligned export path
-- `ffhq512-128.pkl` is the paired untuned baseline expected by the maintained
-  scripts
+- **Mesh-bank export:** `eg3d/reward_tune_analysis/scripts/export_snapshot_mesh_bank.py`
+  (`--baseline-pkl`, `--tuned-pkl`); use the `legacy_sigma10` path for the
+  paper-facing geometry.
+- **Release verifier:** `reward_model_training/reward_model_framework/core_modules/scripts/verify_public_release.py`
+  — loads the released reward model and runs forward/export smoke checks.
+- **Fine-tuning:** see [finetuning.md](finetuning.md).

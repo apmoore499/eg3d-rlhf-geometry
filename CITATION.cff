@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you use this code or the released models, please cite the paper."
+title: "Using Human Feedback to Fine-Tune Implicit 3D Face Geometry"
+abstract: >-
+  Code and released models for fine-tuning the 3D geometry of EG3D, a 3D-aware
+  GAN, from a geometry-sensitive reward model trained on human preference
+  rankings.
+authors:
+  - family-names: Moore
+    given-names: Archer P.
+  - family-names: Gong
+    given-names: Mingming
+  - family-names: Hodgkinson
+    given-names: Liam
+date-released: "2026-06-26"
+url: "https://github.com/apmoore499/eg3d-rlhf-geometry"
+repository-code: "https://github.com/apmoore499/eg3d-rlhf-geometry"
+license-url: "https://github.com/apmoore499/eg3d-rlhf-geometry/blob/main/LICENSE.txt"
+keywords:
+  - EG3D
+  - 3D-aware GAN
+  - neural radiance fields
+  - RLHF
+  - 3D face geometry
+# When the arXiv preprint is posted, add a preferred-citation block here with the
+# eprint id so "Cite this repository" points at the paper.
